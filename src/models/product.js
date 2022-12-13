@@ -17,6 +17,10 @@ const Product = sequelize.define('Product', {
     price: {
         type: DataTypes.DECIMAL,
         allowNull: false,
+    },
+    description: {
+        type: DataTypes.TEXT,
+        allowNull: true,
     }
 }, {
     tableName: 'Product',

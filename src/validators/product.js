@@ -1,15 +1,11 @@
 const { param, body } = require('express-validator')
 
 const checkCreate = [
-    body('account')
-        .not().isEmpty().withMessage('Tài khoản không được bỏ trống'),
-    body('password')
-        .isLength({ min: 5 }).withMessage('Mật khẩu phải dài hơn 5 ký tự')
-        .not().isEmpty().withMessage('Mật khẩu không được bỏ trống'),
-    // body('rePassword')
-    //     .custom((value, { req }) => {
-    //         return (req.body.password === value)
-    //     }).withMessage('Mật khẩu không khớp nhau')
+    body('name')
+        .not().isEmpty().withMessage('Tên sản phẩm không được bỏ trống'),
+    body('price')
+        .not().isEmpty().withMessage('Giá bán không bỏ trống')
+        .isNumeric().withMessage('Giá bán không khớp định dạng')
 ]
 
 const checkId = [

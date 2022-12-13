@@ -3,6 +3,7 @@ const route = require('./routes')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const display = require('./utils/display')
+const auto = require('./tools/autoInsertDefault')
 
 const app = express()
 
@@ -33,6 +34,8 @@ app.use((error, req, res, next) => {
         error.error || ''
     ))
 })
+
+// auto()
 
 const server = app.listen(7000, (err) => {
     if (err) {

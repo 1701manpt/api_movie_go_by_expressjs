@@ -5,9 +5,9 @@ const { OAuth2Client } = require('google-auth-library')
 const display = require('../utils/display')
 
 const GOOGLE_MAILER_CLIENT_ID = process.env.GOOGLE_MAILER_CLIENT_ID
-const GOOGLE_MAILER_CLIENT_SECRET = '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'
-const GOOGLE_MAILER_REFRESH_TOKEN = '1//04SjpUNlibUXfCgYIARAAGAQSNwF-L9IrkK7Lk3JVjUniqK_4Llv75_a6C3QGTXrc1sRSH6ul7ImjTHiANn7KfP93Fec7eUQC_Y0'
-const ADMIN_EMAIL_ADDRESS = 'thaiphuongnam1071@gmail.com'
+const GOOGLE_MAILER_CLIENT_SECRET = process.env.GOOGLE_MAILER_CLIENT_SECRET
+const GOOGLE_MAILER_REFRESH_TOKEN = process.env.GOOGLE_MAILER_REFRESH_TOKEN
+const ADMIN_EMAIL_ADDRESS = process.env.ADMIN_EMAIL_ADDRESS
 
 // Khởi tạo OAuth2Client với Client ID và Client Secret 
 const myOAuth2Client = new OAuth2Client(

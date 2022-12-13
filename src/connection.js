@@ -15,6 +15,4 @@ sequelize.authenticate()
     .finally((err) => {
     })
 
-// sequelize.sync({ force: true })
-
 module.exports = sequelize
