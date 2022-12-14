@@ -6,7 +6,7 @@ const config = {
     "database": process.env.DB_DATABASE,
     "host": process.env.DB_HOST,
     "dialect": "mssql",
-    // "port": 49865,
+    "port": 49865,
     // "dialectOptions": {
     //     "instanceName": process.env.SERVER
     // }
