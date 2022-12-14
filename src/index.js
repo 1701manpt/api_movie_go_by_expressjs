@@ -37,6 +37,10 @@ app.use((error, req, res, next) => {
 
 // auto()
 
+// const os = require("os");
+// const hostname = os.hostname();
+// console.log(hostname);
+
 const server = app.listen(7000, (err) => {
     if (err) {
         console.error('Listening on port 7000 error: ' + err)
