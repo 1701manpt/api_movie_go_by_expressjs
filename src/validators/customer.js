@@ -22,12 +22,16 @@ const checkCreate = [
         .not().isEmpty().withMessage('Địa chỉ không bỏ trống')
 ]
 
+const checkSignIn = [
+    body('account')
+        .not().isEmpty().withMessage('Tài khoản không bỏ trống'),
+    body('password')
+        .not().isEmpty().withMessage('Mật khẩu không bỏ trống')
+]
+
 const checkId = [
     param('id')
         .isInt().toInt().withMessage('ID must be a number')
 ]
 
-module.exports = {
-    checkId,
-    checkCreate,
-}
+module.exports = { checkId, checkCreate, checkSignIn }

@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 // validate
-const { checkId, checkCreate } = require('../validators/customer')
+const { checkId, checkCreate, checkSignIn } = require('../validators/customer')
 
 // middleware
 const logValidation = require('../middlewares/validation')
@@ -19,7 +19,7 @@ router.get('/:id/verify/:confirmationCode', verify)
 
 router.post('/', checkCreate, logValidation, create)
 router.post('/signUp', checkCreate, logValidation, signUp, sendMail)
-router.post('/signIn', signIn)
+router.post('/signIn', checkSignIn, logValidation, signIn)
 router.post('/:id', checkId, logValidation, restore)
 
 router.put('/:id', checkId, logValidation, update)

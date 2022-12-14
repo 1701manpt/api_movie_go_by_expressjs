@@ -231,13 +231,21 @@ const verify = async (req, res, next) => {
 
 const signIn = async (req, res, next) => {
     try {
-        const instance = await Customer.findOne({ where: { account: req.body.account } })
+        const instance = await Customer.findOne({
+            where: { account: req.body.account },
+            include: 'accountStatus'
+        })
+
         if (!instance) {
             return next(display(400, 'Account not exist'))
         }
 
         if (instance.password !== req.body.password) {
             return next(display(400, 'Password not match'))
+        }
+
+        if (instance.accountStatus.code === 1) {
+            return next(display(400, 'Account not verify'))
         }
 
         const token = generateAccessToken({
