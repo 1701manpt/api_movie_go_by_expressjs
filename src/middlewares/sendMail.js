@@ -45,7 +45,7 @@ const sendMail = async (req, res, next) => {
         const content = `
             <div>
                 <h3>Nhấn vào liên kết bên dưới để xác thực tài khoản</h3>
-                <a href="http://localhost:7000/api/customers/${req.body.id}/verify/${req.body.confirmationCode}">link xác thực</a>
+                <a href="http://localhost:7000/api/auth/register/verify/${req.confirmationCode}">link xác thực</a>
             </div>
         `
 

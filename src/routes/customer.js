@@ -7,19 +7,16 @@ const { checkId, checkCreate, checkSignIn } = require('../validators/customer')
 // middleware
 const logValidation = require('../middlewares/validation')
 const sendMail = require('../middlewares/sendMail')
-const authenticateToken = require('../middlewares/authenticateToken')
+const { authenticateToken, authorizeToken } = require('../middlewares/verifyToken')
 
 // controllers
-const { getAll, getById, create, update, destroy, restore, destroyForce, verify, signUp, signIn, getAllOrder } = require('../controllers/customer')
+const { getAll, getById, create, update, destroy, restore, destroyForce, getAllOrder } = require('../controllers/customer')
 
 router.get('/', getAll)
 router.get('/:id/orders', authenticateToken, getAllOrder)
-router.get('/:id', checkId, logValidation, getById)
-router.get('/:id/verify/:confirmationCode', verify)
+router.get('/:id', checkId, logValidation, authenticateToken, getById)
 
 router.post('/', checkCreate, logValidation, create)
-router.post('/signUp', checkCreate, logValidation, signUp, sendMail)
-router.post('/signIn', checkSignIn, logValidation, signIn)
 router.post('/:id', checkId, logValidation, restore)
 
 router.put('/:id', checkId, logValidation, update)

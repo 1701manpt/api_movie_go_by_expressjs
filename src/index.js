@@ -1,8 +1,14 @@
 const express = require('express')
-const route = require('./routes')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+var cookieParser = require('cookie-parser')
+
+const route = require('./routes')
+
+// utils
 const display = require('./utils/display')
+
+// tools
 const auto = require('./tools/autoInsertDefault')
 
 const app = express()
@@ -16,6 +22,8 @@ app.use(bodyParser.urlencoded({
 }))
 
 app.use(cors())
+
+app.use(cookieParser())
 
 route(app)
 
@@ -36,10 +44,6 @@ app.use((error, req, res, next) => {
 })
 
 // auto()
-
-// const os = require("os");
-// const hostname = os.hostname();
-// console.log(hostname);
 
 const server = app.listen(7000, (err) => {
     if (err) {

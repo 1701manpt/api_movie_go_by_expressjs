@@ -4,6 +4,7 @@ const order = require('./order')
 const orderLine = require('./orderLine')
 const orderStatus = require('./orderStatus')
 const accountStatus = require('./accountStatus')
+const auth = require('./auth')
 
 const version1 = require('./v1/index')
 
@@ -16,6 +17,7 @@ function route(app) {
     app.use('/api/orderLines', orderLine)
     app.use('/api/orderStatuses', orderStatus)
     app.use('/api/accountStatuses', accountStatus)
+    app.use('/api/auth', auth)
 
     // version of the API
     app.use('/api/v1', version1)
