@@ -42,10 +42,6 @@ const Customer = sequelize.define('Customer', {
         type: DataTypes.INTEGER,
         defaultValue: 0,
         allowNull: false,
-    },
-    confirmationCode: {
-        type: DataTypes.STRING,
-        allowNull: true
     }
 }, {
     tableName: 'Customer',

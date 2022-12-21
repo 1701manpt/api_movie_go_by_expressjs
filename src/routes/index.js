@@ -1,4 +1,5 @@
 const customer = require('./customer')
+const category = require('./category')
 const product = require('./product')
 const order = require('./order')
 const orderLine = require('./orderLine')
@@ -12,6 +13,7 @@ function route(app) {
 
     // default
     app.use('/api/customers', customer)
+    app.use('/api/categories', category)
     app.use('/api/products', product)
     app.use('/api/orders', order)
     app.use('/api/orderLines', orderLine)
