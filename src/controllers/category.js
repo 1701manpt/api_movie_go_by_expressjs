@@ -93,7 +93,6 @@ const destroy = async (req, res, next) => {
 }
 
 const getProductsByCategory = async (req, res, next) => {
-    console.log(typeof req.params.id);
     const products = await Product.findAll({
         where: { categoryId: req.params.id },
         include: {

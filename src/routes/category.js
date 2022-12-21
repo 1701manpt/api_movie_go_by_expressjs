@@ -8,16 +8,16 @@ const { getAll, getById, create, update, destroy, getProductsByCategory } = requ
 const checkId = require('../validators/checkId')
 
 // middlewares
-// const logValidation = require('../middlewares/validation')
+const logValidation = require('../middlewares/validation')
 
 router.get('/', getAll)
-router.get('/:id', checkId, getById)
-router.get('/:id/products', getProductsByCategory)
+router.get('/:id', checkId, logValidation, getById)
+router.get('/:id/products', checkId, logValidation, getProductsByCategory)
 
 router.post('/', create)
 
-router.put('/:id', checkId, update)
+router.put('/:id', checkId, logValidation, update)
 
-router.delete('/:id', checkId, destroy)
+router.delete('/:id', checkId, logValidation, destroy)
 
 module.exports = router

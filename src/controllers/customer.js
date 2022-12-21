@@ -51,7 +51,7 @@ const create = async (req, res, next) => {
     try {
         const instance = await Customer.findOne({ where: { account: req.body.account }, paranoid: false })
         if (instance) {
-            return next(display(400, 'Customer already exists'))
+            return next(display(400, 'Tài khoản đã tồn tại'))
         }
 
         const newInstance = await Customer.create({
@@ -64,7 +64,7 @@ const create = async (req, res, next) => {
             accountStatusId: req.body.accountStatusId,
         })
 
-        res.json(display(200, 'Customer created successfully', newInstance && 1, newInstance))
+        res.json(display(200, 'Tài khoản tạo thành công', newInstance && 1, newInstance))
     } catch (err) {
         next(err)
     }

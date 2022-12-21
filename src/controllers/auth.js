@@ -16,15 +16,15 @@ const login = async (req, res, next) => {
         })
 
         if (!instanceCheck) {
-            return next(display(400, 'Account not exist'))
+            return next(display(400, 'Tài khoản không tồn tại'))
         }
 
         if (instanceCheck.password !== req.body.password) {
-            return next(display(400, 'Password not match'))
+            return next(display(400, 'Mật khẩu không khớp'))
         }
 
         if (instanceCheck.accountStatus.code === 1) {
-            return next(display(400, 'Account not verify'))
+            return next(display(400, 'Tài khoản chưa xác thực'))
         }
 
         const instanceDisplay = await Customer.findByPk(instanceCheck.id, {
@@ -58,7 +58,7 @@ const login = async (req, res, next) => {
             accessToken
         }
 
-        res.json(display(200, 'Sign in successfully', 1, data))
+        res.json(display(200, 'Đăng nhập thành công', 1, data))
     } catch (err) {
         next(err)
     }
@@ -68,7 +68,7 @@ const register = async (req, res, next) => {
     try {
         const instanceCheck = await Customer.findOne({ where: { account: req.body.account }, paranoid: false })
         if (instanceCheck) {
-            return next(display(400, 'Customer already exists'))
+            return next(display(400, 'Tài khoản đã tồn tại'))
         }
 
         const newInstance = await Customer.create({
@@ -83,7 +83,7 @@ const register = async (req, res, next) => {
 
         const confirmationCode = generateTokenRegister({ id: newInstance.id, roleId: 1 })
 
-        res.json(display(200, 'Customer created successfully', newInstance && 1, newInstance))
+        res.json(display(200, 'Tài khoản tạo thành công', newInstance && 1, newInstance))
 
         req.confirmationCode = confirmationCode
         return next()  // go to sendMail

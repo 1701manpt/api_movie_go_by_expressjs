@@ -5,7 +5,7 @@ const config = {
     "password": process.env.DB_PASSWORD,
     "database": process.env.DB_DATABASE,
     "dialect": "mssql",
-    // "port": 1433,
+    "port": 54817,
     "dialectOptions": {
         "instanceName": process.env.SERVER
     }
