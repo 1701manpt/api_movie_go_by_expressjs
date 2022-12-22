@@ -1,18 +1,12 @@
-'use strict'
-
 const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
 
-const AccountStatus = sequelize.define('AccountStatus', {
+const UserStatus = sequelize.define('UserStatus', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-    },
-    code: {
-        type: DataTypes.INTEGER,
+        autoIncrement: false,
         allowNull: false,
     },
     name: {
@@ -20,9 +14,9 @@ const AccountStatus = sequelize.define('AccountStatus', {
         allowNull: false,
     }
 }, {
-    tableName: 'AccountStatus',
+    tableName: 'UserStatus',
     timestamps: true,
-    paranoid: true, // enable soft delete
+    underscored: true,
 })
 
-module.exports = AccountStatus
+module.exports = UserStatus

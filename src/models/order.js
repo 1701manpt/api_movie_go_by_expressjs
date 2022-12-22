@@ -1,10 +1,8 @@
-'use strict'
-
 const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
 
-const OrderStatus = require('./orderStatus')
+const OrderStatus = require('./OrderStatus')
 const Customer = require('./customer')
 
 const Order = sequelize.define('Order', {
@@ -26,18 +24,19 @@ const Order = sequelize.define('Order', {
     tableName: 'Order',
     timestamps: true,
     paranoid: true, // enable soft delete
+    underscored: true,
 })
 
 Order.belongsTo(Customer, {
-    foreignKey: 'customerId',
     as: 'customer',
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE',
+    foreignKey: 'customerId',
+    // onDelete: 'SET NULL',
+    // onUpdate: 'CASCADE',
 })
 
 Order.belongsTo(OrderStatus, {
-    foreignKey: 'orderStatusId',
     as: 'orderStatus',
+    foreignKey: 'orderStatusId',
 })
 
 module.exports = Order

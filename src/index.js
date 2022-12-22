@@ -1,7 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-var cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser')
+const path = require('path')
 
 const route = require('./routes')
 
@@ -28,26 +29,32 @@ app.use(cookieParser())
 route(app)
 
 // error handler 404
-app.use((req, res, next) => {
-    next(display(404, 'Not found page'))
+app.use('/', (req, res, next) => {
+    return res.status(404).sendFile(path.join(__dirname + '/./pages/404.html'))
 })
 
 // error handler middleware
 app.use((error, req, res, next) => {
-    res.status(error.status || 500).json(display(
-        error.status || 500,
-        error.message || 'Internal Server Error',
-        0,
-        '',
-        error.error || ''
-    ))
+    res.status(error.status || 500).json(display({
+        error: error.error,
+        message: error.message || 'Internal Server Error'
+    }))
 })
 
+const Employee = require('./models/Employee')
+const ProductImage = require('./models/ProductImage')
+
+async () => {
+    await Employee.findAll()
+    await ProductImage.findAll()
+}
+
+// tự động tạo database và chèn dữ liệu
 // auto()
 
 const server = app.listen(7000, (err) => {
     if (err) {
         console.error('Listening on port 7000 error: ' + err)
     }
-    else console.log(`Server listening on port ${'http://localhost:' + server.address().port}`)
+    else console.log(`Server listening on port ${'http://localhost:' + server.address().port + '/api'}`)
 })

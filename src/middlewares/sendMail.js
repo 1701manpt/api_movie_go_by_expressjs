@@ -51,15 +51,19 @@ const sendMail = async (req, res, next) => {
 
         // mailOption là những thông tin gửi từ phía client lên thông qua API
         const mailOptions = {
-            to: req.body.email, // Gửi đến ai?
-            subject: 'Xác thực tài khoản ' + req.body.account, // Tiêu đề email
+            to: req.body.user.email, // Gửi đến ai?
+            subject: 'Xác thực tài khoản ' + req.body.user.account, // Tiêu đề email
             html: content // Nội dung email
         }
         // Gọi hành động gửi email
         await transport.sendMail(mailOptions)
         // Không có lỗi gì thì trả về success
-        return res.json(display(200, 'Email sent successfully'))
+        console.log('Sent mail successfully');
+        return res.status(200).json(display({
+            message: 'Gửi email thành công'
+        }))
     } catch (error) {
+        console.log('Sent mail error: ' + error);
         next(error)
     }
 }

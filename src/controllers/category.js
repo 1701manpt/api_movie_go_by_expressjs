@@ -7,41 +7,54 @@ const display = require('../utils/display')
 
 const getAll = async (req, res, next) => {
     try {
-        const instance = await Category.findAll()
+        const list = await Category.findAll()
 
-        res.json(display(200, 'List of category returned successfully', instance.length, instance))
+        res.status(200).json(display({
+            message: 'Lấy danh sách danh mục thành công',
+            data: list
+        }))
     }
-    catch (err) {
-        next(err)
+    catch (error) {
+        next(error)
     }
 }
 
 const getById = async (req, res, next) => {
     try {
-        const instance = await Category.findByPk(req.params.id)
-        if (!instance) {
-            return next(display(404, 'Category not found'))
+        const category = await Category.findByPk(req.params.id)
+        if (!category) {
+            return res.status(400).json(display({
+                message: 'Danh mục không tồn tại'
+            }))
         }
 
-        res.json(display(200, 'Category returned successfully', instance && 1, instance))
+        res.status(200).json(display({
+            message: 'Lấy danh mục thành công',
+            data: category
+        }))
     }
-    catch (err) {
-        next(err)
+    catch (error) {
+        next(error)
     }
 }
 
 const create = async (req, res, next) => {
     try {
-        const instance = await Category.findOne({ where: { name: req.body.name }, paranoid: false })
+        const instance = await Category.findOne({ where: { name: req.body.name } })
         if (instance) {
-            return next(display(400, 'Category already exists'))
+            return res.status(400).json(display({
+                message: 'Tên danh mục tồn tại'
+            }))
         }
 
-        const newInstance = await Category.create({
+        const newCategory = await Category.create({
             name: req.body.name,
         })
 
-        res.json(display(200, 'Category created successfully', newInstance && 1, newInstance))
+        res.status(200).json(display({
+            message: 'Tạo danh mục thành công',
+            data: newCategory
+        }))
     } catch (err) {
         next(err)
     }
@@ -49,17 +62,20 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const instance = await Category.findByPk(req.params.id)
-        if (!instance) {
-            return next(display(404, 'Category not found'))
+        const category = await Category.findByPk(req.params.id)
+        if (!category) {
+            return res.status(400).json(display({
+                message: 'Danh mục không tồn tại'
+            }))
         }
 
-        const instance2 = await Category.findOne({ where: { name: req.body.name }, paranoid: false })
-        if (instance2 && (instance2.id != req.params.id)) {
-            return next(display(400, 'Name\'s category exists already'))
-        }
+        // if (category && category.id == req.body.name) {
+        //     return res.status(400).json(display({
+        //         message: 'Tên danh mục tồn tại'
+        //     }))
+        // }
 
-        const [result, newInstance] = await Category.update({
+        const [result, newCategory] = await Category.update({
             name: req.body.name,
         }, {
             where: { id: req.params.id },
@@ -67,9 +83,12 @@ const update = async (req, res, next) => {
             plain: true,
         })
 
-        res.json(display(200, 'Category updated successfully', !result && 1, newInstance))
-    } catch (err) {
-        next(err)
+        res.status(200).json(display({
+            message: 'Cập nhật danh mục thành công',
+            data: newCategory,
+        }))
+    } catch (error) {
+        next(error)
     }
 }
 
@@ -77,18 +96,22 @@ const destroy = async (req, res, next) => {
     try {
         const instance = await Category.findByPk(req.params.id)
         if (!instance) {
-            return next(display(404, 'Category not found'))
+            return res.status(400).json(display({
+                message: 'Danh mục không tồn tại'
+            }))
         }
 
-        const newInstance = await Category.destroy({
+        await Category.destroy({
             where: { id: req.params.id },
             returning: true,
             plain: true
         })
 
-        res.json(display(200, 'Category deleted successfully', newInstance && 1, newInstance))
-    } catch (err) {
-        next(err)
+        res.status(200).json(display({
+            message: 'Xóa danh mục thành công'
+        }))
+    } catch (error) {
+        next(error)
     }
 }
 
@@ -100,7 +123,10 @@ const getProductsByCategory = async (req, res, next) => {
         }
     })
 
-    res.status(200).json(display(200, 'Trả về thành công', products.length, products))
+    res.status(200).json(display({
+        message: 'Lấy thành công',
+        data: products
+    }))
 }
 
 module.exports = { getAll, getById, create, update, destroy, getProductsByCategory }

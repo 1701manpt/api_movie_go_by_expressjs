@@ -1,5 +1,3 @@
-'use strict'
-
 const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
@@ -8,11 +6,7 @@ const OrderStatus = sequelize.define('OrderStatus', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-    },
-    code: {
-        type: DataTypes.INTEGER,
+        autoIncrement: false,
         allowNull: false,
     },
     name: {
@@ -22,7 +16,7 @@ const OrderStatus = sequelize.define('OrderStatus', {
 }, {
     tableName: 'OrderStatus',
     timestamps: true,
-    paranoid: true, // enable soft delete
+    underscored: true,
 })
 
 module.exports = OrderStatus

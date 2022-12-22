@@ -1,93 +1,68 @@
 // modal
 const Customer = require('../models/customer')
 const Order = require('../models/order')
-const AccountStatus = require('../models/accountStatus')
 
 // utils
 const display = require('../utils/display')
 
 const getAll = async (req, res, next) => {
     try {
-        const instance = await Customer.findAll({
-            include: {
-                association: 'accountStatus',
-                attributes: ['code', 'name'],
-            },
-            attributes: {
-                exclude: ['password', 'confirmationCode'],
-            }
-        })
+        const list = await Customer.findAll()
 
-        res.json(display(200, 'List of customers returned successfully', instance.length, instance))
+        res.status(200).json(display({
+            message: 'Lấy danh sách khách hàng thành công',
+            data: list
+        }))
     }
-    catch (err) {
-        next(err)
+    catch (error) {
+        next(error)
     }
 }
 
 const getById = async (req, res, next) => {
     try {
-        const instance = await Customer.findByPk(req.params.id, {
-            include: {
-                association: 'accountStatus',
-                attributes: ['code', 'name'],
-            },
-            attributes: {
-                exclude: ['password', 'confirmationCode'],
-            }
-        })
-        if (!instance) {
-            return next(display(404, 'Customer not found'))
+        const customer = await Customer.findByPk(req.params.id)
+
+        if (!customer) {
+            return res.status(400).json(display({
+                message: 'Khách hàng không tồn tại'
+            }))
         }
 
-        res.json(display(200, 'Customer returned successfully', instance && 1, instance))
+        res.status(200).json(display({
+            message: 'Lấy khách hàng thành công',
+            data: customer
+        }))
     }
-    catch (err) {
-        next(err)
-    }
-}
-
-const create = async (req, res, next) => {
-    try {
-        const instance = await Customer.findOne({ where: { account: req.body.account }, paranoid: false })
-        if (instance) {
-            return next(display(400, 'Tài khoản đã tồn tại'))
-        }
-
-        const newInstance = await Customer.create({
-            account: req.body.account,
-            password: req.body.password,
-            fullName: req.body.fullName,
-            email: req.body.email,
-            phone: req.body.phone,
-            address: req.body.address,
-            accountStatusId: req.body.accountStatusId,
-        })
-
-        res.json(display(200, 'Tài khoản tạo thành công', newInstance && 1, newInstance))
-    } catch (err) {
-        next(err)
+    catch (error) {
+        next(error)
     }
 }
 
 const update = async (req, res, next) => {
     try {
-        const instance = await Customer.findByPk(req.params.id)
-        if (!instance) {
-            return next(display(404, 'Customer not found'))
+        const customer = await Customer.findByPk(req.params.id)
+
+        if (!customer) {
+            return res.status(400).json(display({
+                message: 'Khách hàng không tồn tại'
+            }))
         }
 
-        const [result, newInstance] = await Customer.update({
-            password: req.body.password,
+        const [result, newCustomer] = await Customer.update({
+            fullName: req.body.fullName
         }, {
             where: { id: req.params.id },
             returning: true,
             plain: true,
         })
 
-        res.json(display(200, 'Customer updated successfully', !result && 1, newInstance))
-    } catch (err) {
-        next(err)
+        res.status(200).json(display({
+            message: 'Cập nhật khách hàng thành công',
+            data: newCustomer
+        }))
+    } catch (error) {
+        next(error)
     }
 }
 
@@ -95,7 +70,9 @@ const destroy = async (req, res, next) => {
     try {
         const instance = await Customer.findByPk(req.params.id)
         if (!instance) {
-            return next(display(404, 'Customer not found'))
+            return res.status(400).json(display({
+                message: 'Khách hàng không tồn tại'
+            }))
         }
 
         const newInstance = await Customer.destroy({
@@ -104,7 +81,9 @@ const destroy = async (req, res, next) => {
             plain: true
         })
 
-        res.json(display(200, 'Customer deleted successfully', newInstance && 1, newInstance))
+        res.status(200).json(display({
+            message: 'Xóa khách hàng thành công'
+        }))
     } catch (err) {
         next(err)
     }
@@ -113,12 +92,17 @@ const destroy = async (req, res, next) => {
 const restore = async (req, res, next) => {
     try {
         const instance = await Customer.findOne({ where: { id: req.params.id }, paranoid: false })
+
         if (!instance) {
-            return next(display(404, 'Customer not found'))
-        } else {
-            if (instance.deletedAt === null) {
-                return next(display(400, 'Customer must be soft deleted before continue'))
-            }
+            return res.status(400).json(display({
+                message: 'Khách hàng không tồn tại'
+            }))
+        }
+
+        if (instance.deletedAt == null) {
+            return res.status(400).json(display({
+                message: 'Khách hàng chưa xóa mềm'
+            }))
         }
 
         const newInstance = await Customer.restore({
@@ -127,7 +111,9 @@ const restore = async (req, res, next) => {
             plain: true
         })
 
-        res.json(display(200, 'Restore customer successfully', newInstance && 1, newInstance))
+        res.status(200).json(display({
+            message: 'Xóa khách hàng thành công'
+        }))
     } catch (err) {
         next(err)
     }
@@ -137,11 +123,15 @@ const destroyForce = async (req, res, next) => {
     try {
         const instance = await Customer.findOne({ where: { id: req.params.id }, paranoid: false })
         if (!instance) {
-            return next(display(404, 'Customer not found'))
-        } else {
-            if (instance.deletedAt === null) {
-                return next(display(400, 'Customer must be soft deleted before continue'))
-            }
+            return res.status(400).json(display({
+                message: 'Khách hàng không tồn tại'
+            }))
+        }
+
+        if (instance.deletedAt == null) {
+            return res.status(400).json(display({
+                message: 'Khách hàng chưa xóa mềm'
+            }))
         }
 
         const newInstance = await Customer.destroy({
@@ -151,23 +141,25 @@ const destroyForce = async (req, res, next) => {
             force: true // delete record from database
         })
 
-        res.json(display(200, 'Customer deleted successfully', newInstance))
-    } catch (err) {
-        next(err)
+        res.status(200).json(display({
+            message: 'Xóa khách hàng thành công'
+        }))
+    } catch (error) {
+        next(error)
     }
 }
 
 const getAllOrder = async (req, res, next) => {
     try {
-        const instance = await Order.findAll({ where: { customerId: req.params.id } })
-        if (!instance) {
-            return next(display(400, 'Order not found'))
-        }
+        // const instance = await Order.findAll({ where: { customerId: req.params.id } })
+        // if (!instance) {
+        //     return next(display(400, 'Order not found'))
+        // }
 
-        res.json(display(200, 'Get all order successfully', instance.length, instance))
+        // res.json(display(200, 'Get all order successfully', instance.length, instance))
     } catch (err) {
         next(err)
     }
 }
 
-module.exports = { getAll, getById, create, update, destroy, restore, destroyForce, getAllOrder }
+module.exports = { getAll, getById, update, destroy, restore, destroyForce, getAllOrder }

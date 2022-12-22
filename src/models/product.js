@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
 
-const Category = require('./category')
+const Category = require('./Category')
 
 const Product = sequelize.define('Product', {
     id: {
@@ -11,6 +11,7 @@ const Product = sequelize.define('Product', {
         autoIncrement: true,
         allowNull: false,
     },
+
     name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -32,6 +33,7 @@ const Product = sequelize.define('Product', {
     tableName: 'Product',
     timestamps: true,
     paranoid: true, // enable soft delete
+    underscored: true,
 })
 
 Product.belongsTo(Category, {

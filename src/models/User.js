@@ -1,42 +1,44 @@
+'use strict'
+
 const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
 
-const User = require('./User')
+const UserStatus = require('./UserStatus')
 
-const Customer = sequelize.define('Customer', {
+const User = sequelize.define('User', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
     },
-    fullName: {
+    account: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
-    phone: {
+    password: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
-    address: {
+    email: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
-    userId: {
+    userStatusId: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
     }
 }, {
-    tableName: 'Customer',
+    tableName: 'User',
     timestamps: true,
     paranoid: true, // enable soft delete
     underscored: true,
 })
 
-Customer.belongsTo(User, {
-    as: 'user',
-    foreignKey: 'userId',
+User.belongsTo(UserStatus, {
+    as: 'userStatus',
+    foreignKey: 'userStatusId',
 })
 
-module.exports = Customer
+module.exports = User

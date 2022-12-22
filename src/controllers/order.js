@@ -8,68 +8,76 @@ const display = require('../utils/display')
 
 const getAll = async (req, res, next) => {
     try {
-        const instance = await Order.findAll({ include: ['customer', 'orderStatus'] })
+        const instance = await Order.findAll()
 
-        res.json(display(200, 'List of order returned successfully', instance.length, instance))
+        res.status(200).json(display({
+            message: 'Lấy danh sách đơn hàng thành công',
+            data: instance
+        }))
     }
-    catch (err) {
-        next(err)
+    catch (error) {
+        next(error)
     }
 }
 
 const getById = async (req, res, next) => {
     try {
-        const instance = await Order.findByPk(req.params.id, { include: ['customer', 'orderStatus'] })
+        const instance = await Order.findByPk(req.params.id)
         if (!instance) {
-            return next(display(404, 'Order not found'))
+            return res.status(400).json(display({
+                message: 'Đơn hàng không tồn tại'
+            }))
         }
 
-        res.json(display(200, 'Order returned successfully', instance && 1, instance))
+        res.status(200).json(display({
+            message: 'Lấy đơn hàng thành công',
+            data: instance
+        }))
     }
-    catch (err) {
-        next(err)
+    catch (error) {
+        next(error)
     }
 }
 
 const create = async (req, res, next) => {
     try {
-        const instance = await Customer.findByPk(req.body.customerId)
-        if (!instance) {
-            return next(display(400, 'Customer not exist'))
+        const customer = await Customer.findByPk(req.body.customerId)
+        if (!customer) {
+            return res.status(400).json(display({
+                message: 'Khách hàng không tồn tại'
+            }))
         }
 
-        const instance2 = await OrderStatus.findOne({ where: { code: 1 } })
-        if (!instance2) {
-            return next(display(400, 'OrderStatus not exist'))
-        }
-
-        const newInstance = await Order.create({
+        const newOrder = await Order.create({
             customerId: req.body.customerId,
-            orderStatusId: instance2.id
+            orderStatusId: 1
         })
 
-        res.json(display(200, 'Order created successfully', newInstance && 1, newInstance))
-    } catch (err) {
-        next(err)
+        res.status(200).json(display({
+            message: 'Tạo đơn hàng thành công',
+            data: newOrder
+        }))
+    } catch (error) {
+        next(error)
     }
 }
 
 const update = async (req, res, next) => {
     try {
-        const instance = await Order.findByPk(req.params.id)
-        if (!instance) {
-            return next(404, 'Order not found')
-        }
+        // const instance = await Order.findByPk(req.params.id)
+        // if (!instance) {
+        //     return next(404, 'Order not found')
+        // }
 
-        const [result, newInstance] = await Order.update({
-            orderStatusId: req.body.orderStatusId,
-        }, {
-            where: { id: req.params.id },
-            returning: true,
-            plain: true,
-        })
+        // const [result, newInstance] = await Order.update({
+        //     orderStatusId: req.body.orderStatusId,
+        // }, {
+        //     where: { id: req.params.id },
+        //     returning: true,
+        //     plain: true,
+        // })
 
-        res.json(display(200, 'Order updated successfully', !result && 1, newInstance))
+        // res.json(display(200, 'Order updated successfully', !result && 1, newInstance))
     } catch (err) {
         next(err)
     }
@@ -77,18 +85,18 @@ const update = async (req, res, next) => {
 
 const destroy = async (req, res, next) => {
     try {
-        const instance = await Order.findByPk(req.params.id)
-        if (!instance) {
-            return next(display(404, 'Order not found'))
-        }
+        // const instance = await Order.findByPk(req.params.id)
+        // if (!instance) {
+        //     return next(display(404, 'Order not found'))
+        // }
 
-        const newInstance = await Order.destroy({
-            where: { id: req.params.id },
-            returning: true,
-            plain: true
-        })
+        // const newInstance = await Order.destroy({
+        //     where: { id: req.params.id },
+        //     returning: true,
+        //     plain: true
+        // })
 
-        res.json(display(200, 'Order deleted successfully', newInstance && 1, newInstance))
+        // res.json(display(200, 'Order deleted successfully', newInstance && 1, newInstance))
     } catch (err) {
         next(err)
     }
@@ -96,23 +104,23 @@ const destroy = async (req, res, next) => {
 
 const destroyForce = async (req, res, next) => {
     try {
-        const instance = await Order.findOne({ where: { id: req.params.id }, paranoid: false })
-        if (!instance) {
-            return next(display(404, 'Order not found'))
-        } else {
-            if (instance.deletedAt === null) {
-                return next(display(400, 'Order must be soft deleted before continue'))
-            }
-        }
+        // const instance = await Order.findOne({ where: { id: req.params.id }, paranoid: false })
+        // if (!instance) {
+        //     return next(display(404, 'Order not found'))
+        // } else {
+        //     if (instance.deletedAt === null) {
+        //         return next(display(400, 'Order must be soft deleted before continue'))
+        //     }
+        // }
 
-        const newInstance = await Order.destroy({
-            where: { id: req.params.id },
-            returning: true,
-            plain: true,
-            force: true // delete record from database
-        })
+        // const newInstance = await Order.destroy({
+        //     where: { id: req.params.id },
+        //     returning: true,
+        //     plain: true,
+        //     force: true // delete record from database
+        // })
 
-        res.json(display(200, 'Order deleted successfully', newInstance))
+        // res.json(display(200, 'Order deleted successfully', newInstance))
     } catch (err) {
         next(err)
     }
@@ -120,22 +128,22 @@ const destroyForce = async (req, res, next) => {
 
 const restore = async (req, res, next) => {
     try {
-        const instance = await Order.findOne({ where: { id: req.params.id }, paranoid: false })
-        if (!instance) {
-            return next(display(404, 'Order not found'))
-        } else {
-            if (instance.deletedAt === null) {
-                return next(display(400, 'Order must be soft deleted before continue'))
-            }
-        }
+        // const instance = await Order.findOne({ where: { id: req.params.id }, paranoid: false })
+        // if (!instance) {
+        //     return next(display(404, 'Order not found'))
+        // } else {
+        //     if (instance.deletedAt === null) {
+        //         return next(display(400, 'Order must be soft deleted before continue'))
+        //     }
+        // }
 
-        const newInstance = await Order.restore({
-            where: { id: req.params.id },
-            returning: true,
-            plain: true
-        })
+        // const newInstance = await Order.restore({
+        //     where: { id: req.params.id },
+        //     returning: true,
+        //     plain: true
+        // })
 
-        res.json(display(200, 'Order restored successfully', newInstance && 1, newInstance))
+        // res.json(display(200, 'Order restored successfully', newInstance && 1, newInstance))
     } catch (err) {
         next(err)
     }

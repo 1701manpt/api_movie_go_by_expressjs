@@ -1,9 +1,9 @@
-module.exports = (status, message, result, data, error) => {
+const snakeCase = require("./snakeCase")
+
+module.exports = ({ message = null, data = null, error = null }) => {
     return {
-        status: status,
         message: message,
-        affectedRows: result || 0,
-        data: data || '',
-        error: error || ''
+        data: snakeCase(data),
+        error: error,
     }
 }

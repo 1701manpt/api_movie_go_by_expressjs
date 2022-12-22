@@ -6,7 +6,9 @@ const authenticateToken = (req, res, next) => {
     const token = req.headers.token
 
     if (!token) {
-        return next(display(401, 'You are not authenticated'))
+        return res.status(401).json(display({
+            message: 'Đăng nhập để tiếp tục'
+        }))
     }
 
     const accessToken = token.split(" ")[1]
@@ -14,7 +16,9 @@ const authenticateToken = (req, res, next) => {
     jwt.verify(accessToken, process.env.TOKEN_SECRET, (err, user) => {
 
         if (err) {
-            return next(display(400, 'Token is invalid or expired', 0, '', err))
+            return res.status(400).json(display({
+                message: 'Token hết hạn, hoặc không tồn tại'
+            }))
         }
 
         req.user = user
@@ -25,10 +29,12 @@ const authenticateToken = (req, res, next) => {
 
 const authorizeToken = (req, res, next) => {
     authenticateToken(req, res, () => {
-        if (req.user.id === req.params.id || req.user.roleId === 1) {
+        if (req.user.id === req.params.id) {
             next()
         } else {
-            res.json(display(403, 'You are not authorized'))
+            res.status(403).json(display({
+                message: 'Người dùng không có quyền hạn truy cập'
+            }))
         }
     })
 }

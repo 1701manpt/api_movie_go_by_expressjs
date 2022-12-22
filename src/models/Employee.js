@@ -4,7 +4,7 @@ const sequelize = require('../connection')
 
 const User = require('./User')
 
-const Customer = sequelize.define('Customer', {
+const Employee = sequelize.define('Employee', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -13,30 +13,31 @@ const Customer = sequelize.define('Customer', {
     },
     fullName: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     phone: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     address: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     userId: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
+        unique: true,
     }
 }, {
-    tableName: 'Customer',
+    tableName: 'Employee',
     timestamps: true,
     paranoid: true, // enable soft delete
     underscored: true,
 })
 
-Customer.belongsTo(User, {
+Employee.belongsTo(User, {
     as: 'user',
     foreignKey: 'userId',
 })
 
-module.exports = Customer
+module.exports = Employee

@@ -7,44 +7,61 @@ const display = require('../utils/display')
 
 const getAll = async (req, res, next) => {
     try {
-        const instance = await Product.findAll({
+        const list = await Product.findAll({
             include: 'category',
         })
 
-        res.json(display(200, 'List of product returned successfully', instance.length, instance))
+        res.status(200).json(display({
+            message: 'Lấy danh sách sản phẩm thành công',
+            data: list
+        }))
     }
-    catch (err) {
-        next(err)
+    catch (error) {
+        next(error)
     }
 }
 
 const getById = async (req, res, next) => {
     try {
-        const instance = await Product.findByPk(req.params.id, {
+        const product = await Product.findByPk(req.params.id, {
             include: 'category',
         })
-        if (!instance) {
-            return next(display(404, 'Product not found'))
+        if (!product) {
+            return res.status(400).json(display({
+                message: 'Sản phẩm không tồn tại'
+            }))
         }
 
-        res.json(display(200, 'Product returned successfully', instance && 1, instance))
+        res.status(200).json(display({
+            message: 'Lấy sản phẩm thành công',
+            data: product
+        }))
     }
-    catch (err) {
-        next(err)
+    catch (error) {
+        next(error)
     }
 }
 
 const create = async (req, res, next) => {
     try {
-        const instance = await Product.findOne({ where: { name: req.body.name }, paranoid: false })
-        if (instance) {
-            return next(display(400, 'Sản phẩm đã tồn tại'))
+        const product = await Product.findOne({
+            where: { name: req.body.name },
+            paranoid: false
+        })
+        if (product) {
+            return res.status(400).json(display({
+                message: 'Sản phẩm tồn tại'
+            }))
         }
 
         if (req.body.categoryId) {
-            const category = await Category.findByPk(req.body.categoryId)
+            const category = await Category.findOne({
+                where: { id: req.body.categoryId }
+            })
             if (!category) {
-                return next(display(400, 'Danh mục không tồn tại'))
+                return res.status(400).json(display({
+                    message: 'Danh mục không tồn tại'
+                }))
             }
         }
 
@@ -52,28 +69,40 @@ const create = async (req, res, next) => {
             name: req.body.name,
             price: req.body.price,
             description: req.body.description,
-            categoryId: req.body.categoryId || null,
+            categoryId: req.body.categoryId,
         })
 
-        res.json(display(200, 'Tạo thành công', newInstance && 1, newInstance))
-    } catch (err) {
-        next(err)
+        res.status(200).json(display({
+            message: 'Tạo sản phẩm thành công',
+            data: newInstance
+        }))
+    } catch (error) {
+        next(error)
     }
 }
 
 const update = async (req, res, next) => {
     try {
-        const instance = await Product.findByPk(req.params.id)
-        if (!instance) {
-            return next(display(404, 'Product not found'))
+        const product = await Product.findByPk(req.params.id)
+        if (!product) {
+            return res.status(400).json(display({
+                message: 'Sản phẩm không tồn tại'
+            }))
         }
 
-        const instance2 = await Product.findOne({ where: { name: req.body.name }, paranoid: false })
-        if (instance2 && (instance2.id != req.params.id)) {
-            return next(display(400, 'Name\'s product exists already'))
+        const productCheckName = await Product.findOne({
+            where: {
+                name: req.body.name
+            }
+        })
+
+        if (productCheckName) {
+            return res.status(400).json(display({
+                message: 'Tên sản phẩm đã tồn tại'
+            }))
         }
 
-        const [result, newInstance] = await Product.update({
+        const [result, newProduct] = await Product.update({
             name: req.body.name,
             price: req.body.price,
         }, {
@@ -82,26 +111,33 @@ const update = async (req, res, next) => {
             plain: true,
         })
 
-        res.json(display(200, 'Product updated successfully', !result && 1, newInstance))
-    } catch (err) {
-        next(err)
+        res.status(200).json(display({
+            message: 'Cập nhật sản phẩm thành công',
+            data: newProduct
+        }))
+    } catch (error) {
+        next(error)
     }
 }
 
 const destroy = async (req, res, next) => {
     try {
-        const instance = await Product.findByPk(req.params.id)
-        if (!instance) {
-            return next(display(404, 'Product not found'))
+        const product = await Product.findByPk(req.params.id)
+        if (!product) {
+            return res.status(400).json(display({
+                message: 'Sản phẩm không tồn tại'
+            }))
         }
 
-        const newInstance = await Product.destroy({
+        await Product.destroy({
             where: { id: req.params.id },
             returning: true,
             plain: true
         })
 
-        res.json(display(200, 'Product deleted successfully', newInstance && 1, newInstance))
+        res.status(200).json(display({
+            message: 'Xóa sản phẩm thành công'
+        }))
     } catch (err) {
         next(err)
     }
@@ -111,22 +147,28 @@ const restore = async (req, res, next) => {
     try {
         const instance = await Product.findOne({ where: { id: req.params.id }, paranoid: false })
         if (!instance) {
-            return next(display(404, 'Product not found'))
-        } else {
-            if (instance.deletedAt === null) {
-                return next(display(400, 'Product must be soft deleted before continue'))
-            }
+            return res.status(400).json(display({
+                message: 'Sản phẩm không tồn tại'
+            }))
         }
 
-        const newInstance = await Product.restore({
+        if (instance.deletedAt == null) {
+            return res.status(400).json(display({
+                message: 'Sản phẩm chưa xóa mềm'
+            }))
+        }
+
+        await Product.restore({
             where: { id: req.params.id },
             returning: true,
             plain: true
         })
 
-        res.json(display(200, 'Product restored successfully', newInstance && 1, newInstance))
-    } catch (err) {
-        next(err)
+        res.status(200).json(display({
+            message: 'Xóa sản phẩm thành công'
+        }))
+    } catch (error) {
+        next(error)
     }
 }
 
@@ -134,23 +176,28 @@ const destroyForce = async (req, res, next) => {
     try {
         const instance = await Product.findOne({ where: { id: req.params.id }, paranoid: false })
         if (!instance) {
-            return next(display(404, 'Product not found'))
-        } else {
-            if (instance.deletedAt === null) {
-                return next(display(400, 'Product must be soft deleted before continue'))
-            }
+            return res.status(400).json(display({
+                message: 'Sản phẩm không tồn tại'
+            }))
+        }
+        if (instance.deletedAt == null) {
+            return res.status(400).json(display({
+                message: 'Sản phẩm chưa xóa mềm'
+            }))
         }
 
-        const newInstance = await Product.destroy({
+        await Product.destroy({
             where: { id: req.params.id },
             returning: true,
             plain: true,
             force: true // delete record from database
         })
 
-        res.json(display(200, 'Product deleted successfully', newInstance))
-    } catch (err) {
-        next(err)
+        res.status(200).json(display({
+            message: 'Xóa sản phẩm thành công'
+        }))
+    } catch (error) {
+        next(error)
     }
 }
 

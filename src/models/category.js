@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
+const Product = require('./Product')
 
 const Category = sequelize.define('Category', {
     id: {
@@ -8,6 +9,10 @@ const Category = sequelize.define('Category', {
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
+    },
+    image: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
     name: {
         type: DataTypes.STRING,
@@ -17,7 +22,11 @@ const Category = sequelize.define('Category', {
 }, {
     tableName: 'Category',
     timestamps: true,
-    // paranoid: true, // enable soft delete
+    underscored: true,
 })
+
+// Category.hasMany(Product, {
+//     foreignKey: 'categoryId',
+// })
 
 module.exports = Category
