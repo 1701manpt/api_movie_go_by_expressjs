@@ -8,7 +8,7 @@ const UserStatus = require('../models/userStatus')
 const display = require('../utils/display')
 
 // middlewares
-const logValidation = require('../middlewares/validation')
+const logValidation = require('../middlewares/validate')
 const checkId = require('../validators/checkId')
 
 router.get('/', async (req, res, next) => {

@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
+
 const Product = require('./Product')
 
 const Category = sequelize.define('Category', {
@@ -26,6 +27,7 @@ const Category = sequelize.define('Category', {
 })
 
 // Category.hasMany(Product, {
+//     as: 'products',
 //     foreignKey: 'categoryId',
 // })
 

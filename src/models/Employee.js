@@ -13,20 +13,19 @@ const Employee = sequelize.define('Employee', {
     },
     fullName: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     phone: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     address: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     userId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        unique: true,
+        allowNull: true,
     }
 }, {
     tableName: 'Employee',

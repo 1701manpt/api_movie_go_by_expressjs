@@ -7,7 +7,12 @@ const display = require('../utils/display')
 
 const getAll = async (req, res, next) => {
     try {
-        const list = await Customer.findAll()
+        const list = await Customer.findAll({
+            include: {
+                association: 'user',
+                include: 'userStatus'
+            }
+        })
 
         res.status(200).json(display({
             message: 'Lấy danh sách khách hàng thành công',
@@ -21,7 +26,12 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const customer = await Customer.findByPk(req.params.id)
+        const customer = await Customer.findByPk(req.params.id, {
+            include: {
+                association: 'user',
+                include: 'userStatus'
+            }
+        })
 
         if (!customer) {
             return res.status(400).json(display({
@@ -151,14 +161,19 @@ const destroyForce = async (req, res, next) => {
 
 const getAllOrder = async (req, res, next) => {
     try {
-        // const instance = await Order.findAll({ where: { customerId: req.params.id } })
-        // if (!instance) {
-        //     return next(display(400, 'Order not found'))
-        // }
+        const instance = await Order.findAll({ where: { customerId: req.params.id } })
+        if (!instance) {
+            return res.status(400).json(display({
+                message: 'Khách hàng chưa có đơn hàng hoặc không tồn tại'
+            }))
+        }
 
-        // res.json(display(200, 'Get all order successfully', instance.length, instance))
-    } catch (err) {
-        next(err)
+        res.status(200).json(display({
+            message: 'Lấy danh sách đơn hàng thành công',
+            data: instance
+        }))
+    } catch (error) {
+        next(error)
     }
 }
 

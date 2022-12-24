@@ -5,6 +5,8 @@ const display = require('../utils/display')
 const authenticateToken = (req, res, next) => {
     const token = req.headers.token
 
+    console.log('Token Client Old: ', token);
+
     if (!token) {
         return res.status(401).json(display({
             message: 'Đăng nhập để tiếp tục'
@@ -16,8 +18,9 @@ const authenticateToken = (req, res, next) => {
     jwt.verify(accessToken, process.env.TOKEN_SECRET, (err, user) => {
 
         if (err) {
-            return res.status(400).json(display({
-                message: 'Token hết hạn, hoặc không tồn tại'
+            return res.status(401).json(display({
+                message: 'Token hết hạn, hoặc không hợp lệ',
+                error: err
             }))
         }
 
@@ -29,7 +32,7 @@ const authenticateToken = (req, res, next) => {
 
 const authorizeToken = (req, res, next) => {
     authenticateToken(req, res, () => {
-        if (req.user.id === req.params.id) {
+        if (req.user.id) {
             next()
         } else {
             res.status(403).json(display({

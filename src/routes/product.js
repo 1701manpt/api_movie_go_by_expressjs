@@ -5,7 +5,7 @@ const router = express.Router()
 const { getAll, getById, create, update, destroy, restore, destroyForce } = require('../controllers/product')
 
 // validators
-const logValidation = require('../middlewares/validation')
+const logValidation = require('../middlewares/validate')
 const { checkCreate, checkId } = require('../validators/product')
 
 router.get('/', getAll)

@@ -51,6 +51,8 @@ const create = async (req, res, next) => {
         const newOrder = await Order.create({
             customerId: req.body.customerId,
             orderStatusId: 1
+        }, {
+            include: 'orderLine'
         })
 
         res.status(200).json(display({

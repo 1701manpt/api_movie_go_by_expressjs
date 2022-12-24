@@ -69,14 +69,20 @@ const update = async (req, res, next) => {
             }))
         }
 
-        // if (category && category.id == req.body.name) {
-        //     return res.status(400).json(display({
-        //         message: 'Tên danh mục tồn tại'
-        //     }))
-        // }
+        const categoryCheckName = await Category.findOne({
+            where: {
+                name: req.body.name,
+            }
+        })
+        if (categoryCheckName.id != category.id && categoryCheckName) {
+            return res.status(400).json(display({
+                message: 'Tên danh mục tồn tại'
+            }))
+        }
 
         const [result, newCategory] = await Category.update({
             name: req.body.name,
+            image: req.body.image,
         }, {
             where: { id: req.params.id },
             returning: true,

@@ -1,6 +1,6 @@
 const { body } = require('express-validator')
 
-const checkRegister = [
+const checkCreate = [
     body('user.account')
         .not().isEmpty().withMessage('Tài khoản không bỏ trống')
         .isLength({ min: 5, max: 20 }).withMessage('Tài khoản dài từ 5 đến 20 ký tự')
@@ -24,4 +24,4 @@ const checkLogin = [
         .not().isEmpty().withMessage('Mật khẩu không bỏ trống')
 ]
 
-module.exports = { checkRegister, checkLogin }
+module.exports = { checkCreate, checkLogin }

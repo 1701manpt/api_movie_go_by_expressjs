@@ -15,10 +15,6 @@ const isObject = function (o) {
 };
 
 const camelCase = function (o) {
-    if (isSnakeCase(o)) {
-        return o
-    }
-
     if (isObject(o)) {
         const n = {};
 

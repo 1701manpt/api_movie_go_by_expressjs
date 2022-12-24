@@ -1,12 +1,11 @@
 const express = require('express')
 const router = express.Router()
 
-// validate
-const { checkId, checkCreate, checkSignIn } = require('../validators/customer')
+// validators
+const checkId = require('../validators/checkId')
 
 // middleware
-const logValidation = require('../middlewares/validation')
-const sendMail = require('../middlewares/sendMail')
+const logValidation = require('../middlewares/validate')
 const { authenticateToken, authorizeToken } = require('../middlewares/verifyToken')
 
 // controllers
@@ -14,7 +13,7 @@ const { getAll, getById, update, destroy, restore, destroyForce, getAllOrder } =
 
 router.get('/', getAll)
 router.get('/:id/orders', authenticateToken, getAllOrder)
-router.get('/:id', checkId, logValidation, authenticateToken, getById)
+router.get('/:id', authenticateToken, checkId, logValidation, getById)
 
 router.post('/:id', checkId, logValidation, restore)
 

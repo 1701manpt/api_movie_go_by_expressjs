@@ -52,6 +52,12 @@ async () => {
 // tự động tạo database và chèn dữ liệu
 // auto()
 
+// const crypto = require('crypto')
+// const buf = crypto.randomBytes(64, (err, buf) => {
+//     if (err) throw err;
+//     console.log(`${buf.length} bytes of random data: ${buf.toString('hex')}`);
+// });
+
 const server = app.listen(7000, (err) => {
     if (err) {
         console.error('Listening on port 7000 error: ' + err)

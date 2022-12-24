@@ -1,5 +1,6 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
+const path = require('path')
 
 // models
 const Customer = require('../models/customer')
@@ -8,14 +9,15 @@ const User = require('../models/User')
 // utils
 const display = require('../utils/display')
 const { generateToken, generateRefreshToken, generateTokenRegister } = require("../utils/generateToken")
-const path = require('path')
+const { toHash, toCheck } = require('../utils/password')
 
 const login = async (req, res, next) => {
     try {
         const user = await User.findOne({
             where: {
                 account: req.body.account,
-            }
+            },
+            include: 'userStatus'
         })
 
         if (!user) {
@@ -24,14 +26,13 @@ const login = async (req, res, next) => {
             }))
         }
 
-        if (user && user.password == req.body.password) {
+        if (user && !toCheck(req.body.password, user.password)) {
             return res.status(400).json(display({
                 message: 'Mật khẩu không khớp',
             }))
         }
 
         // cần bổ sung
-        // kiểm tra trạng thái người dùng
         // kiểm tra người dùng là khách hàng
 
         const token = generateToken({
@@ -85,7 +86,7 @@ const register = async (req, res, next) => {
             user: {
                 email: req.body.user.email,
                 account: req.body.user.account,
-                password: req.body.user.password,
+                password: toHash(req.body.user.password),
                 userStatusId: 1,
             }
         }, {
@@ -135,6 +136,8 @@ const verifyRegister = (req, res, next) => {
 const requestRefreshToken = (req, res, next) => {
     const refreshToken = req.cookies.refreshToken
 
+    console.log('Refresh Token Client Old: ', refreshToken);
+
     if (!refreshToken) {
         return res.status(401).json(display({
             message: 'Đăng nhập để tiếp tục',
@@ -149,8 +152,11 @@ const requestRefreshToken = (req, res, next) => {
             }))
         }
 
-        const newAccessToken = generateAccessToken({ id: user.id })
+        const newAccessToken = generateToken({ id: user.id })
         const newRefreshToken = generateRefreshToken({ id: user.id })
+
+        console.log('Refresh Token Client New: ', newRefreshToken);
+        console.log('Token Client New: ', newAccessToken);
 
         res.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
