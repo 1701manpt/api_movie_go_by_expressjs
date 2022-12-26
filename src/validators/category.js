@@ -5,6 +5,6 @@ const checkCreate = [
         .not().isEmpty().withMessage('Tên danh mục không được bỏ trống'),
 ]
 
-module.exports = {
-    checkCreate,
-}
+const checkUpdate = []
+
+module.exports = { checkCreate, checkUpdate }

@@ -2,7 +2,7 @@ require('dotenv').config()
 
 const nodemailer = require('nodemailer')
 const { OAuth2Client } = require('google-auth-library')
-const display = require('../utils/display')
+// const display = require('../utils/display')
 
 const GOOGLE_MAILER_CLIENT_ID = process.env.GOOGLE_MAILER_CLIENT_ID
 const GOOGLE_MAILER_CLIENT_SECRET = process.env.GOOGLE_MAILER_CLIENT_SECRET
@@ -44,24 +44,28 @@ const sendMail = async (req, res, next) => {
 
         const content = `
             <div>
-                <h3>Nhấn vào liên kết bên dưới để xác thực tài khoản</h3>
-                <a href="http://localhost:7000/api/auth/register/verify/${req.confirmationCode}">link xác thực</a>
+                <h1>Nhấn vào liên kết bên dưới để xác thực tài khoản</h1>
+                <h3>
+                    <a href="http://localhost:7000/api/auth/register/verify/${req.body.user.confirmationCode}">
+                        link xác thực
+                    </a>
+                </h3>
             </div>
         `
 
         // mailOption là những thông tin gửi từ phía client lên thông qua API
         const mailOptions = {
             to: req.body.user.email, // Gửi đến ai?
-            subject: 'Xác thực tài khoản ' + req.body.user.account, // Tiêu đề email
+            subject: 'Admin Store Online xin gửi đường dẫn xác thực tài khoản ' + req.body.user.account, // Tiêu đề email
             html: content // Nội dung email
         }
         // Gọi hành động gửi email
         await transport.sendMail(mailOptions)
         // Không có lỗi gì thì trả về success
         console.log('Sent mail successfully');
-        return res.status(200).json(display({
-            message: 'Gửi email thành công'
-        }))
+        // res.status(200).json(display({
+        //     message: 'Gửi email thành công'
+        // }))
     } catch (error) {
         console.log('Sent mail error: ' + error);
         next(error)

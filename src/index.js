@@ -49,7 +49,7 @@ async () => {
     await ProductImage.findAll()
 }
 
-// tự động tạo database và chèn dữ liệu
+// tự động xóa, tạo database và chèn dữ liệu
 // auto()
 
 // const crypto = require('crypto')

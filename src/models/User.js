@@ -29,7 +29,7 @@ const User = sequelize.define('User', {
     userStatusId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-    }
+    },
 }, {
     tableName: 'User',
     timestamps: true,

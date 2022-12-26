@@ -6,7 +6,8 @@ const { getAll, getById, create, update, destroy, restore, destroyForce } = requ
 
 // validators
 const logValidation = require('../middlewares/validate')
-const { checkCreate, checkId } = require('../validators/product')
+const { checkCreate, checkUpdate } = require('../validators/product')
+const checkId = require('../validators/checkId')
 
 router.get('/', getAll)
 router.get('/:id', checkId, logValidation, getById)
@@ -14,7 +15,7 @@ router.get('/:id', checkId, logValidation, getById)
 router.post('/', checkCreate, logValidation, create)
 router.post('/:id', checkId, logValidation, restore)
 
-router.put('/:id', checkId, checkCreate, logValidation, update)
+router.put('/:id', checkId, checkUpdate, logValidation, update)
 
 router.delete('/:id', checkId, logValidation, destroy)
 router.delete('/:id/destroy', checkId, logValidation, destroyForce)

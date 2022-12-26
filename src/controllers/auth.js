@@ -104,7 +104,7 @@ const register = async (req, res, next) => {
             data: newCustomer,
         }))
 
-        req.confirmationCode = confirmationCode
+        req.body.user.confirmationCode = confirmationCode
         return next()  // go to sendMail
     } catch (error) {
         next(error)

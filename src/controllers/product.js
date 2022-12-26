@@ -66,10 +66,10 @@ const create = async (req, res, next) => {
         }
 
         const newInstance = await Product.create({
-            name: req.body.name,
-            price: req.body.price,
-            description: req.body.description,
-            categoryId: req.body.categoryId,
+            name: req.body?.name,
+            price: req.body?.price,
+            description: req.body?.description,
+            categoryId: req.body?.categoryId,
         })
 
         res.status(200).json(display({
@@ -103,8 +103,10 @@ const update = async (req, res, next) => {
         }
 
         const [result, newProduct] = await Product.update({
-            name: req.body.name,
-            price: req.body.price,
+            name: req.body?.name,
+            price: req.body?.price,
+            description: req.body?.description,
+            categoryId: req.body?.categoryId,
         }, {
             where: { id: req.params.id },
             returning: true,

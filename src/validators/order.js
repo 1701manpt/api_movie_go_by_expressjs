@@ -1,6 +1,6 @@
 const { param, body } = require('express-validator')
 
-const checkCreate = [
+const checkCreate = () => [
 
 ]
 

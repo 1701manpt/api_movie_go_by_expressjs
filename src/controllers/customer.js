@@ -1,6 +1,7 @@
 // modal
 const Customer = require('../models/customer')
 const Order = require('../models/order')
+const User = require('../models/User')
 
 // utils
 const display = require('../utils/display')
@@ -85,8 +86,14 @@ const destroy = async (req, res, next) => {
             }))
         }
 
-        const newInstance = await Customer.destroy({
+        const oldCustomer = await Customer.destroy({
             where: { id: req.params.id },
+            returning: true,
+            plain: true
+        })
+
+        const oldUser = await User.destroy({
+            where: { id: instance.userId },
             returning: true,
             plain: true
         })
@@ -115,14 +122,20 @@ const restore = async (req, res, next) => {
             }))
         }
 
-        const newInstance = await Customer.restore({
+        const restoreCustomer = await Customer.restore({
             where: { id: req.params.id },
             returning: true,
             plain: true
         })
 
+        const restoreUser = await User.restore({
+            where: { id: instance.userId },
+            returning: true,
+            plain: true
+        })
+
         res.status(200).json(display({
-            message: 'Xóa khách hàng thành công'
+            message: 'Khôi phục khách hàng thành công'
         }))
     } catch (err) {
         next(err)
@@ -144,8 +157,15 @@ const destroyForce = async (req, res, next) => {
             }))
         }
 
-        const newInstance = await Customer.destroy({
+        const destroyCustomer = await Customer.destroy({
             where: { id: req.params.id },
+            returning: true,
+            plain: true,
+            force: true // delete record from database
+        })
+
+        const destroyUser = await User.destroy({
+            where: { id: instance.userId },
             returning: true,
             plain: true,
             force: true // delete record from database
