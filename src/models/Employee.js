@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
+const Role = require('./Role')
 
 const User = require('./User')
 
@@ -26,6 +27,10 @@ const Employee = sequelize.define('Employee', {
     userId: {
         type: DataTypes.INTEGER,
         allowNull: true,
+    },
+    roleId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
     }
 }, {
     tableName: 'Employee',
@@ -37,6 +42,11 @@ const Employee = sequelize.define('Employee', {
 Employee.belongsTo(User, {
     as: 'user',
     foreignKey: 'userId',
+})
+
+Employee.belongsTo(Role, {
+    as: 'role',
+    foreignKey: 'roleId',
 })
 
 module.exports = Employee

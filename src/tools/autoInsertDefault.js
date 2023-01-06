@@ -2,7 +2,8 @@ const sequelize = require('../connection')
 
 // models
 const AccountStatus = require('../models/UserStatus')
-const OrderStatus = require('../models/orderStatus')
+const OrderStatus = require('../models/OrderStatus')
+const Role = require('../models/Role')
 
 const auto = async () => {
     const orderStatusArray = [
@@ -51,6 +52,13 @@ const auto = async () => {
         },
     ]
 
+    const roleArray = [
+        {
+            id: 1,
+            name: 'Administrator',
+        },
+    ]
+
     await sequelize.sync({ force: true })
 
     accountStatusArray.forEach(async (e) => {
@@ -58,6 +66,9 @@ const auto = async () => {
     })
     orderStatusArray.forEach(async (e) => {
         await OrderStatus.create(e)
+    })
+    roleArray.forEach(async (e) => {
+        await Role.create(e)
     })
 }
 

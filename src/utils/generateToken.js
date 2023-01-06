@@ -10,7 +10,7 @@ const generateRefreshToken = (user) => {
 }
 
 const generateTokenRegister = (user) => {
-    return jwt.sign({ ...user }, process.env.REGISTER_TOKEN_SECRET, { expiresIn: '1m' });
+    return jwt.sign(user, process.env.REGISTER_TOKEN_SECRET, { expiresIn: '1m' });
 }
 
 module.exports = { generateToken, generateRefreshToken, generateTokenRegister }

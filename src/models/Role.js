@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
 
-const OrderStatus = sequelize.define('OrderStatus', {
+const Role = sequelize.define('Role', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -14,9 +14,10 @@ const OrderStatus = sequelize.define('OrderStatus', {
         allowNull: false,
     }
 }, {
-    tableName: 'OrderStatus',
+    tableName: 'Role',
     timestamps: false,
+    paranoid: false,
     underscored: true,
 })
 
-module.exports = OrderStatus
+module.exports = Role

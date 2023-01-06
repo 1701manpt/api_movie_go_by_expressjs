@@ -1,6 +1,7 @@
 // modal
 const Category = require('../models/category')
 const Product = require('../models/product')
+const ProductImage = require('../models/productImage')
 
 // utils
 const display = require('../utils/display')
@@ -24,7 +25,7 @@ const getAll = async (req, res, next) => {
 const getById = async (req, res, next) => {
     try {
         const product = await Product.findByPk(req.params.id, {
-            include: 'category',
+            include: ['category'],
         })
         if (!product) {
             return res.status(400).json(display({
@@ -32,9 +33,18 @@ const getById = async (req, res, next) => {
             }))
         }
 
+        const images = await ProductImage.findAll({
+            where: {
+                productId: product.id
+            }
+        })
+
         res.status(200).json(display({
             message: 'Lấy sản phẩm thành công',
-            data: product
+            data: {
+                product,
+                images
+            }
         }))
     }
     catch (error) {
@@ -50,7 +60,7 @@ const create = async (req, res, next) => {
         })
         if (product) {
             return res.status(400).json(display({
-                message: 'Sản phẩm tồn tại'
+                message: 'Tên sản phẩm tồn tại'
             }))
         }
 
@@ -65,16 +75,25 @@ const create = async (req, res, next) => {
             }
         }
 
-        const newInstance = await Product.create({
+        const newProduct = await Product.create({
+            avatar: req.body?.avatar,
             name: req.body?.name,
             price: req.body?.price,
             description: req.body?.description,
             categoryId: req.body?.categoryId,
         })
 
+        req.body.images && req.body.images.map(async (image, i) => {
+            await ProductImage.create({
+                index: i,
+                path: image,
+                productId: newProduct.id
+            })
+        })
+
         res.status(200).json(display({
             message: 'Tạo sản phẩm thành công',
-            data: newInstance
+            data: newProduct
         }))
     } catch (error) {
         next(error)
@@ -145,62 +164,4 @@ const destroy = async (req, res, next) => {
     }
 }
 
-const restore = async (req, res, next) => {
-    try {
-        const instance = await Product.findOne({ where: { id: req.params.id }, paranoid: false })
-        if (!instance) {
-            return res.status(400).json(display({
-                message: 'Sản phẩm không tồn tại'
-            }))
-        }
-
-        if (instance.deletedAt == null) {
-            return res.status(400).json(display({
-                message: 'Sản phẩm chưa xóa mềm'
-            }))
-        }
-
-        await Product.restore({
-            where: { id: req.params.id },
-            returning: true,
-            plain: true
-        })
-
-        res.status(200).json(display({
-            message: 'Xóa sản phẩm thành công'
-        }))
-    } catch (error) {
-        next(error)
-    }
-}
-
-const destroyForce = async (req, res, next) => {
-    try {
-        const instance = await Product.findOne({ where: { id: req.params.id }, paranoid: false })
-        if (!instance) {
-            return res.status(400).json(display({
-                message: 'Sản phẩm không tồn tại'
-            }))
-        }
-        if (instance.deletedAt == null) {
-            return res.status(400).json(display({
-                message: 'Sản phẩm chưa xóa mềm'
-            }))
-        }
-
-        await Product.destroy({
-            where: { id: req.params.id },
-            returning: true,
-            plain: true,
-            force: true // delete record from database
-        })
-
-        res.status(200).json(display({
-            message: 'Xóa sản phẩm thành công'
-        }))
-    } catch (error) {
-        next(error)
-    }
-}
-
-module.exports = { getAll, getById, create, update, destroy, restore, destroyForce }
+module.exports = { getAll, getById, create, update, destroy }

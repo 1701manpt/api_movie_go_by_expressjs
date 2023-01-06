@@ -49,6 +49,7 @@ const create = async (req, res, next) => {
 
         const newCategory = await Category.create({
             name: req.body.name,
+            image: req.body.image,
         })
 
         res.status(200).json(display({

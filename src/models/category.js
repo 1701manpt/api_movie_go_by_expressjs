@@ -12,7 +12,7 @@ const Category = sequelize.define('Category', {
         allowNull: false,
     },
     image: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true,
     },
     name: {
@@ -23,6 +23,7 @@ const Category = sequelize.define('Category', {
 }, {
     tableName: 'Category',
     timestamps: true,
+    paranoid: false,
     underscored: true,
 })
 

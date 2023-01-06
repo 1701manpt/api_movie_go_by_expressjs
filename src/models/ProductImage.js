@@ -25,7 +25,7 @@ const ProductImage = sequelize.define('ProductImage', {
     }
 }, {
     tableName: 'ProductImage',
-    timestamps: true,
+    paranoid: false,
     underscored: true,
 })
 

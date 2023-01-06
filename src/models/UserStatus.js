@@ -15,7 +15,8 @@ const UserStatus = sequelize.define('UserStatus', {
     }
 }, {
     tableName: 'UserStatus',
-    timestamps: true,
+    timestamps: false,
+    paranoid: false,
     underscored: true,
 })
 

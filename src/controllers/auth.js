@@ -4,6 +4,7 @@ const path = require('path')
 
 // models
 const Customer = require('../models/customer')
+const Employee = require('../models/employee')
 const User = require('../models/User')
 
 // utils
@@ -13,33 +14,32 @@ const { toHash, toCheck } = require('../utils/password')
 
 const login = async (req, res, next) => {
     try {
-        const user = await User.findOne({
-            where: {
-                account: req.body.account,
-            },
-            include: 'userStatus'
+        const customer = await Customer.findOne({
+            include: {
+                association: 'user',
+                where: {
+                    account: req.body.account
+                },
+            }
         })
 
-        if (!user) {
+        if (!customer) {
             return res.status(400).json(display({
                 message: 'Tài khoản không tồn tại',
             }))
         }
 
-        if (user && !toCheck(req.body.password, user.password)) {
+        if (customer && !toCheck(req.body.password, customer.user.password)) {
             return res.status(400).json(display({
                 message: 'Mật khẩu không khớp',
             }))
         }
 
-        // cần bổ sung
-        // kiểm tra người dùng là khách hàng
-
         const token = generateToken({
-            id: user.id
+            id: customer.user.id,
         })
         const refreshToken = generateRefreshToken({
-            id: user.id,
+            id: customer.user.id,
         })
 
         res.cookie('refreshToken', refreshToken, {
@@ -52,7 +52,7 @@ const login = async (req, res, next) => {
         res.status(200).json(display({
             message: 'Đăng nhập thành công',
             data: {
-                id: user.id,
+                id: customer.user.id,
                 token: token
             }
         }))
@@ -60,6 +60,61 @@ const login = async (req, res, next) => {
         next(error)
     }
 }
+
+const loginAdmin = async (req, res, next) => {
+    try {
+        const admin = await Employee.findOne({
+            include: [
+                {
+                    association: 'user',
+                    where: {
+                        account: req.body.account
+                    },
+                }
+            ]
+        })
+
+        if (!admin) {
+            return res.status(400).json(display({
+                message: 'Tài khoản không tồn tại',
+            }))
+        }
+
+        if (admin && !toCheck(req.body.password, admin.user.password)) {
+            return res.status(400).json(display({
+                message: 'Mật khẩu không khớp',
+            }))
+        }
+
+        const token = generateToken({
+            id: admin.user.id,
+            roleId: admin.roleId
+        })
+        const refreshToken = generateRefreshToken({
+            id: admin.user.id,
+            roleId: admin.roleId
+        })
+
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: false,
+            path: '/',
+            sameSite: 'strict',
+        })
+
+        res.status(200).json(display({
+            message: 'Đăng nhập thành công',
+            data: {
+                id: admin.user.id,
+                roleId: admin.roleId,
+                token: token
+            }
+        }))
+    } catch (error) {
+        next(error)
+    }
+}
+
 
 const register = async (req, res, next) => {
     try {
@@ -88,7 +143,7 @@ const register = async (req, res, next) => {
                 account: req.body.user.account,
                 password: toHash(req.body.user.password),
                 userStatusId: 1,
-            }
+            },
         }, {
             include: {
                 association: 'user'
@@ -136,8 +191,6 @@ const verifyRegister = (req, res, next) => {
 const requestRefreshToken = (req, res, next) => {
     const refreshToken = req.cookies.refreshToken
 
-    console.log('Refresh Token Client Old: ', refreshToken);
-
     if (!refreshToken) {
         return res.status(401).json(display({
             message: 'Đăng nhập để tiếp tục',
@@ -154,9 +207,6 @@ const requestRefreshToken = (req, res, next) => {
 
         const newAccessToken = generateToken({ id: user.id })
         const newRefreshToken = generateRefreshToken({ id: user.id })
-
-        console.log('Refresh Token Client New: ', newRefreshToken);
-        console.log('Token Client New: ', newAccessToken);
 
         res.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
@@ -181,4 +231,4 @@ const logout = (req, res) => {
     }))
 }
 
-module.exports = { requestRefreshToken, login, register, logout, verifyRegister }
+module.exports = { requestRefreshToken, login, loginAdmin, register, logout, verifyRegister }

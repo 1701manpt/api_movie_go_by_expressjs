@@ -36,9 +36,11 @@ const authorizeToken = (req, res, next) => {
             next()
         } else {
             res.status(403).json(display({
-                message: 'Người dùng không có quyền hạn truy cập'
+                message: 'Người dùng không có quyền truy cập'
             }))
         }
+
+        // if(req.user.id)
     })
 }
 

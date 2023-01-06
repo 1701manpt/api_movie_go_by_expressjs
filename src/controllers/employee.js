@@ -1,17 +1,26 @@
-// modal
+require('dotenv').config()
+
+// models
 const Employee = require('../models/employee')
+const Role = require('../models/Role')
 const User = require('../models/User')
 
 // utils
 const display = require('../utils/display')
+const { toHash } = require('../utils/password')
 
 const getAll = async (req, res, next) => {
     try {
         const list = await Employee.findAll({
-            include: {
-                association: 'user',
-                include: 'userStatus'
-            }
+            include: [
+                {
+                    association: 'user',
+                    include: 'userStatus'
+                },
+                {
+                    association: 'role',
+                },
+            ]
         })
 
         res.status(200).json(display({
@@ -174,8 +183,16 @@ const create = async (req, res, next) => {
             }))
         }
 
+        const checkRole = await Role.findByPk(req.body.roleId)
+        if (!checkRole) {
+            return res.status(400).json(display({
+                message: 'Vai trò không tồn tại'
+            }))
+        }
+
         // cần bổ sung
         // kiểm tra email đã sử dụng
+        // kiểm tra có tồn tại roleId
 
         const newEmployee = await Employee.create({
             fullName: req.body.fullName,
@@ -186,7 +203,8 @@ const create = async (req, res, next) => {
                 account: req.body.user.account,
                 password: toHash(req.body.user.password),
                 userStatusId: 2,
-            }
+            },
+            roleId: req.body.roleId,
         }, {
             include: {
                 association: 'user'

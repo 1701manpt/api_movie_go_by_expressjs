@@ -5,6 +5,7 @@ const { DataTypes } = require('sequelize')
 const sequelize = require('../connection')
 
 const UserStatus = require('./UserStatus')
+const Role = require('./Role')
 
 const User = sequelize.define('User', {
     id: {

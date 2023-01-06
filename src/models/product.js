@@ -11,7 +11,10 @@ const Product = sequelize.define('Product', {
         autoIncrement: true,
         allowNull: false,
     },
-
+    avatar: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
     name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -32,7 +35,7 @@ const Product = sequelize.define('Product', {
 }, {
     tableName: 'Product',
     timestamps: true,
-    paranoid: true, // enable soft delete
+    paranoid: false, // enable soft delete
     underscored: true,
 })
 
@@ -40,5 +43,10 @@ Product.belongsTo(Category, {
     as: 'category',
     foreignKey: 'categoryId',
 })
+
+// Category.hasMany(Product, {
+//     as: 'products',
+//     foreignKey: 'categoryId',
+// })
 
 module.exports = Product
