@@ -35,11 +35,19 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const employee = await Employee.findByPk(req.params.id, {
-            include: {
-                association: 'user',
-                include: 'userStatus'
-            }
+        const employee = await Employee.findOne({
+            where: {
+                userId: req.params.id
+            },
+            include: [
+                {
+                    association: 'user',
+                    include: 'userStatus'
+                },
+                {
+                    association: 'role',
+                },
+            ]
         })
 
         if (!employee) {
@@ -172,7 +180,7 @@ const create = async (req, res, next) => {
     try {
         const user = await User.findOne({
             where: {
-                account: req.body.user.account,
+                account: req.body.account,
             },
             paranoid: false
         })
@@ -199,9 +207,9 @@ const create = async (req, res, next) => {
             address: req.body.address,
             phone: req.body.phone,
             user: {
-                email: req.body.user.email,
-                account: req.body.user.account,
-                password: toHash(req.body.user.password),
+                email: req.body.email,
+                account: req.body.account,
+                password: toHash(req.body.password),
                 userStatusId: 2,
             },
             roleId: req.body.roleId,

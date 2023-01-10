@@ -11,7 +11,7 @@ const { authenticateToken, authorizeToken } = require('../middlewares/verifyToke
 // controllers
 const { getAll, getById, update, destroy, restore, destroyForce, getAllOrder } = require('../controllers/customer')
 
-router.get('/', getAll)
+router.get('/', authorizeToken, getAll)
 router.get('/:id/orders', authenticateToken, getAllOrder)
 router.get('/:id', authenticateToken, checkId, logValidation, getById)
 

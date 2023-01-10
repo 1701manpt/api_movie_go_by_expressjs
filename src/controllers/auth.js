@@ -120,7 +120,7 @@ const register = async (req, res, next) => {
     try {
         const user = await User.findOne({
             where: {
-                account: req.body.user.account,
+                account: req.body.account,
             },
             paranoid: false
         })
@@ -139,9 +139,9 @@ const register = async (req, res, next) => {
             address: req.body.address,
             phone: req.body.phone,
             user: {
-                email: req.body.user.email,
-                account: req.body.user.account,
-                password: toHash(req.body.user.password),
+                email: req.body.email,
+                account: req.body.account,
+                password: toHash(req.body.password),
                 userStatusId: 1,
             },
         }, {
@@ -205,8 +205,8 @@ const requestRefreshToken = (req, res, next) => {
             }))
         }
 
-        const newAccessToken = generateToken({ id: user.id })
-        const newRefreshToken = generateRefreshToken({ id: user.id })
+        const newAccessToken = generateToken({ id: user.id, roleId: user.roleId })
+        const newRefreshToken = generateRefreshToken({ id: user.id, roleId: user.roleId })
 
         res.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,

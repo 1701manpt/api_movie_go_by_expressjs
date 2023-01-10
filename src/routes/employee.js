@@ -10,16 +10,17 @@ const logValidation = require('../middlewares/validate')
 
 // controllers
 const { getAll, getById, update, destroy, restore, destroyForce, create } = require('../controllers/employee')
+const { authenticateToken, authorizeToken } = require('../middlewares/verifyToken')
 
-router.get('/', getAll)
-router.get('/:id', checkId, logValidation, getById)
+router.get('/', authorizeToken, getAll)
+router.get('/:id', authorizeToken, checkId, logValidation, getById)
 
-router.post('/', checkCreate, logValidation, create)
-router.post('/:id', checkId, logValidation, restore)
+router.post('/', authorizeToken, checkCreate, logValidation, create)
+router.post('/:id', authorizeToken, checkId, logValidation, restore)
 
-router.put('/:id', checkId, logValidation, update)
+router.put('/:id', authorizeToken, checkId, logValidation, update)
 
-router.delete('/:id', checkId, logValidation, destroy)
-router.delete('/:id/destroy', checkId, logValidation, destroyForce)
+router.delete('/:id', authorizeToken, checkId, logValidation, destroy)
+router.delete('/:id/destroy', authorizeToken, checkId, logValidation, destroyForce)
 
 module.exports = router

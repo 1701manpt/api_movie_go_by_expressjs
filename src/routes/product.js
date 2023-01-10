@@ -8,14 +8,15 @@ const { getAll, getById, create, update, destroy } = require('../controllers/pro
 const logValidation = require('../middlewares/validate')
 const { checkCreate, checkUpdate } = require('../validators/product')
 const checkId = require('../validators/checkId')
+const { authenticateToken } = require('../middlewares/verifyToken')
 
 router.get('/', getAll)
 router.get('/:id', checkId, logValidation, getById)
 
-router.post('/', checkCreate, logValidation, create)
+router.post('/', authenticateToken, checkCreate, logValidation, create)
 
-router.put('/:id', checkId, checkUpdate, logValidation, update)
+router.put('/:id', authenticateToken, checkId, checkUpdate, logValidation, update)
 
-router.delete('/:id', checkId, logValidation, destroy)
+router.delete('/:id', authenticateToken, checkId, logValidation, destroy)
 
 module.exports = router

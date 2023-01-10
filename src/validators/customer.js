@@ -1,18 +1,18 @@
 const { body } = require('express-validator')
 
 const checkRegister = [
-    body('user.account')
+    body('account')
         .not().isEmpty().withMessage('Tài khoản không bỏ trống')
         .isLength({ min: 5, max: 20 }).withMessage('Tài khoản dài từ 5 đến 20 ký tự')
         .isAlphanumeric().withMessage('Tài khoản không chứa ký tự đặc biệt và khoảng trắng'),
-    // body('user.password')
+    // body('password')
     //     .not().isEmpty().withMessage('Mật khẩu không bỏ trống')
     //     .isLength({ min: 5, max: 50 }).withMessage('Mật khẩu dài từ 5 đến 50 ký tự'),
-    body('user.confirmPassword')
+    body('confirmPassword')
         .custom((value, { req }) => {
-            return (req.body.user.password == value)
+            return (req.body.password == value)
         }).withMessage('Mật khẩu không khớp nhau'),
-    body('user.email')
+    body('email')
         .not().isEmpty().withMessage('Email không bỏ trống')
         .isEmail().withMessage('Email không khớp định dạng')
 ]

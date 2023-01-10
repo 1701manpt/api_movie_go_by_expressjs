@@ -41,11 +41,9 @@ app.use((error, req, res, next) => {
     }))
 })
 
-const Employee = require('./models/Employee')
 const ProductImage = require('./models/ProductImage')
 
 async () => {
-    await Employee.findAll()
     await ProductImage.findAll()
 }
 

@@ -12,13 +12,13 @@ const { checkCreate, checkUpdate } = require('../validators/category')
 const logValidation = require('../middlewares/validate')
 
 // verify
-const { authenticateToken } = require('../middlewares/verifyToken')
+const { authenticateToken, authorizeToken } = require('../middlewares/verifyToken')
 
 router.get('/', getAll)
 router.get('/:id', checkId, logValidation, getById)
 router.get('/:id/products', checkId, logValidation, getProductsByCategory)
 
-router.post('/', checkCreate, logValidation, create)
+router.post('/', authenticateToken, checkCreate, logValidation, create)
 
 router.put('/:id', checkId, checkUpdate, logValidation, update)
 

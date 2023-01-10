@@ -27,7 +27,10 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const customer = await Customer.findByPk(req.params.id, {
+        const customer = await Customer.findOne({
+            where: {
+                userId: req.params.id
+            },
             include: {
                 association: 'user',
                 include: 'userStatus'
