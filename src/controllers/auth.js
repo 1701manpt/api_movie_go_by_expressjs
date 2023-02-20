@@ -5,7 +5,7 @@ const path = require('path')
 // models
 const Customer = require('../models/customer')
 const Employee = require('../models/employee')
-const User = require('../models/User')
+const User = require('../models/user')
 
 // utils
 const display = require('../utils/display')
@@ -13,7 +13,7 @@ const {
    generateToken,
    generateRefreshToken,
    generateTokenRegister,
-} = require('../utils/generateToken')
+} = require('../utils/generate-token')
 const { toHash, toCheck } = require('../utils/password')
 
 const login = async (req, res, next) => {

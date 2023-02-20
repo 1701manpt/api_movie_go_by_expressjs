@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize')
 
 // configs
-const config = require('./configs/connectDb')
+const config = require('./configs/database')
 
 const sequelize = new Sequelize(config)
 
@@ -13,6 +13,6 @@ sequelize
    .catch(error => {
       console.error('Unable to connect to the database:', error)
    })
-   .finally(err => {})
+   .finally(err => { })
 
 module.exports = sequelize

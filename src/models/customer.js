@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
 
-const User = require('./User')
+const User = require('./user')
 
 const Customer = sequelize.define(
    'Customer',

@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
 
-const OrderStatus = require('./OrderStatus')
+const OrderStatus = require('./orderStatus')
 const Customer = require('./customer')
 
 const Order = sequelize.define(

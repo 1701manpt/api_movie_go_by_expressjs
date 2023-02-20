@@ -1,9 +1,9 @@
 const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
-const Role = require('./Role')
+const Role = require('./role')
 
-const User = require('./User')
+const User = require('./user')
 
 const Employee = sequelize.define(
    'Employee',

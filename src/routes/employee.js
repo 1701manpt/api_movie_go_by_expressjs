@@ -11,7 +11,7 @@ const {
    destroyForce,
    create,
 } = require('../controllers/employee')
-const { authorizeToken } = require('../middlewares/verifyToken')
+const { authorizeToken } = require('../middlewares/verify-token')
 
 router.get('/', authorizeToken, getAll)
 router.get('/:id', authorizeToken, getById)

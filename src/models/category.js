@@ -2,8 +2,6 @@ const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
 
-const Product = require('./Product')
-
 const Category = sequelize.define(
    'Category',
    {
@@ -30,10 +28,5 @@ const Category = sequelize.define(
       underscored: true,
    },
 )
-
-// Category.hasMany(Product, {
-//     as: 'products',
-//     foreignKey: 'categoryId',
-// })
 
 module.exports = Category

@@ -5,7 +5,7 @@ const router = express.Router()
 const { getAll, getById, create, update, destroy } = require('../../controllers/v1/product')
 
 // validators
-const { authenticateToken } = require('../../middlewares/verifyToken')
+const { authenticateToken } = require('../../middlewares/verify-token')
 
 router.get('/', getAll)
 router.get('/:id', getById)

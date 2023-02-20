@@ -10,8 +10,8 @@ const {
    logout,
    verifyRegister,
 } = require('../controllers/auth')
-const sendMail = require('../middlewares/sendMail')
-const { authenticateToken } = require('../middlewares/verifyToken')
+const sendMail = require('../middlewares/send-mail')
+const { authenticateToken } = require('../middlewares/verify-token')
 
 router.post('/login', login)
 router.post('/login/admin', loginAdmin)

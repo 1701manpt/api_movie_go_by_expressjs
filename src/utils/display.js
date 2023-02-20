@@ -1,4 +1,4 @@
-const snakeCase = require('./snakeCase')
+const snakeCase = require('./snake-case')
 
 const display = ({ message = null, data = null, error = null }) => {
    return {

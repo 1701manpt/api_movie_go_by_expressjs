@@ -1,10 +1,6 @@
-'use strict'
-
 const { DataTypes } = require('sequelize')
-
 const sequelize = require('../connection')
-
-const UserStatus = require('./UserStatus')
+const UserStatus = require('./userStatus')
 
 const User = sequelize.define(
    'User',

@@ -1,7 +1,7 @@
 const sequelize = require('../connection')
 
 // models
-const AccountStatus = require('../models/UserStatus')
+const AccountStatus = require('../models/userStatus')
 const OrderStatus = require('../models/OrderStatus')
 const Role = require('../models/Role')
 const Employee = require('../models/Employee')

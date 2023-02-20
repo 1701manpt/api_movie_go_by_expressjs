@@ -1,7 +1,10 @@
 // modal
-const OrderLine = require('../../models/orderLine')
-const Order = require('../../models/order')
-const Product = require('../../models/product')
+const OrderLine = require('../models/order-line')
+const Order = require('../models/order')
+const Product = require('../models/product')
+
+// utils
+const display = require('../utils/display')
 
 const getAll = async (req, res, next) => {
    try {

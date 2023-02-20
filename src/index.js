@@ -1,36 +1,21 @@
 const express = require('express')
+const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
-
 const route = require('./routes')
-
-// tools
 const auto = require('./tools/autoInsertDefault')
 
-const app = express()
-
 app.use(express.json())
-
 app.use(bodyParser.json())
-
 app.use(
    bodyParser.urlencoded({
       extended: true,
    }),
 )
-
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
-
 app.use(cookieParser())
-
 route(app)
-
-const ProductImage = require('./models/ProductImage')
-
-;async () => {
-   await ProductImage.findAll()
-}
 
 // tự động xóa, tạo database và chèn dữ liệu
 // auto()

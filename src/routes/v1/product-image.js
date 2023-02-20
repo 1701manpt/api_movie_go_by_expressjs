@@ -8,9 +8,9 @@ const {
    destroyByProductId,
    destroy,
    update,
-} = require('../../controllers/v1/productImage')
+} = require('../../controllers/v1/product-image')
 const validate = require('../../middlewares/validate')
-const imagesSchema = require('../../validators/image')
+const imagesSchema = require('../../validators/product-image')
 
 router.get('/product/:productId', getByProductId)
 router.post('/product/:productId', validate(imagesSchema), createByProductId)

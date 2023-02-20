@@ -12,7 +12,7 @@ const {
 } = require('../controllers/category')
 
 // verify
-const { authorizeToken } = require('../middlewares/verifyToken')
+const { authorizeToken } = require('../middlewares/verify-token')
 
 router.get('/', getAll)
 router.get('/:id', getById)

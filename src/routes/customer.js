@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 // middleware
-const { authenticateToken, authorizeToken } = require('../middlewares/verifyToken')
+const { authenticateToken, authorizeToken } = require('../middlewares/verify-token')
 
 // controllers
 const {
