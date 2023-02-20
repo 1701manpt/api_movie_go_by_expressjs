@@ -2,7 +2,15 @@ const express = require('express')
 const router = express.Router()
 
 // controllers
-const { getAll, getById, create, update, destroy, destroyForce, restore } = require('../controllers/order')
+const {
+   getAll,
+   getById,
+   create,
+   update,
+   destroy,
+   destroyForce,
+   restore,
+} = require('../controllers/order')
 
 router.get('/', getAll)
 router.get('/:id', getById)

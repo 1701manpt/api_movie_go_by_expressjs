@@ -4,43 +4,36 @@ const router = express.Router()
 // models
 const UserStatus = require('../models/userStatus')
 
-// utils
-const display = require('../utils/display')
-
-// middlewares
-const logValidation = require('../middlewares/validate')
-const checkId = require('../validators/checkId')
-
 router.get('/', async (req, res, next) => {
-    try {
-        const list = await UserStatus.findAll()
+   try {
+      const list = await UserStatus.findAll()
 
-        res.status(200).json(display({
-            message: 'Lấy danh sách trạng thái người dùng thành công',
-            data: list,
-        }))
-    }
-    catch (error) {
-        next(error)
-    }
+      res.status(200).json({
+         status: 200,
+         data: list,
+      })
+   } catch (error) {
+      next(error)
+   }
 })
 
-router.get('/:id', checkId, logValidation, async (req, res, next) => {
-    try {
-        const instance = await UserStatus.findByPk(req.params.id)
-        if (!instance) {
-            return res.status(400).json(display({
-                message: 'Trạng thái người dùng không tồn tại'
-            }))
-        }
+router.get('/:id', async (req, res, next) => {
+   try {
+      const status = await UserStatus.findByPk(req.params.id)
+      if (!status) {
+         return res.status(404).json({
+            status: 404,
+            message: '404 Not Found',
+         })
+      }
 
-        res.status(200).json(display({
-            message: 'Lấy trạng thái người dùng thành công'
-        }))
-    }
-    catch (error) {
-        next(error)
-    }
+      res.status(200).json({
+         status: 200,
+         data: status,
+      })
+   } catch (error) {
+      next(error)
+   }
 })
 
 module.exports = router

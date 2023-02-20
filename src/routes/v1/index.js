@@ -1,10 +1,28 @@
 const express = require('express')
 const router = express.Router()
 
-const customer = require('../customer')
+const auth = require('./auth')
+const category = require('./category')
+const customer = require('./customer')
+const employee = require('./employee')
+const order = require('./order')
+const orderLine = require('./orderLine')
+const orderStatus = require('./orderStatus')
+const productImage = require('./productImage')
+const product = require('./product')
+const role = require('./role')
+const user = require('./user')
 
-router.use('/', (req, res, next) => {
-    res.send('Version 1')
-})
+router.use('/auth', auth)
+router.use('/categories', category)
+router.use('/customers', customer)
+router.use('/employees', employee)
+router.use('/orders', order)
+router.use('/order-lines', orderLine)
+router.use('/order-statuses', orderStatus)
+router.use('/product-images', productImage)
+router.use('/products', product)
+router.use('/roles', role)
+router.use('/users', user)
 
 module.exports = router

@@ -9,226 +9,275 @@ const User = require('../models/User')
 
 // utils
 const display = require('../utils/display')
-const { generateToken, generateRefreshToken, generateTokenRegister } = require("../utils/generateToken")
+const {
+   generateToken,
+   generateRefreshToken,
+   generateTokenRegister,
+} = require('../utils/generateToken')
 const { toHash, toCheck } = require('../utils/password')
 
 const login = async (req, res, next) => {
-    try {
-        const customer = await Customer.findOne({
-            include: {
-                association: 'user',
-                where: {
-                    account: req.body.account
-                },
-            }
-        })
+   try {
+      const customer = await Customer.findOne({
+         include: {
+            association: 'user',
+            where: {
+               account: req.body.account,
+            },
+         },
+      })
 
-        if (!customer) {
-            return res.status(400).json(display({
-                message: 'Tài khoản không tồn tại',
-            }))
-        }
+      if (!customer) {
+         return res.status(400).json(
+            display({
+               message: 'Tài khoản không tồn tại',
+            }),
+         )
+      }
 
-        if (customer && !toCheck(req.body.password, customer.user.password)) {
-            return res.status(400).json(display({
-                message: 'Mật khẩu không khớp',
-            }))
-        }
+      if (customer && !toCheck(req.body.password, customer.user.password)) {
+         return res.status(400).json(
+            display({
+               message: 'Mật khẩu không khớp',
+            }),
+         )
+      }
 
-        const token = generateToken({
-            id: customer.user.id,
-        })
-        const refreshToken = generateRefreshToken({
-            id: customer.user.id,
-        })
+      const token = generateToken({
+         id: customer.user.id,
+      })
+      const refreshToken = generateRefreshToken({
+         id: customer.user.id,
+      })
 
-        res.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            secure: false,
-            path: '/',
-            sameSite: 'strict',
-        })
+      res.cookie('refreshToken', refreshToken, {
+         httpOnly: true,
+         secure: false,
+         path: '/',
+         sameSite: 'strict',
+      })
 
-        res.status(200).json(display({
+      res.status(200).json(
+         display({
             message: 'Đăng nhập thành công',
             data: {
-                id: customer.user.id,
-                token: token
-            }
-        }))
-    } catch (error) {
-        next(error)
-    }
+               id: customer.user.id,
+               token: token,
+            },
+         }),
+      )
+   } catch (error) {
+      next(error)
+   }
 }
 
 const loginAdmin = async (req, res, next) => {
-    try {
-        const admin = await Employee.findOne({
-            include: [
-                {
-                    association: 'user',
-                    where: {
-                        account: req.body.account
-                    },
-                }
-            ]
-        })
+   try {
+      const admin = await Employee.findOne({
+         include: [
+            {
+               association: 'user',
+               where: {
+                  account: req.body.account,
+               },
+            },
+         ],
+      })
 
-        if (!admin) {
-            return res.status(400).json(display({
-                message: 'Tài khoản không tồn tại',
-            }))
-        }
+      if (!admin) {
+         return res.status(400).json(
+            display({
+               message: 'Tài khoản không tồn tại',
+            }),
+         )
+      }
 
-        if (admin && !toCheck(req.body.password, admin.user.password)) {
-            return res.status(400).json(display({
-                message: 'Mật khẩu không khớp',
-            }))
-        }
+      if (admin && !toCheck(req.body.password, admin.user.password)) {
+         return res.status(400).json(
+            display({
+               message: 'Mật khẩu không khớp',
+            }),
+         )
+      }
 
-        const token = generateToken({
-            id: admin.user.id,
-            roleId: admin.roleId
-        })
-        const refreshToken = generateRefreshToken({
-            id: admin.user.id,
-            roleId: admin.roleId
-        })
+      const token = generateToken({
+         id: admin.user.id,
+         roleId: admin.roleId,
+      })
+      const refreshToken = generateRefreshToken({
+         id: admin.user.id,
+         roleId: admin.roleId,
+      })
 
-        res.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            secure: false,
-            path: '/',
-            sameSite: 'strict',
-        })
+      res.cookie('refreshToken', refreshToken, {
+         httpOnly: true,
+         secure: false,
+         path: '/',
+         sameSite: 'strict',
+      })
 
-        res.status(200).json(display({
+      res.status(200).json(
+         display({
             message: 'Đăng nhập thành công',
             data: {
-                id: admin.user.id,
-                roleId: admin.roleId,
-                token: token
-            }
-        }))
-    } catch (error) {
-        next(error)
-    }
+               id: admin.user.id,
+               roleId: admin.roleId,
+               token: token,
+            },
+         }),
+      )
+   } catch (error) {
+      next(error)
+   }
 }
 
-
 const register = async (req, res, next) => {
-    try {
-        const user = await User.findOne({
-            where: {
-                account: req.body.account,
-            },
-            paranoid: false
-        })
+   try {
+      const user = await User.findOne({
+         where: {
+            account: req.body.account,
+         },
+         paranoid: false,
+      })
 
-        if (user) {
-            return res.status(400).json(display({
-                message: 'Tài khoản tồn tại'
-            }))
-        }
+      if (user) {
+         return res.status(400).json(
+            display({
+               message: 'Tài khoản tồn tại',
+            }),
+         )
+      }
 
-        // cần bổ sung
-        // kiểm tra email đã sử dụng
+      // cần bổ sung
+      // kiểm tra email đã sử dụng
 
-        const newCustomer = await Customer.create({
+      const newCustomer = await Customer.create(
+         {
             fullName: req.body.fullName,
             address: req.body.address,
             phone: req.body.phone,
             user: {
-                email: req.body.email,
-                account: req.body.account,
-                password: toHash(req.body.password),
-                userStatusId: 1,
+               email: req.body.email,
+               account: req.body.account,
+               password: toHash(req.body.password),
+               userStatusId: 1,
             },
-        }, {
+         },
+         {
             include: {
-                association: 'user'
-            }
-        })
+               association: 'user',
+            },
+         },
+      )
 
-        const confirmationCode = generateTokenRegister({
-            id: newCustomer.user.id,
-        })
+      const confirmationCode = generateTokenRegister({
+         id: newCustomer.user.id,
+      })
 
-        res.status(200).json(display({
+      res.status(200).json(
+         display({
             message: 'Đăng ký thành công',
             data: newCustomer,
-        }))
+         }),
+      )
 
-        req.body.user.confirmationCode = confirmationCode
-        return next()  // go to sendMail
-    } catch (error) {
-        next(error)
-    }
+      req.body.user.confirmationCode = confirmationCode
+      return next() // go to sendMail
+   } catch (error) {
+      next(error)
+   }
 }
 
 const verifyRegister = (req, res, next) => {
-    try {
-        const confirmationCode = req.params.confirmationCode
+   try {
+      const confirmationCode = req.params.confirmationCode
 
-        jwt.verify(confirmationCode, process.env.REGISTER_TOKEN_SECRET, async (err, user) => {
-            if (err) {
-                return res.status(400).sendFile(path.join(__dirname + '/../pages/verifyRegister/verifyError.html'))
-            }
+      jwt.verify(confirmationCode, process.env.REGISTER_TOKEN_SECRET, async (err, user) => {
+         if (err) {
+            return res
+               .status(400)
+               .sendFile(path.join(__dirname + '/../pages/verifyRegister/verifyError.html'))
+         }
 
-            await User.update({
-                userStatusId: 2,
-            }, {
-                where: { id: user.id },
-            })
+         await User.update(
+            {
+               userStatusId: 2,
+            },
+            {
+               where: { id: user.id },
+            },
+         )
 
-            res.status(200).sendFile(path.join(__dirname + '/../pages/verifyRegister/verifySuccess.html'))
-        })
-    } catch (error) {
-        next(error)
-    }
+         res.status(200).sendFile(
+            path.join(__dirname + '/../pages/verifyRegister/verifySuccess.html'),
+         )
+      })
+   } catch (error) {
+      next(error)
+   }
 }
 
 const requestRefreshToken = (req, res, next) => {
-    const refreshToken = req.cookies.refreshToken
+   const refreshToken = req.cookies.refreshToken
 
-    if (!refreshToken) {
-        return res.status(401).json(display({
+   if (!refreshToken) {
+      return res.status(401).json(
+         display({
             message: 'Đăng nhập để tiếp tục',
-        }))
-    }
+         }),
+      )
+   }
 
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+      if (err) {
+         return res.status(403).json(
+            display({
+               message: 'Phiên đăng nhập hết hạn',
+            }),
+         )
+      }
 
-        if (err) {
-            return res.status(403).json(display({
-                message: 'Phiên đăng nhập hết hạn'
-            }))
-        }
+      const newAccessToken = generateToken({
+         id: user.id,
+         roleId: user.roleId,
+      })
+      const newRefreshToken = generateRefreshToken({
+         id: user.id,
+         roleId: user.roleId,
+      })
 
-        const newAccessToken = generateToken({ id: user.id, roleId: user.roleId })
-        const newRefreshToken = generateRefreshToken({ id: user.id, roleId: user.roleId })
+      res.cookie('refreshToken', newRefreshToken, {
+         httpOnly: true,
+         secure: false,
+         path: '/',
+         sameSite: 'strict',
+      })
 
-        res.cookie('refreshToken', newRefreshToken, {
-            httpOnly: true,
-            secure: false,
-            path: '/',
-            sameSite: 'strict',
-        })
-
-        return res.status(200).json(display({
+      return res.status(200).json(
+         display({
             message: 'Làm mới token thành công',
             data: {
-                token: newAccessToken
-            }
-        }))
-    })
+               token: newAccessToken,
+            },
+         }),
+      )
+   })
 }
 
 const logout = (req, res) => {
-    res.clearCookie('refreshToken')
-    res.status(200).json(display({
-        message: 'Đăng xuất thành công'
-    }))
+   res.clearCookie('refreshToken')
+   res.status(200).json(
+      display({
+         message: 'Đăng xuất thành công',
+      }),
+   )
 }
 
-module.exports = { requestRefreshToken, login, loginAdmin, register, logout, verifyRegister }
+module.exports = {
+   requestRefreshToken,
+   login,
+   loginAdmin,
+   register,
+   logout,
+   verifyRegister,
+}

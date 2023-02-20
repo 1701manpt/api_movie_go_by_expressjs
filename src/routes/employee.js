@@ -1,26 +1,27 @@
 const express = require('express')
 const router = express.Router()
 
-// validators
-const checkId = require('../validators/checkId')
-const { checkCreate } = require('../validators/employee')
-
-// middleware
-const logValidation = require('../middlewares/validate')
-
 // controllers
-const { getAll, getById, update, destroy, restore, destroyForce, create } = require('../controllers/employee')
-const { authenticateToken, authorizeToken } = require('../middlewares/verifyToken')
+const {
+   getAll,
+   getById,
+   update,
+   destroy,
+   restore,
+   destroyForce,
+   create,
+} = require('../controllers/employee')
+const { authorizeToken } = require('../middlewares/verifyToken')
 
 router.get('/', authorizeToken, getAll)
-router.get('/:id', authorizeToken, checkId, logValidation, getById)
+router.get('/:id', authorizeToken, getById)
 
-router.post('/', authorizeToken, checkCreate, logValidation, create)
-router.post('/:id', authorizeToken, checkId, logValidation, restore)
+router.post('/', authorizeToken, create)
+router.post('/:id', authorizeToken, restore)
 
-router.put('/:id', authorizeToken, checkId, logValidation, update)
+router.put('/:id', authorizeToken, update)
 
-router.delete('/:id', authorizeToken, checkId, logValidation, destroy)
-router.delete('/:id/destroy', authorizeToken, checkId, logValidation, destroyForce)
+router.delete('/:id', authorizeToken, destroy)
+router.delete('/:id/destroy', authorizeToken, destroyForce)
 
 module.exports = router

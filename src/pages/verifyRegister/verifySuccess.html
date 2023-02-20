@@ -1,62 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link
+         rel="icon"
+         type="image/x-icon"
+         href="https://th.bing.com/th/id/R.bace8eb4c7fdd70353f31e25fe2d3e48?rik=8g%2f4XBs55KUAJg&pid=ImgRaw&r=0"
+      />
+      <title>Xác thực người dùng | Store Online</title>
+   </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon"
-        href="https://th.bing.com/th/id/R.bace8eb4c7fdd70353f31e25fe2d3e48?rik=8g%2f4XBs55KUAJg&pid=ImgRaw&r=0">
-    <title>Xác thực người dùng | Store Online</title>
-</head>
+   <style>
+      *,
+      html,
+      body {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+      }
 
-<style>
-    *,
-    html,
-    body {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+      body {
+         background-image: linear-gradient(135deg, #f5f7fa 10%, #c3cfe2 100%);
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         min-height: 100vh;
+         padding-top: 25vh;
+      }
 
-    body {
-        background-image: linear-gradient(135deg, #f5f7fa 10%, #c3cfe2 100%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-        padding-top: 25vh;
-    }
+      h3 {
+         text-transform: uppercase;
+         color: #0e197d;
+         margin: 16px;
+         padding: 16px;
+         background-image: linear-gradient(135deg, #79f1a4 10%, #0e5cad 100%);
+      }
+   </style>
 
-    h3 {
-        text-transform: uppercase;
-        color: #0E197D;
-        margin: 16px;
-        padding: 16px;
-        background-image: linear-gradient(135deg, #79F1A4 10%, #0E5CAD 100%);
-    }
-</style>
+   <body>
+      <h3>Xác thực thành công</h3>
+      <h4>
+         Tự động chuyển hướng đến trang
+         <a href="http://localhost:3000">Store Online</a> sau
+      </h4>
+      <h1>10 giây</h1>
+   </body>
 
-<body>
-    <h3>
-        Xác thực thành công
-    </h3>
-    <h4>Tự động chuyển hướng đến trang <a href="http://localhost:3000">Store Online</a> sau</h4>
-    <h1>10 giây</h1>
-</body>
-
-<script>
-    window.addEventListener('load',
-        function () {
+   <script>
+      window.addEventListener(
+         'load',
+         function () {
             let x = 9
             const setI = setInterval(function () {
-                document.querySelector('h1').innerHTML = x-- + ' giây'
-                if (x <= 0) {
-                    clearInterval(setI)
-                    window.location = "http://localhost:3000";
-                }
+               document.querySelector('h1').innerHTML = x-- + ' giây'
+               if (x <= 0) {
+                  clearInterval(setI)
+                  window.location = 'http://localhost:3000'
+               }
             }, 1000)
-        }, false);
-</script>
-
+         },
+         false,
+      )
+   </script>
 </html>

@@ -5,18 +5,15 @@ const router = express.Router()
 const { getAll, getById, create, update, destroy } = require('../controllers/product')
 
 // validators
-const logValidation = require('../middlewares/validate')
-const { checkCreate, checkUpdate } = require('../validators/product')
-const checkId = require('../validators/checkId')
 const { authenticateToken } = require('../middlewares/verifyToken')
 
 router.get('/', getAll)
-router.get('/:id', checkId, logValidation, getById)
+router.get('/:id', getById)
 
-router.post('/', authenticateToken, checkCreate, logValidation, create)
+router.post('/', authenticateToken, create)
 
-router.put('/:id', authenticateToken, checkId, checkUpdate, logValidation, update)
+router.put('/:id', authenticateToken, update)
 
-router.delete('/:id', authenticateToken, checkId, logValidation, destroy)
+router.delete('/:id', authenticateToken, destroy)
 
 module.exports = router

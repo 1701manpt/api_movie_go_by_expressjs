@@ -1,15 +1,16 @@
-const { validationResult } = require('express-validator')
-const display = require('../utils/display')
+function validate(schema) {
+   return (req, res, next) => {
+      const { error } = schema.validate(req.body, { abortEarly: false })
+      if (error) {
+         const errors = error.details.reduce((acc, cur) => {
+            acc[cur.path[0]] = cur.message
+            return acc
+         }, {})
+         return res.status(400).json({ errors })
+      }
 
-const logValidation = (req, res, next) => {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        return res.status(400).json(display({
-            message: 'Lỗi xác thực',
-            error: errors.array()
-        }))
-    }
-    return next()
+      return next()
+   }
 }
 
-module.exports = logValidation
+module.exports = validate
