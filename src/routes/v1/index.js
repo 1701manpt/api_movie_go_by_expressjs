@@ -12,6 +12,7 @@ const productImage = require('./product-image')
 const product = require('./product')
 const role = require('./role')
 const user = require('./user')
+const cart = require('./cart')
 
 router.use('/auth', auth)
 router.use('/categories', category)
@@ -24,5 +25,6 @@ router.use('/product-images', productImage)
 router.use('/products', product)
 router.use('/roles', role)
 router.use('/users', user)
+router.use('/carts', cart)
 
 module.exports = router

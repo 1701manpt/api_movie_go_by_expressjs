@@ -1,11 +1,11 @@
 const sequelize = require('../connection')
 
 // models
-const AccountStatus = require('../models/userStatus')
-const OrderStatus = require('../models/OrderStatus')
-const Role = require('../models/Role')
-const Employee = require('../models/Employee')
-const { toHash } = require('../utils/password')
+const UserStatus = require('../models/user-status')
+const OrderStatus = require('../models/order-status')
+const Role = require('../models/role')
+const Employee = require('../models/employee')
+const { hashPassword } = require('../utils/password')
 
 const auto = async () => {
    const orderStatusArray = [
@@ -61,10 +61,11 @@ const auto = async () => {
       },
    ]
 
+   // Đồng bộ hóa database với Sequelize
    await sequelize.sync({ force: true })
 
    accountStatusArray.forEach(async e => {
-      await AccountStatus.create(e)
+      await UserStatus.create(e)
    })
    orderStatusArray.forEach(async e => {
       await OrderStatus.create(e)
@@ -72,6 +73,8 @@ const auto = async () => {
    roleArray.forEach(async e => {
       await Role.create(e)
    })
+
+   const password = await hashPassword('admin')
 
    await Employee.create(
       {
@@ -81,7 +84,7 @@ const auto = async () => {
          user: {
             email: 'thaiphuongnam1071@gmail.com',
             account: 'admin',
-            password: toHash('admin'),
+            password: password,
             userStatusId: 2,
          },
          roleId: 1,

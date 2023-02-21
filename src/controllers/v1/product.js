@@ -1,7 +1,6 @@
-// modal
 const Category = require('../../models/category')
 const Product = require('../../models/product')
-const ProductImage = require('../../models/productImage')
+const ProductImage = require('../../models/product-image')
 
 const getAll = async (req, res, next) => {
    try {
@@ -133,14 +132,14 @@ const destroy = async (req, res, next) => {
          })
       }
 
-      await Product.destroy({
+      const count = await Product.destroy({
          where: { id: req.params.id },
          returning: true,
-         plain: true,
       })
 
       res.status(200).json({
          status: 200,
+         count: count,
       })
    } catch (err) {
       next(err)

@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 // models
-const UserStatus = require('../models/userStatus')
+const UserStatus = require('../models/user-status')
 
 router.get('/', async (req, res, next) => {
    try {

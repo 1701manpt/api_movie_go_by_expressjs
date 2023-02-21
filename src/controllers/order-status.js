@@ -1,5 +1,5 @@
 // modal
-const OrderStatus = require('../models/orderStatus')
+const OrderStatus = require('../models/order-status')
 // utils
 const display = require('../utils/display')
 

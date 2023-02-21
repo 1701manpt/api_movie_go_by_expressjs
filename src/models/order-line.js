@@ -1,11 +1,9 @@
-'use strict'
-
 const { DataTypes } = require('sequelize')
 
 const sequelize = require('../connection')
 
 const Order = require('./order')
-const Product = require('./Product')
+const Product = require('./product')
 
 const OrderLine = sequelize.define(
    'OrderLine',

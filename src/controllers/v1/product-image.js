@@ -1,6 +1,6 @@
 // models
 const Product = require('../../models/product')
-const ProductImage = require('../../models/productImage')
+const ProductImage = require('../../models/product-image')
 
 const getByProductId = async (req, res, next) => {
    try {

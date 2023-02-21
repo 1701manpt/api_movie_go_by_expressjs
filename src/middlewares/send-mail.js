@@ -2,12 +2,11 @@ require('dotenv').config()
 
 const nodemailer = require('nodemailer')
 const { OAuth2Client } = require('google-auth-library')
-// const display = require('../utils/display')
 
-const GOOGLE_MAILER_CLIENT_ID = process.env.GOOGLE_MAILER_CLIENT_ID
-const GOOGLE_MAILER_CLIENT_SECRET = process.env.GOOGLE_MAILER_CLIENT_SECRET
-const GOOGLE_MAILER_REFRESH_TOKEN = process.env.GOOGLE_MAILER_REFRESH_TOKEN
-const ADMIN_EMAIL_ADDRESS = process.env.ADMIN_EMAIL_ADDRESS
+const GOOGLE_MAILER_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
+const GOOGLE_MAILER_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
+const GOOGLE_MAILER_REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN
+const ADMIN_EMAIL_ADDRESS = process.env.MAIL_USER
 
 // Khởi tạo OAuth2Client với Client ID và Client Secret
 const myOAuth2Client = new OAuth2Client(GOOGLE_MAILER_CLIENT_ID, GOOGLE_MAILER_CLIENT_SECRET)
@@ -43,7 +42,7 @@ const sendMail = async (req, res, next) => {
             <div>
                 <h1>Nhấn vào liên kết bên dưới để xác thực tài khoản</h1>
                 <h3>
-                    <a href="http://localhost:7000/api/auth/register/verify/${req.body.user.confirmationCode}">
+                    <a href="http://localhost:7000/api/auth/register/verify/${req.user.confirmationCode}">
                         link xác thực
                     </a>
                 </h3>
@@ -52,9 +51,8 @@ const sendMail = async (req, res, next) => {
 
       // mailOption là những thông tin gửi từ phía client lên thông qua API
       const mailOptions = {
-         to: req.body.user.email, // Gửi đến ai?
-         subject:
-            'Admin Store Online xin gửi đường dẫn xác thực tài khoản ' + req.body.user.account, // Tiêu đề email
+         to: req.user.email, // Gửi đến ai?
+         subject: 'Admin Store Online xin gửi đường dẫn xác thực tài khoản ' + req.user.account, // Tiêu đề email
          html: content, // Nội dung email
       }
       // Gọi hành động gửi email

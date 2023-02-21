@@ -36,8 +36,8 @@ npm run test
 
 👤 **1701manpt**
 
-* Website: Thái Phương Nam
-* Github: [@1701manpt](https://github.com/1701manpt)
+-  Website: Thái Phương Nam
+-  Github: [@1701manpt](https://github.com/1701manpt)
 
 ## 🤝 Contributing
 
@@ -52,5 +52,6 @@ Give a ⭐️ if this project helped you!
 Copyright © 2023 [1701manpt](https://github.com/1701manpt).<br />
 This project is [ISC](https://github.com/1701manpt/StoreOnline/blob/master/LICENSE) licensed.
 
-***
+---
+
 _This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_

@@ -14,7 +14,7 @@ const {
    generateRefreshToken,
    generateTokenRegister,
 } = require('../utils/generate-token')
-const { toHash, toCheck } = require('../utils/password')
+const { hashPassword, comparePassword } = require('../utils/password')
 
 const login = async (req, res, next) => {
    try {
@@ -35,7 +35,9 @@ const login = async (req, res, next) => {
          )
       }
 
-      if (customer && !toCheck(req.body.password, customer.user.password)) {
+      const isPassword = await comparePassword(req.body.password, customer.user.password)
+
+      if (customer && !isPassword) {
          return res.status(400).json(
             display({
                message: 'Mật khẩu không khớp',
@@ -92,7 +94,9 @@ const loginAdmin = async (req, res, next) => {
          )
       }
 
-      if (admin && !toCheck(req.body.password, admin.user.password)) {
+      const isPassword = await comparePassword(req.body.password, admin.user.password)
+
+      if (admin && !isPassword) {
          return res.status(400).json(
             display({
                message: 'Mật khẩu không khớp',
@@ -151,6 +155,10 @@ const register = async (req, res, next) => {
       // cần bổ sung
       // kiểm tra email đã sử dụng
 
+      const password = await hashPassword(req.body.password)
+
+      console.log(password)
+
       const newCustomer = await Customer.create(
          {
             fullName: req.body.fullName,
@@ -159,7 +167,7 @@ const register = async (req, res, next) => {
             user: {
                email: req.body.email,
                account: req.body.account,
-               password: toHash(req.body.password),
+               password: password,
                userStatusId: 1,
             },
          },
@@ -181,7 +189,7 @@ const register = async (req, res, next) => {
          }),
       )
 
-      req.body.user.confirmationCode = confirmationCode
+      req.user.confirmationCode = confirmationCode
       return next() // go to sendMail
    } catch (error) {
       next(error)

@@ -1,7 +1,7 @@
 // modal
 const Category = require('../models/category')
 const Product = require('../models/product')
-const ProductImage = require('../models/productImage')
+const ProductImage = require('../models/product-image')
 
 // utils
 const display = require('../utils/display')

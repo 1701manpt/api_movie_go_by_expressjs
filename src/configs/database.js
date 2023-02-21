@@ -9,8 +9,12 @@ const config = {
    dialectOptions: {
       instanceName: process.env.SERVER,
       useUTC: false, // for reading from database
+      options: {
+         encrypt: true,
+      },
    },
    timezone: '+07:00',
+   logging: false,
 }
 
 module.exports = config
