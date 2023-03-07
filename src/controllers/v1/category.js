@@ -7,7 +7,7 @@ const getAll = async (req, res, next) => {
       const list = await Category.findAll()
 
       res.status(200).json({
-         status: 'success',
+         status: 200,
          data: list,
       })
    } catch (error) {
@@ -20,7 +20,7 @@ const getById = async (req, res, next) => {
       const category = await Category.findByPk(req.params.id)
       if (!category) {
          return res.status(404).json({
-            status: 'error',
+            status: 404,
             message: '404 Not Found',
          })
       }
@@ -41,7 +41,7 @@ const create = async (req, res, next) => {
       })
       if (instance) {
          return res.status(400).json({
-            status: 'error',
+            status: 400,
             message: 'Tên danh mục tồn tại',
          })
       }
