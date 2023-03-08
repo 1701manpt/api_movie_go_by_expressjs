@@ -8,7 +8,7 @@
     <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
   </a>
   <a href="https://github.com/1701manpt/StoreOnline/blob/master/LICENSE" target="_blank">
-    <img alt="License: ISC" src="https://img.shields.io/github/license/1701manpt/API of Store Online" />
+    <img alt="License: ISC" src="https://img.shields.io/github/license/1701manpt/StoreOnline_nodejs" />
   </a>
 </p>
 
