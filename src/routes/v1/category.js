@@ -17,7 +17,8 @@ router.get('/', getAll)
 router.get('/:id', getById)
 router.get('/:id/products', getProductsByCategory)
 
-router.post('/', authorizeToken, create)
+// router.post('/', authorizeToken, create)
+router.post('/', create)
 
 router.put('/:id', authorizeToken, update)
 

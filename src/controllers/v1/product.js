@@ -92,7 +92,7 @@ const getAll = async (req, res, next) => {
 const getById = async (req, res, next) => {
     try {
         const product = await Product.findByPk(req.params.id, {
-            include: ['category'],
+            include: 'category',
         })
         if (!product) {
             return res.status(404).json({
@@ -121,17 +121,6 @@ const getById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
     try {
-        const product = await Product.findOne({
-            where: { name: req.body.name },
-            paranoid: false,
-        })
-        if (product) {
-            return res.status(400).json({
-                status: 400,
-                message: 'Tên sản phẩm tồn tại',
-            })
-        }
-
         if (req.body.category_id) {
             const category = await Category.findOne({
                 where: { id: req.body.category_id },

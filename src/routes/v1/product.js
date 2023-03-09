@@ -13,7 +13,8 @@ const productSchema = require('~/validators/product')
 router.get('/', getAll)
 router.get('/:id', getById)
 
-router.post('/', authenticateToken, validate(productSchema.create), create)
+// router.post('/', authenticateToken, validate(productSchema.create), create)
+router.post('/', create)
 
 router.put('/:id', authenticateToken, validate(productSchema.update), update)
 
