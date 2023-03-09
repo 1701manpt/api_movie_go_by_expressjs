@@ -1,59 +1,59 @@
-const Cart = require('../../models/cart')
-const Product = require('../../models/product')
+const Cart = require('~/models/cart')
+const Product = require('~/models/product')
 
 const getAll = async (req, res, next) => {
-   try {
-      const list = await Cart.findAll()
+    try {
+        const list = await Cart.findAll()
 
-      res.status(200).json({
-         status: 200,
-         data: list,
-      })
-   } catch (error) {
-      next(error)
-   }
+        res.status(200).json({
+            status: 200,
+            data: list,
+        })
+    } catch (error) {
+        next(error)
+    }
 }
 
 const getById = async (req, res, next) => {
-   try {
-      const cart = await Cart.findByPk(req.params.id)
-      if (!cart) {
-         return res.status(404).json({
-            status: 404,
-            message: '404 Not Found',
-         })
-      }
+    try {
+        const cart = await Cart.findByPk(req.params.id)
+        if (!cart) {
+            return res.status(404).json({
+                status: 404,
+                message: '404 Not Found',
+            })
+        }
 
-      res.status(200).json({
-         status: 200,
-         data: cart,
-      })
-   } catch (error) {
-      next(error)
-   }
+        res.status(200).json({
+            status: 200,
+            data: cart,
+        })
+    } catch (error) {
+        next(error)
+    }
 }
 
 const create = async (req, res, next) => {
-   try {
-      const product = await Product.findByPk(req.body.productId)
-      if (!product) {
-         return res.status(404).json({
-            status: 400,
-            message: '400 Bad Request',
-         })
-      }
+    try {
+        const product = await Product.findByPk(req.body.product_id)
+        if (!product) {
+            return res.status(404).json({
+                status: 400,
+                message: '400 Bad Request',
+            })
+        }
 
-      const cart = await Cart.create({
-         customerId: req.body.customerId,
-      })
+        const cart = await Cart.create({
+            customer_id: req.body.customer_id,
+        })
 
-      res.status(200).json({
-         status: 200,
-         data: cart,
-      })
-   } catch (error) {
-      next(error)
-   }
+        res.status(200).json({
+            status: 200,
+            data: cart,
+        })
+    } catch (error) {
+        next(error)
+    }
 }
 
 // const update = async (req, res, next) => {
@@ -90,27 +90,32 @@ const create = async (req, res, next) => {
 // }
 
 const destroy = async (req, res, next) => {
-   try {
-      const cart = await Cart.findByPk(req.params.id)
-      if (!cart) {
-         return res.status(404).json({
-            status: 404,
-            message: '404 Not Found',
-         })
-      }
+    try {
+        const cart = await Cart.findByPk(req.params.id)
+        if (!cart) {
+            return res.status(404).json({
+                status: 404,
+                message: '404 Not Found',
+            })
+        }
 
-      const count = await Cart.destroy({
-         where: { id: req.params.id },
-         returning: true,
-      })
+        const count = await Cart.destroy({
+            where: { id: req.params.id },
+            returning: true,
+        })
 
-      res.status(200).json({
-         status: 200,
-         count: count,
-      })
-   } catch (err) {
-      next(err)
-   }
+        res.status(200).json({
+            status: 200,
+            count,
+        })
+    } catch (err) {
+        next(err)
+    }
 }
 
-module.exports = { getAll, getById, create, destroy }
+module.exports = {
+    getAll,
+    getById,
+    create,
+    destroy,
+}

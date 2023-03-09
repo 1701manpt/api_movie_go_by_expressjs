@@ -1,8 +1,9 @@
 const express = require('express')
+
 const router = express.Router()
 
 // controllers
-const { getAll, getById, create, destroy } = require('../../controllers/v1/cart')
+const { getAll, getById, create, destroy } = require('~/controllers/v1/cart')
 
 router.get('/', getAll)
 router.get('/:id', getById)

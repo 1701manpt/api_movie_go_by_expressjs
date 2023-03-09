@@ -1,4 +1,5 @@
 const express = require('express')
+
 const router = express.Router()
 
 const auth = require('./auth')
@@ -11,8 +12,12 @@ const orderStatus = require('./order-status')
 const productImage = require('./product-image')
 const product = require('./product')
 const role = require('./role')
-const user = require('./user')
 const cart = require('./cart')
+const movie = require('./movie')
+const ticket = require('./ticket')
+const seat = require('./seat')
+const threater = require('./threater')
+const showTime = require('./show-time')
 
 router.use('/auth', auth)
 router.use('/categories', category)
@@ -24,7 +29,11 @@ router.use('/order-statuses', orderStatus)
 router.use('/product-images', productImage)
 router.use('/products', product)
 router.use('/roles', role)
-router.use('/users', user)
 router.use('/carts', cart)
+router.use('/movies', movie)
+router.use('/tickets', ticket)
+router.use('/seats', seat)
+router.use('/show-times', showTime)
+router.use('/threaters', threater)
 
 module.exports = router

@@ -1,46 +1,35 @@
 const { DataTypes } = require('sequelize')
 
-const sequelize = require('../connection')
+const sequelize = require('~/connection')
 
 const OrderStatus = require('./order-status')
 const Customer = require('./customer')
 
-const Order = sequelize.define(
-   'Order',
-   {
-      id: {
-         type: DataTypes.INTEGER,
-         primaryKey: true,
-         autoIncrement: true,
-         allowNull: false,
-      },
-      customerId: {
-         type: DataTypes.INTEGER,
-         allowNull: true,
-      },
-      orderStatusId: {
-         type: DataTypes.INTEGER,
-         allowNull: false,
-      },
-   },
-   {
-      tableName: 'Order',
-      timestamps: true,
-      paranoid: true, // enable soft delete
-      underscored: true,
-   },
-)
+const Order = sequelize.define('Order', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+    },
+    customer_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+    status_id: {
+        type: DataTypes.INTEGER,
+    },
+})
 
 Order.belongsTo(Customer, {
-   as: 'customer',
-   foreignKey: 'customerId',
-   // onDelete: 'SET NULL',
-   // onUpdate: 'CASCADE',
+    as: 'customer',
+    foreignKey: 'customer_id',
+    // onDelete: 'SET NULL',
+    // onUpdate: 'CASCADE',
 })
 
 Order.belongsTo(OrderStatus, {
-   as: 'orderStatus',
-   foreignKey: 'orderStatusId',
+    as: 'order_status',
+    foreignKey: 'status_id',
 })
 
 module.exports = Order

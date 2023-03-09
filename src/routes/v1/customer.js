@@ -1,17 +1,21 @@
 const express = require('express')
+
 const router = express.Router()
 
 // controllers
 const {
-   getAll,
-   getById,
-   update,
-   destroy,
-   restore,
-   destroyForce,
-   getAllOrder,
-} = require('../../controllers/v1/customer')
-const { authorizeToken, authenticateToken } = require('../../middlewares/verify-token')
+    getAll,
+    getById,
+    update,
+    destroy,
+    restore,
+    destroyForce,
+    getAllOrder,
+} = require('~/controllers/v1/customer')
+const {
+    authorizeToken,
+    authenticateToken,
+} = require('~/middlewares/verify-token')
 
 router.get('/', authorizeToken, getAll)
 router.get('/:id/orders', authenticateToken, getAllOrder)

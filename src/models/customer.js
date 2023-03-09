@@ -1,46 +1,42 @@
 const { DataTypes } = require('sequelize')
 
-const sequelize = require('../connection')
-
-const User = require('./user')
+const sequelize = require('~/connection')
 
 const Customer = sequelize.define(
-   'Customer',
-   {
-      id: {
-         type: DataTypes.INTEGER,
-         primaryKey: true,
-         autoIncrement: true,
-         allowNull: false,
-      },
-      fullName: {
-         type: DataTypes.STRING,
-         allowNull: true,
-      },
-      phone: {
-         type: DataTypes.STRING,
-         allowNull: true,
-      },
-      address: {
-         type: DataTypes.STRING,
-         allowNull: true,
-      },
-      userId: {
-         type: DataTypes.INTEGER,
-         allowNull: true,
-      },
-   },
-   {
-      tableName: 'Customer',
-      timestamps: true,
-      paranoid: true, // enable soft delete
-      underscored: true,
-   },
+    'Customer',
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        full_name: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        phone_number: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        address: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        account: {
+            type: DataTypes.STRING,
+        },
+        password: {
+            type: DataTypes.STRING,
+        },
+    },
+    {
+        paranoid: true,
+        deletedAt: 'deleted_at',
+    },
 )
-
-Customer.belongsTo(User, {
-   as: 'user',
-   foreignKey: 'userId',
-})
 
 module.exports = Customer
