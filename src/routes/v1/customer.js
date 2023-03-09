@@ -12,12 +12,10 @@ const {
     destroyForce,
     getAllOrder,
 } = require('~/controllers/v1/customer')
-const {
-    authorizeToken,
-    authenticateToken,
-} = require('~/middlewares/verify-token')
+const { authorizeToken, authenticateToken } = require('~/middlewares/verify-token')
 
-router.get('/', authorizeToken, getAll)
+// router.get('/', authorizeToken, getAll)
+router.get('/', getAll)
 router.get('/:id/orders', authenticateToken, getAllOrder)
 router.get('/:id', authenticateToken, getById)
 

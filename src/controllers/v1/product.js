@@ -8,6 +8,14 @@ const getAll = async (req, res, next) => {
         const { query } = req
         const option = {}
 
+        // search by field `id`
+        if (query.id) {
+            const searchId = {
+                [Op.like]: query.id,
+            }
+            option.id = searchId
+        }
+
         // search by field `name`
         if (query.name) {
             const names = query.name.split(' ')
@@ -28,14 +36,6 @@ const getAll = async (req, res, next) => {
                 })),
             }
             option.description = searchDescription
-        }
-
-        // search by field `id`
-        if (query.id) {
-            const searchId = {
-                [Op.like]: query.id,
-            }
-            option.id = searchId
         }
 
         // search by field `price`

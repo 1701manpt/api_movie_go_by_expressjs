@@ -6,8 +6,9 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const route = require('~/routes')
-const delDataAndSyncModel = require('~/tools/del-data-and-sync-model')
+const delDataAndSyncModel = require('~/tools/sync')
 const insertDataDefault = require('~/tools/insert-data-default')
+const insert = require('./tools/insert-movies')
 
 app.use(express.json())
 app.use(bodyParser.json())
@@ -36,9 +37,6 @@ const server = app.listen(7000, err => {
     if (err) {
         console.error(`Listening on port 7000 error: ${err}`)
     } else {
-        console.log(
-            `Server listening on port ${`http://localhost:${server.address().port
-            }/api`}`,
-        )
+        console.log(`Server listening on port ${`http://localhost:${server.address().port}/api`}`)
     }
 })

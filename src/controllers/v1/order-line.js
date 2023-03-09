@@ -7,7 +7,7 @@ const getAll = async (req, res, next) => {
         const list = await OrderLine.findAll()
         res.json({
             status: 200,
-            data: list
+            data: list,
         })
     } catch (err) {
         next(err)
@@ -20,7 +20,7 @@ const getById = async (req, res, next) => {
         if (!OrderLine) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found'
+                message: '404 Not Found',
             })
         }
         res.status(200).json({
@@ -34,7 +34,6 @@ const getById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
     try {
-
     } catch (err) {
         next(err)
     }

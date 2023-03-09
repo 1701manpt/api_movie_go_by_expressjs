@@ -25,7 +25,8 @@
       "nodemailer": "^6.8.0",
       "nodemon": "^2.0.20",
       "sequelize": "^6.26.0",
-      "tedious": "^15.1.2"
+      "tedious": "^15.1.2",
+      "xlsx": "^0.18.5"
    },
    "repository": {
       "type": "git",

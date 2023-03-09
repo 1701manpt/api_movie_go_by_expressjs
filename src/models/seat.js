@@ -17,7 +17,7 @@ const Seat = sequelize.define('Seat', {
     },
     number: {
         type: DataTypes.INTEGER,
-    }
+    },
 })
 
 Seat.belongsTo(Threater, {

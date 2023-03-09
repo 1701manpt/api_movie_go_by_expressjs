@@ -2,10 +2,7 @@ require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const Customer = require('~/models/customer')
 const Employee = require('~/models/employee')
-const {
-    generateToken,
-    generateRefreshToken,
-} = require('~/utils/generate-token')
+const { generateToken, generateRefreshToken } = require('~/utils/generate-token')
 const { hashPassword, comparePassword } = require('~/utils/password')
 
 const loginCustomer = async (req, res, next) => {
@@ -23,10 +20,7 @@ const loginCustomer = async (req, res, next) => {
             })
         }
 
-        const isPassword = await comparePassword(
-            req.body.password,
-            customer.password,
-        )
+        const isPassword = await comparePassword(req.body.password, customer.password)
 
         if (customer && !isPassword) {
             return res.status(401).json({
@@ -76,10 +70,7 @@ const loginEmployee = async (req, res, next) => {
                 message: 'Tên đăng nhập hoặc mật khẩu không chính xác',
             })
         }
-        const isPassword = await comparePassword(
-            req.body.password,
-            admin.password,
-        )
+        const isPassword = await comparePassword(req.body.password, admin.password)
 
         if (admin && !isPassword) {
             return res.status(401).json({

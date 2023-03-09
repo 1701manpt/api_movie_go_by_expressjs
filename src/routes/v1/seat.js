@@ -3,12 +3,7 @@ const express = require('express')
 const router = express.Router()
 
 // controllers
-const {
-    getAll,
-    getById,
-    create,
-    destroy,
-} = require('~/controllers/v1/seat')
+const { getAll, getById, create, destroy } = require('~/controllers/v1/seat')
 
 router.get('/', getAll)
 router.get('/:id', getById)

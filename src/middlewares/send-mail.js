@@ -9,10 +9,7 @@ const GOOGLE_MAILER_REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN
 const ADMIN_EMAIL_ADDRESS = process.env.MAIL_USER
 
 // Khởi tạo OAuth2Client với Client ID và Client Secret
-const myOAuth2Client = new OAuth2Client(
-    GOOGLE_MAILER_CLIENT_ID,
-    GOOGLE_MAILER_CLIENT_SECRET,
-)
+const myOAuth2Client = new OAuth2Client(GOOGLE_MAILER_CLIENT_ID, GOOGLE_MAILER_CLIENT_SECRET)
 // Set Refresh Token vào OAuth2Client Credentials
 myOAuth2Client.setCredentials({
     refresh_token: GOOGLE_MAILER_REFRESH_TOKEN,

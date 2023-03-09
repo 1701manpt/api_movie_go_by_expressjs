@@ -126,15 +126,6 @@ const insertDefault = async () => {
         })
     })
 
-    await Movie.create({
-        name: 'Black Panther 1',
-        genre: 'Hành động, Phiêu lưu, Viễn tưởng',
-        duration: 120,
-        poster_url:
-            'https://f9-zpcloud.zdn.vn/4467357853884789014/edb7597bbf1f62413b0e.jpg',
-        trailer_url: 'https://youtu.be/xjDjIWPwcPU',
-    })
-
     await ShowTime.create({
         threater_id: 1,
         movie_id: 1,

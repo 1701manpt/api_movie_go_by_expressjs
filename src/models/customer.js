@@ -35,7 +35,6 @@ const Customer = sequelize.define(
     },
     {
         paranoid: true,
-        deletedAt: 'deleted_at',
     },
 )
 

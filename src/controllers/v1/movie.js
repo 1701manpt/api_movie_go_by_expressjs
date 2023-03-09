@@ -1,12 +1,87 @@
+const { Op } = require('sequelize')
 const Movie = require('~/models/movie')
 
 const getAll = async (req, res, next) => {
     try {
-        const list = await Movie.findAll()
+        const { query } = req
+        const option = {}
+
+        // search by field `id`
+        if (query.id) {
+            const searchId = {
+                [Op.like]: query.id,
+            }
+            option.id = searchId
+        }
+
+        // search by field `name`
+        if (query.name) {
+            const names = query.name.split(' ')
+            const searchName = {
+                [Op.or]: names.map(term => ({
+                    [Op.like]: `%${term}%`,
+                })),
+            }
+            option.name = searchName
+        }
+
+        // search by field `description`
+        if (query.description) {
+            const descriptions = query.description.split(' ')
+            const searchDescription = {
+                [Op.and]: descriptions.map(term => ({
+                    [Op.like]: `%${term}%`,
+                })),
+            }
+            option.description = searchDescription
+        }
+
+        // search by field `price`
+        if (query.min_duration && query.max_duration) {
+            const searchDuration = {
+                [Op.between]: [query.min_duration, query.max_duration],
+            }
+            option.duration = searchDuration
+        }
+
+        // search by field `genre`
+        if (query.genre) {
+            const genres = query.genre.split(',' || ' ')
+            const searchGenre = {
+                [Op.or]: genres.map(term => ({
+                    [Op.like]: `%${term}%`,
+                })),
+            }
+            option.genre = searchGenre
+        }
+
+        // paginate results
+        const perPage = query.per_page || 5
+        const page = query.page || 1
+
+        // sort by fields
+        const sortBy =
+            query?.sort_by?.split(',').map(e => {
+                if (e.includes('-')) {
+                    return [e.slice(1), 'DESC']
+                }
+                return [e, 'ASC']
+            }) || []
+
+        const { count, rows } = await Movie.findAndCountAll({
+            where: option,
+            limit: Number(perPage),
+            offset: Number(page * perPage - perPage),
+            order: sortBy,
+        })
 
         res.status(200).json({
             status: 200,
-            data: list,
+            page: Number(page),
+            per_page: Number(perPage),
+            total_page: Math.ceil(count / perPage),
+            count: rows.length,
+            data: rows,
         })
     } catch (error) {
         next(error)
@@ -115,5 +190,5 @@ module.exports = {
     getById,
     create,
     destroy,
-    update
+    update,
 }
