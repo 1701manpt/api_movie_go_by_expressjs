@@ -7,9 +7,18 @@ const getAll = async (req, res, next) => {
         const query = req.query
         const option = {}
 
+        // search by field `id`
+        if (query.ids) {
+            const array = query.ids.split(',')
+            const search = {
+                [Op.in]: array,
+            }
+            option.id = search
+        }
+
         // search by field `threater_id`
-        if (query.threaters) {
-            const threaters = query.threaters?.split(',') || [query.threaters]
+        if (query.threater_ids) {
+            const threaters = query.threater_ids.split(',')
             const searchThreaterId = {
                 [Op.in]: threaters,
             }
@@ -17,20 +26,23 @@ const getAll = async (req, res, next) => {
         }
 
         // search by field `text`, `number`
-        if (query.rows || query.columns) {
+        if (query.rows) {
             const rs = query.rows.split(',')
-            const cs = query.columns.split(',')
             const searchText = {
                 [Op.or]: rs.map(term => ({
-                    [Op.like]: `%${term}%`,
+                    [Op.eq]: `${term}`,
                 })),
             }
+            option.text = searchText
+        }
+
+        if (query.columns) {
+            const cs = query.columns.split(',')
             const searchNumber = {
                 [Op.or]: cs.map(term => ({
                     [Op.eq]: Number(term),
                 })),
             }
-            option.text = searchText
             option.number = searchNumber
         }
 
@@ -48,6 +60,7 @@ const getAll = async (req, res, next) => {
             }) || []
 
         const { count, rows } = await Seat.findAndCountAll({
+            include: ['threater', 'tickets'],
             where: option,
             limit: Number(perPage),
             offset: Number(page * perPage - perPage),
@@ -59,6 +72,7 @@ const getAll = async (req, res, next) => {
             page: Number(page),
             per_page: Number(perPage),
             total_page: Math.ceil(count / perPage),
+            total_record: count,
             count: rows.length,
             data: rows,
         })
@@ -165,10 +179,19 @@ const destroy = async (req, res, next) => {
     }
 }
 
+const getAvailableSeats = async (req, res, next) => {
+    try {
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports = {
     getAll,
     getById,
     update,
     create,
     destroy,
+    getAvailableSeats,
 }

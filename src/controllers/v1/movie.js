@@ -7,11 +7,12 @@ const getAll = async (req, res, next) => {
         const option = {}
 
         // search by field `id`
-        if (query.id) {
-            const searchId = {
-                [Op.like]: query.id,
+        if (query.ids) {
+            const array = query.ids.split(',')
+            const search = {
+                [Op.in]: array,
             }
-            option.id = searchId
+            option.id = search
         }
 
         // search by field `name`
@@ -69,6 +70,7 @@ const getAll = async (req, res, next) => {
             }) || []
 
         const { count, rows } = await Movie.findAndCountAll({
+            include: 'show_times',
             where: option,
             limit: Number(perPage),
             offset: Number(page * perPage - perPage),
@@ -80,6 +82,7 @@ const getAll = async (req, res, next) => {
             page: Number(page),
             per_page: Number(perPage),
             total_page: Math.ceil(count / perPage),
+            total_record: count,
             count: rows.length,
             data: rows,
         })

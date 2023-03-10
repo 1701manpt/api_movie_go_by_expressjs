@@ -1,6 +1,4 @@
 const OrderLine = require('~/models/order-line')
-const Order = require('~/models/order')
-const Product = require('~/models/product')
 
 const getAll = async (req, res, next) => {
     try {

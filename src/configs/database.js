@@ -1,4 +1,5 @@
 require('dotenv').config()
+const defineTable = require('~/configs/tables')
 
 const config = {
     username: process.env.DB_USERNAME,
@@ -16,16 +17,7 @@ const config = {
     timezone: '+07:00',
     // logging: false,
     // database options...
-    define: {
-        timestamps: true,
-        freezeTableName: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
-        deletedAt: 'deleted_at',
-        underscored: true,
-        paranoid: false, // enable soft delete
-        // other model options...
-    },
+    define: defineTable
 }
 
 module.exports = config

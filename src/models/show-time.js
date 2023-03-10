@@ -25,13 +25,23 @@ const ShowTime = sequelize.define('ShowTime', {
 })
 
 ShowTime.belongsTo(Movie, {
-    as: 'movie',
     foreignKey: 'movie_id',
+    as: 'movie',
+})
+
+Movie.hasMany(ShowTime, {
+    foreignKey: 'movie_id',
+    as: 'show_times',
 })
 
 ShowTime.belongsTo(Threater, {
+    foreignKey: 'threater_id',
     as: 'threater',
-    foreignKey: 'theater_id',
+})
+
+Threater.hasMany(ShowTime, {
+    foreignKey: 'threater_id',
+    as: 'show_times',
 })
 
 module.exports = ShowTime

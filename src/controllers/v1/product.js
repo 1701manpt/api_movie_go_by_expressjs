@@ -1,7 +1,6 @@
 const { Op } = require('sequelize')
 const Category = require('~/models/category')
 const Product = require('~/models/product')
-const ProductImage = require('~/models/product-image')
 
 const getAll = async (req, res, next) => {
     try {
@@ -9,11 +8,12 @@ const getAll = async (req, res, next) => {
         const option = {}
 
         // search by field `id`
-        if (query.id) {
-            const searchId = {
-                [Op.like]: query.id,
+        if (query.ids) {
+            const array = query.ids.split(',')
+            const search = {
+                [Op.in]: array,
             }
-            option.id = searchId
+            option.id = search
         }
 
         // search by field `name`
@@ -47,8 +47,8 @@ const getAll = async (req, res, next) => {
         }
 
         // search by field `categoryId`
-        if (query.categories) {
-            const categories = query.categories.split(',')
+        if (query.category_ids) {
+            const categories = query.category_ids.split(',')
             const searchCategoryId = {
                 [Op.in]: categories,
             }
@@ -70,7 +70,7 @@ const getAll = async (req, res, next) => {
 
         const { count, rows } = await Product.findAndCountAll({
             where: option,
-            include: 'category',
+            include: ['category', 'images', 'order_lines', 'cart_lines'],
             limit: Number(perPage),
             offset: Number(page * perPage - perPage),
             order: sortBy,
@@ -81,6 +81,7 @@ const getAll = async (req, res, next) => {
             page: Number(page),
             per_page: Number(perPage),
             total_page: Math.ceil(count / perPage),
+            total_record: count,
             count: rows.length,
             data: rows,
         })
@@ -92,7 +93,7 @@ const getAll = async (req, res, next) => {
 const getById = async (req, res, next) => {
     try {
         const product = await Product.findByPk(req.params.id, {
-            include: 'category',
+            include: ['category', 'images'],
         })
         if (!product) {
             return res.status(404).json({
@@ -101,18 +102,9 @@ const getById = async (req, res, next) => {
             })
         }
 
-        const images = await ProductImage.findAll({
-            where: {
-                product_id: product.id,
-            },
-        })
-
         res.status(200).json({
             status: 200,
-            data: {
-                product,
-                images,
-            },
+            data: product,
         })
     } catch (error) {
         next(error)

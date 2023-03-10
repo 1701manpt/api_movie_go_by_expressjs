@@ -14,7 +14,8 @@ const {
     create,
 } = require('~/controllers/v1/employee')
 
-router.get('/', authorizeToken, getAll)
+// router.get('/', authorizeToken, getAll)
+router.get('/', getAll)
 router.get('/:id', authorizeToken, getById)
 
 router.post('/', authorizeToken, create)

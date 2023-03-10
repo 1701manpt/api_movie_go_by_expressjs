@@ -2,8 +2,8 @@ const { DataTypes } = require('sequelize')
 
 const sequelize = require('~/connection')
 
-const OrderStatus = require('./order-status')
-const Customer = require('./customer')
+const OrderStatus = require('~/models/order-status')
+const Customer = require('~/models/customer')
 
 const Order = sequelize.define('Order', {
     id: {
@@ -13,7 +13,6 @@ const Order = sequelize.define('Order', {
     },
     customer_id: {
         type: DataTypes.INTEGER,
-        allowNull: true,
     },
     status_id: {
         type: DataTypes.INTEGER,
@@ -21,15 +20,27 @@ const Order = sequelize.define('Order', {
 })
 
 Order.belongsTo(Customer, {
-    as: 'customer',
     foreignKey: 'customer_id',
+    as: 'customer',
+    // onDelete: 'SET NULL',
+    // onUpdate: 'CASCADE',
+})
+
+Customer.hasMany(Order, {
+    foreignKey: 'customer_id',
+    as: 'orders',
     // onDelete: 'SET NULL',
     // onUpdate: 'CASCADE',
 })
 
 Order.belongsTo(OrderStatus, {
-    as: 'order_status',
     foreignKey: 'status_id',
+    as: 'status',
+})
+
+OrderStatus.hasMany(Order, {
+    foreignKey: 'status_id',
+    as: 'orders',
 })
 
 module.exports = Order

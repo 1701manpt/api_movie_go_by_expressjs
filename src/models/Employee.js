@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize')
 
 const sequelize = require('~/connection')
-const Role = require('./role')
-const UserStatus = require('./user-status')
+const Role = require('~/models/role')
+const UserStatus = require('~/models/user-status')
 
 const Employee = sequelize.define(
     'Employee',
@@ -48,13 +48,23 @@ const Employee = sequelize.define(
 )
 
 Employee.belongsTo(Role, {
-    as: 'role',
     foreignKey: 'role_id',
+    as: 'role',
+})
+
+Role.hasMany(Employee, {
+    foreignKey: 'role_id',
+    as: 'employees',
 })
 
 Employee.belongsTo(UserStatus, {
-    as: 'user_status',
     foreignKey: 'status_id',
+    as: 'status',
+})
+
+UserStatus.hasMany(Employee, {
+    foreignKey: 'status_id',
+    as: 'employees',
 })
 
 module.exports = Employee

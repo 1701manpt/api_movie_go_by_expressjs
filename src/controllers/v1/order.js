@@ -1,15 +1,69 @@
 // models
 const Order = require('~/models/order')
 const Customer = require('~/models/customer')
-// const OrderStatus = require( '~/models/orderStatus' )
+const { Op } = require('sequelize')
 
 const getAll = async (req, res, next) => {
     try {
-        const instance = await Order.findAll()
+        const { query } = req
+        const option = {}
+
+        // search by field `id`
+        if (query.ids) {
+            const array = query.ids.split(',')
+            const search = {
+                [Op.in]: array,
+            }
+            option.id = search
+        }
+
+        // search by field `customer_id`
+        if (query.customer_ids) {
+            const array = query.customer_ids.split(',')
+            const search = {
+                [Op.in]: array,
+            }
+            option.customer_id = search
+        }
+
+        // search by field `status_id`
+        if (query.status_ids) {
+            const array = query.status_ids.split(',')
+            const search = {
+                [Op.in]: array,
+            }
+            option.status_id = search
+        }
+
+        // paginate results
+        const perPage = query.per_page || 5
+        const page = query.page || 1
+
+        // sort by fields
+        const sortBy =
+            query?.sort_by?.split(',').map(e => {
+                if (e.includes('-')) {
+                    return [e.slice(1), 'DESC']
+                }
+                return [e, 'ASC']
+            }) || []
+
+        const { count, rows } = await Order.findAndCountAll({
+            where: option,
+            include: ['customer', 'status', 'order_lines'],
+            limit: Number(perPage),
+            offset: Number(page * perPage - perPage),
+            order: sortBy,
+        })
 
         res.status(200).json({
             status: 200,
-            data: instance,
+            page: Number(page),
+            per_page: Number(perPage),
+            total_page: Math.ceil(count / perPage),
+            total_record: count,
+            count: rows.length,
+            data: rows,
         })
     } catch (error) {
         next(error)
@@ -50,9 +104,9 @@ const create = async (req, res, next) => {
                 customer_id: req.body.customer_id,
                 status_id: 1,
             },
-            {
-                include: 'order_line',
-            },
+            // {
+            //     include: 'order_line',
+            // },
         )
 
         res.status(200).json({

@@ -30,8 +30,13 @@ const Product = sequelize.define('Product', {
 })
 
 Product.belongsTo(Category, {
-    as: 'category',
     foreignKey: 'category_id',
+    as: 'category',
+})
+
+Category.hasMany(Product, {
+    foreignKey: 'category_id',
+    as: 'products',
 })
 
 module.exports = Product

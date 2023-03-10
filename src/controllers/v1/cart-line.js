@@ -1,6 +1,4 @@
 const CartLine = require('~/models/cart-line')
-const Cart = require('~/models/cart')
-const Product = require('~/models/product')
 
 const getAll = async (req, res, next) => {
     try {

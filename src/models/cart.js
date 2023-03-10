@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('~/connection')
-
-const Product = require('./product')
+const Customer = require('./customer')
 
 const Cart = sequelize.define('Cart', {
     id: {
@@ -11,10 +10,21 @@ const Cart = sequelize.define('Cart', {
     },
     customer_id: {
         type: DataTypes.INTEGER,
-        allowNull: true,
     },
 })
 
-Cart.belongsTo(Product, { foreignKey: 'product_id' })
+Cart.belongsTo(Customer, {
+    foreignKey: 'customer_id',
+    as: 'customer',
+    // onDelete: 'SET NULL',
+    // onUpdate: 'CASCADE',
+})
+
+Customer.hasMany(Cart, {
+    foreignKey: 'customer_id',
+    as: 'carts',
+    // onDelete: 'SET NULL',
+    // onUpdate: 'CASCADE',
+})
 
 module.exports = Cart

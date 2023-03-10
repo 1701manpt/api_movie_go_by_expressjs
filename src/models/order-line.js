@@ -27,13 +27,23 @@ const OrderLine = sequelize.define('OrderLine', {
 })
 
 OrderLine.belongsTo(Order, {
-    as: 'order',
     foreignKey: 'order_id',
+    as: 'order',
+})
+
+Order.hasMany(OrderLine, {
+    foreignKey: 'order_id',
+    as: 'order_lines',
 })
 
 OrderLine.belongsTo(Product, {
     as: 'product',
     foreignKey: 'product_id',
+})
+
+Product.hasMany(OrderLine, {
+    foreignKey: 'product_id',
+    as: 'order_lines',
 })
 
 module.exports = OrderLine

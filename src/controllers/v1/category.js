@@ -1,19 +1,68 @@
 // modal
+const { Op } = require('sequelize')
 const Category = require('~/models/category')
 const Product = require('~/models/product')
 
 const getAll = async (req, res, next) => {
     try {
-        const list = await Category.findAll()
+        const { query } = req
+        const option = {}
+
+        // search by field `id`
+        if (query.ids) {
+            const array = query.ids.split(',')
+            const search = {
+                [Op.in]: array,
+            }
+            option.id = search
+        }
+
+        // search by field `name`
+        if (query.name) {
+            const names = query.name.split(' ')
+            const searchName = {
+                [Op.or]: names.map(term => ({
+                    [Op.like]: `%${term}%`,
+                })),
+            }
+            option.name = searchName
+        }
+
+        // paginate results
+        const perPage = query.per_page || 5
+        const page = query.page || 1
+
+        // sort by fields
+        const sortBy =
+            query?.sort_by?.split(',').map(e => {
+                if (e.includes('-')) {
+                    return [e.slice(1), 'DESC']
+                }
+                return [e, 'ASC']
+            }) || []
+
+        const { count, rows } = await Category.findAndCountAll({
+            where: option,
+            include: ['products'],
+            limit: Number(perPage),
+            offset: Number(page * perPage - perPage),
+            order: sortBy,
+        })
 
         res.status(200).json({
             status: 200,
-            data: list,
+            page: Number(page),
+            per_page: Number(perPage),
+            total_page: Math.ceil(count / perPage),
+            total_record: count,
+            count: rows.length,
+            data: rows,
         })
     } catch (error) {
         next(error)
     }
 }
+
 
 const getById = async (req, res, next) => {
     try {

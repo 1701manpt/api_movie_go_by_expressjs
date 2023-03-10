@@ -30,8 +30,13 @@ ProductImage.beforeBulkCreate(async images => {
 })
 
 ProductImage.belongsTo(Product, {
-    as: 'product',
     foreignKey: 'product_id',
+    as: 'product',
+})
+
+Product.hasMany(ProductImage, {
+    foreignKey: 'product_id',
+    as: 'images',
 })
 
 module.exports = ProductImage

@@ -2,6 +2,7 @@ const { DataTypes } = require('sequelize')
 
 const sequelize = require('~/connection')
 const Order = require('~/models/order')
+const ShowTime = require('~/models/show-time')
 const Seat = require('~/models/seat')
 
 const Ticket = sequelize.define('Ticket', {
@@ -21,14 +22,34 @@ const Ticket = sequelize.define('Ticket', {
     },
 })
 
-Ticket.belongsTo(Seat, {
-    as: 'seat',
-    foreignKey: 'seat_id',
+Ticket.belongsTo(ShowTime, {
+    foreignKey: 'show_time_id',
+    as: 'show_time',
+})
+
+ShowTime.hasMany(Ticket, {
+    foreignKey: 'show_time_id',
+    as: 'tickets',
 })
 
 Ticket.belongsTo(Order, {
-    as: 'order',
     foreignKey: 'order_id',
+    as: 'order',
+})
+
+Order.hasMany(Ticket, {
+    foreignKey: 'order_id',
+    as: 'tickets',
+})
+
+Ticket.belongsTo(Seat, {
+    foreignKey: 'seat_id',
+    as: 'seat',
+})
+
+Seat.hasMany(Ticket, {
+    foreignKey: 'seat_id',
+    as: 'tickets',
 })
 
 module.exports = Ticket

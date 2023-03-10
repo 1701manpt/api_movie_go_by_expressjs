@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize')
 
 const sequelize = require('~/connection')
-const Threater = require('./threater')
+const Threater = require('~/models/threater')
 
 const Seat = sequelize.define('Seat', {
     id: {
@@ -21,8 +21,13 @@ const Seat = sequelize.define('Seat', {
 })
 
 Seat.belongsTo(Threater, {
-    as: 'threater',
     foreignKey: 'threater_id',
+    as: 'threater',
+})
+
+Threater.hasMany(Seat, {
+    foreignKey: 'threater_id',
+    as: 'seats'
 })
 
 module.exports = Seat
