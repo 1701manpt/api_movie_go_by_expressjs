@@ -115,7 +115,7 @@ const create = async (req, res, next) => {
             where: {
                 show_time_id: req.body.show_time_id,
                 seat_id: req.body.seat_id,
-            }
+            },
         })
 
         if (ticketCheck) {
@@ -190,7 +190,7 @@ const destroy = async (req, res, next) => {
 
         res.status(200).json({
             status: 200,
-            count: count,
+            count,
         })
     } catch (err) {
         next(err)

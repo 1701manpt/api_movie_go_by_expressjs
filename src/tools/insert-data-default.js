@@ -1,12 +1,6 @@
 const Threater = require('~/models/threater')
 const Seat = require('~/models/seat')
-const Movie = require('~/models/movie')
-const Ticket = require('~/models/ticket')
-const Order = require('~/models/order')
 const ShowTime = require('~/models/show-time')
-const UserStatus = require('~/models/user-status')
-const OrderStatus = require('~/models/order-status')
-const Role = require('~/models/role')
 const Employee = require('~/models/employee')
 const Customer = require('~/models/customer')
 const { hashPassword } = require('~/utils/password')
@@ -49,7 +43,7 @@ const insertDefault = async () => {
                 await Seat.create({
                     threater_id: threater,
                     text: row,
-                    number: number,
+                    number,
                 })
             })
         })

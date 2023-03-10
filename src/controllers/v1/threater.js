@@ -41,7 +41,7 @@ const getAll = async (req, res, next) => {
 
         const { count, rows } = await Threater.findAndCountAll({
             where: option,
-            include: ['show_times', 'seats',],
+            include: ['show_times', 'seats'],
             limit: Number(perPage),
             offset: Number(page * perPage - perPage),
             order: sortBy,
@@ -141,7 +141,7 @@ const destroy = async (req, res, next) => {
 
         res.status(200).json({
             status: 200,
-            count: count,
+            count,
         })
     } catch (err) {
         next(err)

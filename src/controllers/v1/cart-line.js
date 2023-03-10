@@ -32,6 +32,10 @@ const getById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
     try {
+        const cartLine = CartLine.findAll()
+        res.status(200).json({
+            data: cartLine,
+        })
     } catch (err) {
         next(err)
     }

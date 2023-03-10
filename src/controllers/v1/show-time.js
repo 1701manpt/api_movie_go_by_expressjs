@@ -176,7 +176,7 @@ const destroy = async (req, res, next) => {
 
         res.status(200).json({
             status: 200,
-            count: count,
+            count,
         })
     } catch (err) {
         next(err)

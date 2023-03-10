@@ -1,11 +1,11 @@
-const xlsx = require('xlsx');
+const xlsx = require('xlsx')
 
-const convert = (nameFile) => {
-    const workbook = xlsx.readFile('src/data/sample/' + nameFile);
-    const sheet_name_list = workbook.SheetNames;
-    const json_data = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+const convert = nameFile => {
+    const workbook = xlsx.readFile('src/data/sample/' + nameFile)
+    const sheetNameList = workbook.SheetNames
+    const jsonData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetNameList[0]])
 
-    return json_data
+    return jsonData
 }
 
 module.exports = convert

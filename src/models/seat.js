@@ -27,7 +27,7 @@ Seat.belongsTo(Threater, {
 
 Threater.hasMany(Seat, {
     foreignKey: 'threater_id',
-    as: 'seats'
+    as: 'seats',
 })
 
 module.exports = Seat

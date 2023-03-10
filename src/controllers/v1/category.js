@@ -63,7 +63,6 @@ const getAll = async (req, res, next) => {
     }
 }
 
-
 const getById = async (req, res, next) => {
     try {
         const category = await Category.findByPk(req.params.id)

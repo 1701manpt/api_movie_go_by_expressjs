@@ -17,7 +17,7 @@ const config = {
     timezone: '+07:00',
     // logging: false,
     // database options...
-    define: defineTable
+    define: defineTable,
 }
 
 module.exports = config
