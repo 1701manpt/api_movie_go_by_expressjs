@@ -2,8 +2,8 @@ const { DataTypes } = require('sequelize')
 
 const sequelize = require('~/connection')
 
-const Order = require('./order')
-const Product = require('./product')
+const Order = require('~/models/order')
+const Product = require('~/models/product')
 
 const OrderLine = sequelize.define('OrderLine', {
     id: {
@@ -17,7 +17,6 @@ const OrderLine = sequelize.define('OrderLine', {
     },
     product_id: {
         type: DataTypes.INTEGER,
-        allowNull: true,
     },
     quantity: {
         type: DataTypes.INTEGER,

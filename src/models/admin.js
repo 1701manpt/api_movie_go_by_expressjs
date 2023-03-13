@@ -3,8 +3,8 @@ const { DataTypes } = require('sequelize')
 const sequelize = require('~/connection')
 const User = require('~/models/user')
 
-const Customer = sequelize.define(
-    'Customer',
+const Admin = sequelize.define(
+    'Admin',
     {
         id: {
             type: DataTypes.INTEGER,
@@ -32,30 +32,14 @@ const Customer = sequelize.define(
     },
 )
 
-Customer.addScope('includeOrders', {
-    include: ['orders']
-})
-
-Customer.addScope('includeUser', {
-    include: [
-        {
-            as: 'user',
-            model: User,
-            attributes: {
-                exclude: ['password']
-            }
-        }
-    ]
-})
-
-Customer.belongsTo(User, {
+Admin.belongsTo(User, {
     foreignKey: 'user_id',
     as: 'user',
 })
 
-User.hasOne(Customer, {
+User.hasOne(Admin, {
     foreignKey: 'user_id',
-    as: 'customer',
+    as: 'admin',
 })
 
-module.exports = Customer
+module.exports = Admin

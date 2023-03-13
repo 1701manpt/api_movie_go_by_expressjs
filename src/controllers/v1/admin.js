@@ -1,6 +1,8 @@
-// modal
+require('dotenv').config()
 const { Op } = require('sequelize')
-const Customer = require('~/models/customer')
+const Admin = require('~/models/admin')
+const User = require('~/models/user')
+const { comparePassword } = require('~/utils/password')
 
 const getAll = async (req, res, next) => {
     try {
@@ -62,7 +64,7 @@ const getAll = async (req, res, next) => {
                 return [e, 'ASC']
             }) || []
 
-        const { count, rows } = await Customer.findAndCountAll({
+        const { count, rows } = await Admin.findAndCountAll({
             where: option,
             limit: Number(perPage),
             offset: Number(page * perPage - perPage),
@@ -85,9 +87,11 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const customer = await Customer.scope(['includeUser']).findByPk(req.params.id)
+        const admin = await Admin.findOne(req.body.id, {
 
-        if (!customer) {
+        })
+
+        if (!admin) {
             return res.status(404).json({
                 status: 404,
                 message: '404 Not Found',
@@ -96,7 +100,7 @@ const getById = async (req, res, next) => {
 
         res.status(200).json({
             status: 200,
-            data: customer,
+            data: admin,
         })
     } catch (error) {
         next(error)
@@ -105,16 +109,16 @@ const getById = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const customer = await Customer.findByPk(req.params.id)
+        const admin = await Admin.findByPk(req.params.id)
 
-        if (!customer) {
+        if (!admin) {
             return res.status(404).json({
                 status: 404,
                 message: '404 Not Found',
             })
         }
 
-        const newCustomer = await Customer.update(
+        const [count, rows] = await Admin.update(
             {
                 full_name: req.body.full_name,
             },
@@ -127,7 +131,8 @@ const update = async (req, res, next) => {
 
         res.status(200).json({
             status: 200,
-            data: newCustomer[1],
+            count,
+            data: rows,
         })
     } catch (error) {
         next(error)
@@ -136,7 +141,7 @@ const update = async (req, res, next) => {
 
 const destroy = async (req, res, next) => {
     try {
-        const instance = await Customer.findByPk(req.params.id)
+        const instance = await Admin.findByPk(req.params.id)
         if (!instance) {
             return res.status(404).json({
                 status: 404,
@@ -144,7 +149,7 @@ const destroy = async (req, res, next) => {
             })
         }
 
-        await Customer.destroy({
+        await Admin.destroy({
             where: { id: req.params.id },
             returning: true,
             plain: true,
@@ -160,7 +165,7 @@ const destroy = async (req, res, next) => {
 
 const restore = async (req, res, next) => {
     try {
-        const instance = await Customer.findOne({
+        const instance = await Admin.findOne({
             where: { id: req.params.id },
             paranoid: false,
         })
@@ -179,7 +184,7 @@ const restore = async (req, res, next) => {
             })
         }
 
-        await Customer.restore({
+        await Admin.restore({
             where: { id: req.params.id },
             returning: true,
             plain: true,
@@ -195,7 +200,7 @@ const restore = async (req, res, next) => {
 
 const destroyForce = async (req, res, next) => {
     try {
-        const instance = await Customer.findOne({
+        const instance = await Admin.findOne({
             where: { id: req.params.id },
             paranoid: false,
         })
@@ -213,7 +218,7 @@ const destroyForce = async (req, res, next) => {
             })
         }
 
-        await Customer.destroy({
+        await Admin.destroy({
             where: { id: req.params.id },
             returning: true,
             plain: true,
@@ -228,19 +233,30 @@ const destroyForce = async (req, res, next) => {
     }
 }
 
-const getOrders = async (req, res, next) => {
+const create = async (req, res, next) => {
     try {
-        const customer = await Customer.scope(['includeOrders', 'excludePassword']).findAll()
-        if (!customer) {
-            return res.status(404).json({
-                status: 404,
-                message: '404 Not Found',
-            })
-        }
+        const password = await comparePassword(req.body.password)
+        const newAdmin = await Admin.create({
+            full_name: req.body.full_name,
+            address: req.body.address,
+            phone: req.body.phone,
+            user: {
+                email: req.body.email,
+                account: req.body.account,
+                password,
+                status_id: 2,
+                role_id: req.body.role_id,
+            }
+        }, {
+            include: {
+                as: 'user',
+                model: User
+            }
+        })
 
         res.status(200).json({
             status: 200,
-            data: customer,
+            data: newAdmin,
         })
     } catch (error) {
         next(error)
@@ -254,5 +270,5 @@ module.exports = {
     destroy,
     restore,
     destroyForce,
-    getOrders,
+    create,
 }

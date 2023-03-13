@@ -1,39 +1,48 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const Customer = require('~/models/customer')
-const Employee = require('~/models/employee')
 const { generateToken, generateRefreshToken } = require('~/utils/generate-token')
 const { hashPassword, comparePassword } = require('~/utils/password')
+const User = require('~/models/user')
+const Admin = require('~/models/admin')
 
 const loginCustomer = async (req, res, next) => {
     try {
         const customer = await Customer.findOne({
-            where: {
-                account: req.body.account,
-            },
+            include: {
+                as: 'user',
+                model: User,
+                where: {
+                    account: req.body.account,
+                },
+            }
         })
 
         if (!customer) {
             return res.status(401).json({
                 status: 401,
-                message: 'Tên đăng nhập hoặc mật khẩu không chính xác',
+                message: 'Thông tin đăng nhập sai',
             })
         }
 
-        const isPassword = await comparePassword(req.body.password, customer.password)
+        const user = customer.user
 
-        if (customer && !isPassword) {
+        const isPassword = await comparePassword(req.body.password, user.password)
+
+        if (user && !isPassword) {
             return res.status(401).json({
                 status: 401,
-                message: 'Tên đăng nhập hoặc mật khẩu không chính xác',
+                message: 'Thông tin đăng nhập sai',
             })
         }
 
         const token = generateToken({
-            id: customer.id,
+            id: user.id,
+            role_id: user.role_id
         })
         const refreshToken = generateRefreshToken({
-            id: customer.id,
+            id: user.id,
+            role_id: user.role_id
         })
 
         res.cookie('refresh_token', refreshToken, {
@@ -46,8 +55,9 @@ const loginCustomer = async (req, res, next) => {
         res.status(200).json({
             status: 200,
             data: {
-                id: customer.id,
-                account: customer.account,
+                id: user.id,
+                role_id: user.role_id,
+                account: user.account,
                 token,
             },
         })
@@ -56,39 +66,46 @@ const loginCustomer = async (req, res, next) => {
     }
 }
 
-const loginEmployee = async (req, res, next) => {
+const loginAdmin = async (req, res, next) => {
     try {
-        const admin = await Employee.findOne({
-            where: {
-                account: req.body.account,
-            },
+        const admin = await Admin.findOne({
+            include: {
+                as: 'user',
+                model: User,
+                where: {
+                    account: req.body.account,
+                },
+            }
         })
 
         if (!admin) {
             return res.status(401).json({
                 status: 401,
-                message: 'Tên đăng nhập hoặc mật khẩu không chính xác',
+                message: 'Thông tin đăng nhập sai',
             })
         }
-        const isPassword = await comparePassword(req.body.password, admin.password)
 
-        if (admin && !isPassword) {
+        const user = admin.user
+
+        const isPassword = await comparePassword(req.body.password, user.password)
+
+        if (user && !isPassword) {
             return res.status(401).json({
                 status: 401,
-                message: 'Tên đăng nhập hoặc mật khẩu không chính xác',
+                message: 'Thông tin đăng nhập sai',
             })
         }
 
         const token = generateToken({
-            id: admin.id,
-            role_id: admin.role_id,
+            id: user.id,
+            role_id: user.role_id
         })
         const refreshToken = generateRefreshToken({
-            id: admin.id,
-            role_id: admin.role_id,
+            id: user.id,
+            role_id: user.role_id
         })
 
-        res.cookie('refreshToken', refreshToken, {
+        res.cookie('refresh_token', refreshToken, {
             httpOnly: true,
             secure: false,
             path: '/',
@@ -98,9 +115,9 @@ const loginEmployee = async (req, res, next) => {
         res.status(200).json({
             status: 200,
             data: {
-                id: admin.id,
-                account: admin.account,
-                role_id: admin.role_id,
+                id: user.id,
+                role_id: user.role_id,
+                account: user.account,
                 token,
             },
         })
@@ -111,29 +128,66 @@ const loginEmployee = async (req, res, next) => {
 
 const registerCustomer = async (req, res, next) => {
     try {
-        const user = await Customer.findOne({
+        const userCheckEmail = await User.findOne({
             where: {
-                account: req.body.account,
+                email: req.body.email,
             },
-            paranoid: false,
         })
 
-        if (user) {
+        const userCheckAccount = await User.findOne({
+            where: {
+                email: req.body.account,
+            },
+        })
+
+        const userCheckPhoneNumber = await User.findOne({
+            include: {
+                as: 'customer',
+                model: Customer,
+                where: {
+                    phone_number: req.body.phone_number,
+                }
+            },
+        })
+
+        if (userCheckEmail) {
             return res.status(400).json({
                 status: 400,
-                message: 'Tên tài khoản đã tồn tại',
+                message: 'Email đã sử dụng',
+            })
+        }
+
+        if (userCheckPhoneNumber) {
+            return res.status(400).json({
+                status: 400,
+                message: 'Phone Number đã sử dụng',
+            })
+        }
+
+        if (userCheckAccount) {
+            return res.status(400).json({
+                status: 400,
+                message: 'Account đã sử dụng',
             })
         }
 
         const password = await hashPassword(req.body.password)
-
         const customer = await Customer.create({
-            full_name: req.body.full_name,
-            address: req.body.address,
-            phone: req.body.phone,
-            email: req.body.email,
-            account: req.body.account,
-            password,
+            full_name: req.body?.full_name,
+            address: req.body?.address,
+            phone_number: req.body.phone_number,
+            user: {
+                email: req.body.email,
+                account: req.body.account,
+                password: password,
+                status_id: 1,
+                role_id: 2,
+            }
+        }, {
+            include: {
+                as: 'user',
+                model: User,
+            }
         })
 
         res.status(200).json({
@@ -146,7 +200,7 @@ const registerCustomer = async (req, res, next) => {
 }
 
 const refreshToken = (req, res, next) => {
-    const refreshToken = req.cookies.refresh_token
+    const refreshToken = req.cookies['refresh_token']
 
     if (!refreshToken) {
         return res.status(401).json({
@@ -192,12 +246,13 @@ const logout = (req, res) => {
     res.clearCookie('refresh_token')
     res.status(200).json({
         status: 200,
+        message: 'Đăng xuất thành công'
     })
 }
 
 module.exports = {
     loginCustomer,
-    loginEmployee,
+    loginAdmin,
     registerCustomer,
     refreshToken,
     logout,

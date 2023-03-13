@@ -6,9 +6,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const route = require('~/routes')
-// const delDataAndSyncModel = require('~/tools/sync')
-// const insertDataDefault = require('~/tools/insert-data-default')
-// const insert = require('./tools/insert-movies')
+const delDataAndSyncModel = require('~/tools/sync')
 
 app.use(express.json())
 app.use(bodyParser.json())
@@ -23,9 +21,6 @@ route(app)
 
 // delete data in db and sync with model
 // delDataAndSyncModel()
-
-// insert data default
-// insertDataDefault()
 
 // const crypto = require('crypto')
 // const buf = crypto.randomBytes(64, (err, buf) => {

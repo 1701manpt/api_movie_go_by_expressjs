@@ -11,6 +11,9 @@ const UserStatus = sequelize.define('UserStatus', {
     name: {
         type: DataTypes.STRING,
     },
+    description: {
+        type: DataTypes.TEXT,
+    }
 })
 
 module.exports = UserStatus

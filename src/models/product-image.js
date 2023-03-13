@@ -2,7 +2,7 @@ const { DataTypes, Sequelize } = require('sequelize')
 
 const sequelize = require('~/connection')
 
-const Product = require('./product')
+const Product = require('~/models/product')
 
 const ProductImage = sequelize.define('ProductImage', {
     id: {

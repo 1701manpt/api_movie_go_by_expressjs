@@ -45,6 +45,20 @@ const getAll = async (req, res, next) => {
             option.duration = searchDuration
         }
 
+        if (query.min_duration && !query.max_duration) {
+            const search = {
+                [Op.gt]: Number(query.min_duration),
+            }
+            option.duration = search
+        }
+
+        if (!query.min_duration && query.max_duration) {
+            const search = {
+                [Op.lt]: Number(query.max_duration),
+            }
+            option.duration = search
+        }
+
         // search by field `genre`
         if (query.genre) {
             const genres = query.genre.split(',' || ' ')

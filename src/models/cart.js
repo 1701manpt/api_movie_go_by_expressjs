@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('~/connection')
-const Customer = require('./customer')
+const Customer = require('~/models/customer')
 
 const Cart = sequelize.define('Cart', {
     id: {

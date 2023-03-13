@@ -60,7 +60,6 @@ const getAll = async (req, res, next) => {
 
         const { count, rows } = await Ticket.findAndCountAll({
             where: option,
-            include: ['show_time', 'seat', 'order'],
             limit: Number(perPage),
             offset: Number(page * perPage - perPage),
             order: sortBy,

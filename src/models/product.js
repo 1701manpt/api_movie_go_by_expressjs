@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize')
 
 const sequelize = require('~/connection')
-const Category = require('./category')
+const Category = require('~/models/category')
 
 const Product = sequelize.define('Product', {
     id: {

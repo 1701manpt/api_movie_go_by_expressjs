@@ -12,7 +12,7 @@ const {
     restore,
     destroyForce,
     create,
-} = require('~/controllers/v1/employee')
+} = require('~/controllers/v1/admin')
 
 // router.get('/', authorizeToken, getAll)
 router.get('/', getAll)

@@ -46,6 +46,20 @@ const getAll = async (req, res, next) => {
             option.price = searchPrice
         }
 
+        if (query.min_price && !query.max_price) {
+            const search = {
+                [Op.gt]: Number(query.min_price),
+            }
+            option.price = search
+        }
+
+        if (!query.min_price && query.max_price) {
+            const search = {
+                [Op.lt]: Number(query.max_price),
+            }
+            option.price = search
+        }
+
         // search by field `categoryId`
         if (query.category_ids) {
             const categories = query.category_ids.split(',')

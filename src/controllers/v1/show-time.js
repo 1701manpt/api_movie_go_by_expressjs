@@ -35,6 +35,28 @@ const getAll = async (req, res, next) => {
             option.movie_id = search
         }
 
+        // search by field `price`
+        if (query.min_price && query.max_price) {
+            const search = {
+                [Op.between]: [query.min_price, query.max_price],
+            }
+            option.price = search
+        }
+
+        if (query.min_price && !query.max_price) {
+            const search = {
+                [Op.gt]: Number(query.min_price),
+            }
+            option.price = search
+        }
+
+        if (!query.min_price && query.max_price) {
+            const search = {
+                [Op.lt]: Number(query.max_price),
+            }
+            option.price = search
+        }
+
         // search by field `date_time`
         if (query.min_date_time && query.max_date_time) {
             const searchDateTime = {
