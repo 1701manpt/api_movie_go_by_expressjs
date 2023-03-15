@@ -13,13 +13,28 @@ const Ticket = sequelize.define('Ticket', {
     },
     show_time_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
     seat_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
     order_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
+})
+
+Ticket.addScope('includeSeat', {
+    include: 'seat',
+})
+
+Ticket.addScope('includeShowTime', {
+    include: 'show_time',
+})
+
+Ticket.addScope('includeOrder', {
+    include: 'order',
 })
 
 Ticket.belongsTo(ShowTime, {

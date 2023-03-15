@@ -1,5 +1,7 @@
 const toCamel = s =>
-    s.replace(/([-_][a-z])/gi, $1 => $1.toUpperCase().replace('-', '').replace('_', ''))
+    s.replace(/([-_][a-z])/gi, $1 =>
+        $1.toUpperCase().replace('-', '').replace('_', ''),
+    )
 
 const isArray = function (a) {
     return Array.isArray(a)

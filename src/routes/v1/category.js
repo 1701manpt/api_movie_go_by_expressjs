@@ -1,27 +1,21 @@
 const express = require('express')
-const { authorizeToken } = require('~/middlewares/verify-token')
-
 const router = express.Router()
-
-// controllers
+const { authorizeToken } = require('~/middlewares/verify-token')
 const {
     getAll,
     getById,
     create,
     update,
     destroy,
-    getProductsByCategory,
 } = require('~/controllers/v1/category')
 
+// all
 router.get('/', getAll)
 router.get('/:id', getById)
-router.get('/:id/products', getProductsByCategory)
 
-// router.post('/', authorizeToken, create)
-router.post('/', create)
-
-router.put('/:id', authorizeToken, update)
-
-router.delete('/:id', authorizeToken, destroy)
+// admin
+router.post('/', authorizeToken([1]), create)
+router.put('/:id', authorizeToken([1]), update)
+router.delete('/:id', authorizeToken([1]), destroy)
 
 module.exports = router

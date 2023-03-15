@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize')
 
 const sequelize = require('~/connection')
+// const ShowTime = require('./show-time')
 
 const Movie = sequelize.define('Movie', {
     id: {
@@ -10,12 +11,15 @@ const Movie = sequelize.define('Movie', {
     },
     name: {
         type: DataTypes.STRING,
+        allowNull: false,
     },
     genre: {
         type: DataTypes.STRING,
+        allowNull: false,
     },
     duration: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
     description: {
         type: DataTypes.TEXT,
@@ -23,10 +27,16 @@ const Movie = sequelize.define('Movie', {
     },
     poster_url: {
         type: DataTypes.STRING,
+        allowNull: false,
     },
     trailer_url: {
         type: DataTypes.STRING,
+        allowNull: false,
     },
+})
+
+Movie.addScope('includeShowTime', {
+    include: ['show_times'],
 })
 
 module.exports = Movie

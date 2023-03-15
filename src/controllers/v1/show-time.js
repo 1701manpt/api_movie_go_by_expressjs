@@ -78,9 +78,11 @@ const getAll = async (req, res, next) => {
                 return [e, 'ASC']
             }) || []
 
-        const { count, rows } = await ShowTime.findAndCountAll({
+        const { count, rows } = await ShowTime.scope([
+            'includeMovie',
+            'includeThreater',
+        ]).findAndCountAll({
             where: option,
-            include: ['threater', 'movie', 'tickets'],
             limit: Number(perPage),
             offset: Number(page * perPage - perPage),
             order: sortBy,
@@ -102,13 +104,14 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const showTime = await ShowTime.findByPk(req.params.id, {
-            include: ['threater', 'movie', 'tickets'],
-        })
+        const showTime = await ShowTime.scope([
+            'includeThreater',
+            'includeMovie',
+        ]).findByPk(req.params.id)
         if (!showTime) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -155,7 +158,7 @@ const update = async (req, res, next) => {
         if (!threater || !movie) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -187,7 +190,7 @@ const destroy = async (req, res, next) => {
         if (!showTime) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 

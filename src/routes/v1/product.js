@@ -1,23 +1,23 @@
 const express = require('express')
-
 const router = express.Router()
-
-// controllers
-const { getAll, getById, create, update, destroy } = require('~/controllers/v1/product')
-
-// validators
-const { authenticateToken } = require('~/middlewares/verify-token')
+const {
+    getAll,
+    getById,
+    create,
+    update,
+    destroy,
+} = require('~/controllers/v1/product')
+const { authorizeToken } = require('~/middlewares/verify-token')
 const validate = require('~/middlewares/validate')
 const productSchema = require('~/validators/product')
 
+// all
 router.get('/', getAll)
 router.get('/:id', getById)
 
-// router.post('/', authenticateToken, validate(productSchema.create), create)
-router.post('/', create)
-
-router.put('/:id', authenticateToken, validate(productSchema.update), update)
-
-router.delete('/:id', authenticateToken, destroy)
+// admin
+router.post('/', authorizeToken([1]), validate(productSchema.create), create)
+router.put('/:id', authorizeToken([1]), validate(productSchema.update), update)
+router.delete('/:id', authorizeToken([1]), destroy)
 
 module.exports = router

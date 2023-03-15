@@ -81,11 +81,15 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const ticket = await Ticket.findByPk(req.params.id)
+        const ticket = await Ticket.scope([
+            'includeShowTime',
+            'includeSeat',
+            'includeOrder',
+        ]).findByPk(req.params.id)
         if (!ticket) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -103,7 +107,12 @@ const create = async (req, res, next) => {
         const showTime = await ShowTime.findByPk(req.body.show_time_id)
         const seat = await Seat.findByPk(req.body.seat_id)
         const order = await Order.findByPk(req.body.order_id)
-        if (!seat || !showTime || !order || showTime.threater_id !== seat.threater_id) {
+        if (
+            !seat ||
+            !showTime ||
+            !order ||
+            showTime.threater_id !== seat.threater_id
+        ) {
             return res.status(404).json({
                 status: 400,
                 message: '400 Bad Request',
@@ -147,7 +156,7 @@ const update = async (req, res, next) => {
         if (!seat || !showTime || !order) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -178,7 +187,7 @@ const destroy = async (req, res, next) => {
         if (!ticket) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 

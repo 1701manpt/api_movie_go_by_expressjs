@@ -1,6 +1,7 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const Customer = require('~/models/customer')
+const User = require('~/models/user')
 
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers.token
@@ -26,7 +27,7 @@ const authenticateToken = (req, res, next) => {
 }
 
 // Middleware authorize token để kiểm tra quyền truy cập của người dùng
-const authorizeToken = (roles) => {
+const authorizeToken = roles => {
     return (req, res, next) => {
         authenticateToken(req, res, async () => {
             if (!roles.includes(req.user.role_id)) {
@@ -36,15 +37,12 @@ const authorizeToken = (roles) => {
                 })
             }
 
-            // const customer = await Customer.scope('includeUser').findByPk(req.params.id)
-
-            // if (customer) {
-            //     if (customer.user.id !== req.user.id) {
-            //         return res.status(403).json({
-            //             status: 403,
-            //             message: 'You are not authorized to access this account',
-            //         })
-            //     }
+            // const user = User.scope('includeRole').findByPk(req.params.userId)
+            // if (user.role_id === 2 && user.id !== req.user.id) {
+            //     return res.status(403).json({
+            //         status: 403,
+            //         message: 'You are not authorized to access this account',
+            //     })
             // }
             next()
         })

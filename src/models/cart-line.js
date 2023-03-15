@@ -12,12 +12,15 @@ const CartLine = sequelize.define('CartLine', {
     },
     cart_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
     product_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
     quantity: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         defaultValue: 1,
     },
 })

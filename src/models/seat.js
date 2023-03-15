@@ -11,12 +11,15 @@ const Seat = sequelize.define('Seat', {
     },
     threater_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
     text: {
         type: DataTypes.STRING,
+        allowNull: false,
     },
     number: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
 })
 

@@ -1,68 +1,44 @@
-// models
-const Order = require('~/models/order')
-const Customer = require('~/models/customer')
 const { Op } = require('sequelize')
 const sequelize = require('~/connection')
+const Order = require('~/models/order')
+const Customer = require('~/models/customer')
 const OrderLine = require('~/models/order-line')
+const Pagination = require('~/utils/pagination')
+const sortBy = require('~/utils/sort-by')
+const searchOrder = require('~/search/order')
+const User = require('~/models/user')
 
 const getAll = async (req, res, next) => {
     try {
         const { query } = req
-        const option = {}
 
-        // search by field `id`
-        if (query.ids) {
-            const array = query.ids.split(',')
-            const search = {
-                [Op.in]: array,
-            }
-            option.id = search
-        }
-
-        // search by field `customer_id`
-        if (query.customer_ids) {
-            const array = query.customer_ids.split(',')
-            const search = {
-                [Op.in]: array,
-            }
-            option.customer_id = search
-        }
-
-        // search by field `status_id`
-        if (query.status_ids) {
-            const array = query.status_ids.split(',')
-            const search = {
-                [Op.in]: array,
-            }
-            option.status_id = search
-        }
-
-        // paginate results
-        const perPage = query.per_page || 5
-        const page = query.page || 1
-
-        // sort by fields
-        const sortBy =
-            query?.sort_by?.split(',').map(e => {
-                if (e.includes('-')) {
-                    return [e.slice(1), 'DESC']
-                }
-                return [e, 'ASC']
-            }) || []
-
-        const { count, rows } = await Order.findAndCountAll({
-            where: option,
-            limit: Number(perPage),
-            offset: Number(page * perPage - perPage),
-            order: sortBy,
+        // pagination
+        const pagination = new Pagination({
+            perPage: query.per_page,
+            page: query.page,
         })
+
+        // searchs
+        const where = searchOrder(query)
+
+        // sort by
+        const sort = sortBy(query.sort_by)
+
+        const { count, rows } = await Order.scope([
+            'includeCustomer',
+            'includeStatus',
+        ]).findAndCountAll({
+            where: where,
+            limit: pagination.getLimit(),
+            offset: pagination.getOffset(),
+            order: sort,
+        })
+
+        pagination.setCount(count)
 
         res.status(200).json({
             status: 200,
-            page: Number(page),
-            per_page: Number(perPage),
-            total_page: Math.ceil(count / perPage),
-            total_record: count,
+            ...pagination.getInfor(),
             count: rows.length,
             data: rows,
         })
@@ -73,18 +49,20 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const instance = await Order.findByPk(req.params.id, {
-        })
-        if (!instance) {
+        const order = await Order.scope([
+            'includeCustomer',
+            'includeStatus',
+        ]).findByPk(req.params.id)
+        if (!order) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
         res.status(200).json({
             status: 200,
-            data: instance,
+            data: order,
         })
     } catch (error) {
         next(error)
@@ -148,7 +126,7 @@ const update = async (req, res, next) => {
         if (!order) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
         const [count, updatedOrder] = await Order.update(
@@ -176,7 +154,7 @@ const destroy = async (req, res, next) => {
         if (!instance) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
         const count = await Order.destroy({

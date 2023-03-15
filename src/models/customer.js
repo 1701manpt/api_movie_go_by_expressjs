@@ -13,6 +13,7 @@ const Customer = sequelize.define(
         },
         user_id: {
             type: DataTypes.INTEGER,
+            allowNull: false,
         },
         full_name: {
             type: DataTypes.STRING,
@@ -33,19 +34,17 @@ const Customer = sequelize.define(
 )
 
 Customer.addScope('includeOrders', {
-    include: ['orders']
+    include: ['orders'],
 })
 
 Customer.addScope('includeUser', {
-    include: [
-        {
-            as: 'user',
-            model: User,
-            attributes: {
-                exclude: ['password']
-            }
-        }
-    ]
+    include: {
+        as: 'user',
+        model: User,
+        attributes: {
+            exclude: ['password'],
+        },
+    },
 })
 
 Customer.belongsTo(User, {

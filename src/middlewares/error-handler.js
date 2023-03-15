@@ -11,8 +11,8 @@ function handle500Error(error, req, res, next) {
     console.error(error.stack)
     res.status(error.status || 500).json({
         status: error.status || 500,
-        error: 'Internal Server Error',
-        message: 'Something went wrong',
+        message: 'Internal Server Error',
+        error_msg: error.message || error.msg || null
     })
     next()
 }

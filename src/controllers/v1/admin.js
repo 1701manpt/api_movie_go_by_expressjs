@@ -87,14 +87,12 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const admin = await Admin.findOne(req.body.id, {
-
-        })
+        const admin = await Admin.findOne(req.body.id, {})
 
         if (!admin) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -114,7 +112,7 @@ const update = async (req, res, next) => {
         if (!admin) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -145,7 +143,7 @@ const destroy = async (req, res, next) => {
         if (!instance) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -173,14 +171,14 @@ const restore = async (req, res, next) => {
         if (!instance) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
         if (instance.deleted_at == null) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -207,14 +205,14 @@ const destroyForce = async (req, res, next) => {
         if (!instance) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
         if (instance.deleted_at == null) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -236,23 +234,26 @@ const destroyForce = async (req, res, next) => {
 const create = async (req, res, next) => {
     try {
         const password = await comparePassword(req.body.password)
-        const newAdmin = await Admin.create({
-            full_name: req.body.full_name,
-            address: req.body.address,
-            phone: req.body.phone,
-            user: {
-                email: req.body.email,
-                account: req.body.account,
-                password,
-                status_id: 2,
-                role_id: req.body.role_id,
-            }
-        }, {
-            include: {
-                as: 'user',
-                model: User
-            }
-        })
+        const newAdmin = await Admin.create(
+            {
+                full_name: req.body.full_name,
+                address: req.body.address,
+                phone: req.body.phone,
+                user: {
+                    email: req.body.email,
+                    account: req.body.account,
+                    password,
+                    status_id: 2,
+                    role_id: req.body.role_id,
+                },
+            },
+            {
+                include: {
+                    as: 'user',
+                    model: User,
+                },
+            },
+        )
 
         res.status(200).json({
             status: 200,

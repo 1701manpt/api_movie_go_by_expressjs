@@ -70,40 +70,66 @@ const insertAccountStatuses = async () => {
 
 const insertAccounts = async () => {
     const password = await hashPassword('0000')
-    await Admin.create({
-        full_name: 'Admin 123',
-        address: '291 An Dương Vương, Quận 6, Thành Phố Hồ Chí Minh',
-        phone_number: '0337948940',
-        user: {
-            email: 'thaiphuongnam1071@gmail.com',
-            account: 'admin123',
-            password,
-            status_id: 2,
-            role_id: 1,
-        }
-    }, {
-        include: {
-            as: 'user',
-            model: User,
-        }
-    })
-    await Customer.create({
-        full_name: 'Khách hàng 123',
-        address: '291 An Dương Vương, Quận 6, Thành Phố Hồ Chí Minh',
-        phone_number: '0337948940',
-        user: {
-            email: 'thaiphuongnam1071@gmail.com',
-            account: 'customer123',
-            password,
-            status_id: 2,
-            role_id: 2,
-        }
-    }, {
-        include: {
-            as: 'user',
-            model: User,
-        }
-    })
+    await Admin.create(
+        {
+            full_name: 'Admin 123',
+            address: '291 An Dương Vương, Quận 6, Thành Phố Hồ Chí Minh',
+            phone_number: '0337948940',
+            user: {
+                email: 'thaiphuongnam1071@gmail.com',
+                account: 'admin123',
+                password,
+                status_id: 2,
+                role_id: 1,
+            },
+        },
+        {
+            include: {
+                as: 'user',
+                model: User,
+            },
+        },
+    )
+    await Customer.create(
+        {
+            full_name: 'Khách hàng 123',
+            address: '291 An Dương Vương, Quận 6, Thành Phố Hồ Chí Minh',
+            phone_number: '0337948940',
+            user: {
+                email: 'thaiphuongnam1071@gmail.com',
+                account: 'customer123',
+                password,
+                status_id: 2,
+                role_id: 2,
+            },
+        },
+        {
+            include: {
+                as: 'user',
+                model: User,
+            },
+        },
+    )
+    await Customer.create(
+        {
+            full_name: 'Khách hàng ABC',
+            address: '291 An Dương Vương, Quận 6, Thành Phố Hồ Chí Minh',
+            phone_number: '0337948940',
+            user: {
+                email: 'thaiphuongnam1071@gmail.com',
+                account: 'customerabc',
+                password,
+                status_id: 2,
+                role_id: 2,
+            },
+        },
+        {
+            include: {
+                as: 'user',
+                model: User,
+            },
+        },
+    )
 }
 
 const insertThreatersAndSeats = async () => {
@@ -177,7 +203,7 @@ const insertCategoriesAndProducts = async () => {
                     name: 'Mirinda vị cam',
                     price: 20000,
                 },
-            ]
+            ],
         },
         {
             name: 'Nước uống pha chế',
@@ -206,7 +232,7 @@ const insertCategoriesAndProducts = async () => {
                     name: 'Nước ép dâu',
                     price: 25000,
                 },
-            ]
+            ],
         },
         {
             name: 'Thức ăn nhanh',
@@ -235,7 +261,7 @@ const insertCategoriesAndProducts = async () => {
                     name: 'Kem vị dứa',
                     price: 10000,
                 },
-            ]
+            ],
         },
         {
             name: 'Món ăn no bụng',
@@ -260,12 +286,12 @@ const insertCategoriesAndProducts = async () => {
                     name: 'Cơm nhà nấu',
                     price: 50000,
                 },
-            ]
-        }
+            ],
+        },
     ]
     for (const category of categories) {
         const newCategory = await Category.create({
-            name: category.name
+            name: category.name,
         })
 
         for (const product of category.products) {
@@ -284,5 +310,5 @@ module.exports = {
     insertThreatersAndSeats,
     insertAccountStatuses,
     insertRoles,
-    insertCategoriesAndProducts
+    insertCategoriesAndProducts,
 }

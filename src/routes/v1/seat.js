@@ -1,13 +1,11 @@
 const express = require('express')
-
 const router = express.Router()
-
-// controllers
 const { getAll, getById, create, destroy } = require('~/controllers/v1/seat')
+const { authorizeToken } = require('~/middlewares/verify-token')
 
-router.get('/', getAll)
-router.get('/:id', getById)
-router.post('/', create)
-router.delete('/:id', destroy)
+router.get('/', authorizeToken([1]), getAll)
+router.get('/:id', authorizeToken([1]), getById)
+router.post('/', authorizeToken([1]), create)
+router.delete('/:id', authorizeToken([1]), destroy)
 
 module.exports = router

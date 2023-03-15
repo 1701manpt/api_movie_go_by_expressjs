@@ -10,6 +10,7 @@ const Cart = sequelize.define('Cart', {
     },
     customer_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
 })
 

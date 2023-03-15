@@ -12,16 +12,32 @@ const ShowTime = sequelize.define('ShowTime', {
     },
     threater_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
     movie_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
     date_time: {
         type: DataTypes.DATE,
+        allowNull: false,
     },
     price: {
         type: DataTypes.DECIMAL,
+        allowNull: false,
     },
+})
+
+ShowTime.addScope('includeThreater', {
+    include: ['threater'],
+})
+
+ShowTime.addScope('includeMovie', {
+    include: ['movie'],
+})
+
+ShowTime.addScope('includeTickets', {
+    include: ['tickets'],
 })
 
 ShowTime.belongsTo(Movie, {

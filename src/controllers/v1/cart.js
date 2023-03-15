@@ -1,6 +1,9 @@
 const { Op } = require('sequelize')
 const Cart = require('~/models/cart')
+const CartLine = require('~/models/cart-line')
+const Customer = require('~/models/customer')
 const Product = require('~/models/product')
+const User = require('~/models/user')
 
 const getAll = async (req, res, next) => {
     try {
@@ -17,12 +20,27 @@ const getAll = async (req, res, next) => {
         }
 
         // search by field `customer_id`
-        if (query.customer_ids) {
-            const array = query.customer_ids.split(',')
-            const search = {
-                [Op.in]: array,
+        if (req.user.role_id === 1) {
+            if (query.customer_ids) {
+                const array = query.customer_ids.split(',')
+                const search = {
+                    [Op.in]: array,
+                }
+                option.customer_id = search
             }
-            option.customer_id = search
+        }
+
+        if (req.user.role_id !== 1) {
+            const customer = await Customer.findOne({
+                include: {
+                    as: 'user',
+                    model: User,
+                    where: {
+                        id: req.user.id
+                    }
+                },
+            })
+            option.customer_id = customer.id
         }
 
         // search by field `status_id`
@@ -71,11 +89,38 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const cart = await Cart.findByPk(req.params.id)
+        let cart;
+
+        switch (req.user.role_id) {
+            case 1:
+                cart = await Cart.findByPk(req.params.id);
+                break;
+            case 2:
+                const customer = await Customer.findOne({
+                    include: {
+                        as: 'user',
+                        model: User,
+                        where: {
+                            id: req.user.id
+                        }
+                    },
+                })
+
+                cart = await Cart.findByPk(req.params.id, {
+                    where: {
+                        customer_id: customer.id
+                    }
+                })
+                break;
+
+            default:
+                break;
+        }
+
         if (!cart) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -86,21 +131,39 @@ const getById = async (req, res, next) => {
     } catch (error) {
         next(error)
     }
-}
+};
 
 const create = async (req, res, next) => {
     try {
-        const product = await Product.findByPk(req.body.product_id)
-        if (!product) {
-            return res.status(404).json({
-                status: 400,
-                message: '400 Bad Request',
-            })
-        }
+
+        const customer = await Customer.findOne({
+            include: {
+                as: 'user',
+                model: User,
+                where: {
+                    id: req.user.id
+                }
+            },
+        })
 
         const cart = await Cart.create({
-            customer_id: req.body.customer_id,
+            customer_id: customer.id,
         })
+
+        for (const cartLine of req.body.cart_lines) {
+            const product = await Product.findByPk(cartLine.product_id)
+            if (!product) {
+                return res.status(404).json({
+                    status: 400,
+                    message: '400 Bad Request',
+                })
+            }
+
+            await CartLine.create({
+                cart_id: cart.id,
+                ...cartLine,
+            })
+        }
 
         res.status(200).json({
             status: 200,
@@ -117,7 +180,7 @@ const create = async (req, res, next) => {
 //       if (!product) {
 //          return res.status(404).json({
 //             status: 404,
-//             message: '404 Not Found',
+//             message: 'Not Found',
 //          })
 //       }
 
@@ -150,7 +213,7 @@ const destroy = async (req, res, next) => {
         if (!cart) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 

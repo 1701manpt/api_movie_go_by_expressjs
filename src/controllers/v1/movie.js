@@ -83,8 +83,9 @@ const getAll = async (req, res, next) => {
                 return [e, 'ASC']
             }) || []
 
-        const { count, rows } = await Movie.findAndCountAll({
-            include: 'show_times',
+        const { count, rows } = await Movie.scope(
+            'includeShowTime',
+        ).findAndCountAll({
             where: option,
             limit: Number(perPage),
             offset: Number(page * perPage - perPage),
@@ -111,7 +112,7 @@ const getById = async (req, res, next) => {
         if (!movie) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -150,7 +151,7 @@ const update = async (req, res, next) => {
         if (!movie) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -184,7 +185,7 @@ const destroy = async (req, res, next) => {
         if (!movie) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 

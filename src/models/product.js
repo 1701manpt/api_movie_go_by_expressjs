@@ -9,15 +9,17 @@ const Product = sequelize.define('Product', {
         primaryKey: true,
         autoIncrement: true,
     },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
     avatar_url: {
         type: DataTypes.TEXT,
         allowNull: true,
     },
-    name: {
-        type: DataTypes.STRING,
-    },
     price: {
         type: DataTypes.DECIMAL,
+        allowNull: false,
     },
     description: {
         type: DataTypes.TEXT,

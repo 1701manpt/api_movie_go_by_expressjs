@@ -1,13 +1,13 @@
 const express = require('express')
-
 const router = express.Router()
-
-// controllers
 const { getAll, getById, create } = require('~/controllers/v1/order-line')
+const { authorizeToken } = require('~/middlewares/verify-token')
 
-router.get('/', getAll)
-router.get('/:id', getById)
+// admin customer
+router.get('/', authorizeToken([1, 2]), getAll)
+router.get('/:id', authorizeToken([1, 2]), getById)
 
-router.post('/', create)
+// customer
+router.post('/', authorizeToken([2]), create)
 
 module.exports = router

@@ -1,7 +1,10 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const Customer = require('~/models/customer')
-const { generateToken, generateRefreshToken } = require('~/utils/generate-token')
+const {
+    generateToken,
+    generateRefreshToken,
+} = require('~/utils/generate-token')
 const { hashPassword, comparePassword } = require('~/utils/password')
 const User = require('~/models/user')
 const Admin = require('~/models/admin')
@@ -15,7 +18,7 @@ const loginCustomer = async (req, res, next) => {
                 where: {
                     account: req.body.account,
                 },
-            }
+            },
         })
 
         if (!customer) {
@@ -27,7 +30,10 @@ const loginCustomer = async (req, res, next) => {
 
         const user = customer.user
 
-        const isPassword = await comparePassword(req.body.password, user.password)
+        const isPassword = await comparePassword(
+            req.body.password,
+            user.password,
+        )
 
         if (user && !isPassword) {
             return res.status(401).json({
@@ -38,11 +44,11 @@ const loginCustomer = async (req, res, next) => {
 
         const token = generateToken({
             id: user.id,
-            role_id: user.role_id
+            role_id: user.role_id,
         })
         const refreshToken = generateRefreshToken({
             id: user.id,
-            role_id: user.role_id
+            role_id: user.role_id,
         })
 
         res.cookie('refresh_token', refreshToken, {
@@ -75,7 +81,7 @@ const loginAdmin = async (req, res, next) => {
                 where: {
                     account: req.body.account,
                 },
-            }
+            },
         })
 
         if (!admin) {
@@ -87,7 +93,10 @@ const loginAdmin = async (req, res, next) => {
 
         const user = admin.user
 
-        const isPassword = await comparePassword(req.body.password, user.password)
+        const isPassword = await comparePassword(
+            req.body.password,
+            user.password,
+        )
 
         if (user && !isPassword) {
             return res.status(401).json({
@@ -98,11 +107,11 @@ const loginAdmin = async (req, res, next) => {
 
         const token = generateToken({
             id: user.id,
-            role_id: user.role_id
+            role_id: user.role_id,
         })
         const refreshToken = generateRefreshToken({
             id: user.id,
-            role_id: user.role_id
+            role_id: user.role_id,
         })
 
         res.cookie('refresh_token', refreshToken, {
@@ -146,7 +155,7 @@ const registerCustomer = async (req, res, next) => {
                 model: Customer,
                 where: {
                     phone_number: req.body.phone_number,
-                }
+                },
             },
         })
 
@@ -172,23 +181,26 @@ const registerCustomer = async (req, res, next) => {
         }
 
         const password = await hashPassword(req.body.password)
-        const customer = await Customer.create({
-            full_name: req.body?.full_name,
-            address: req.body?.address,
-            phone_number: req.body.phone_number,
-            user: {
-                email: req.body.email,
-                account: req.body.account,
-                password: password,
-                status_id: 1,
-                role_id: 2,
-            }
-        }, {
-            include: {
-                as: 'user',
-                model: User,
-            }
-        })
+        const customer = await Customer.create(
+            {
+                full_name: req.body?.full_name,
+                address: req.body?.address,
+                phone_number: req.body.phone_number,
+                user: {
+                    email: req.body.email,
+                    account: req.body.account,
+                    password: password,
+                    status_id: 1,
+                    role_id: 2,
+                },
+            },
+            {
+                include: {
+                    as: 'user',
+                    model: User,
+                },
+            },
+        )
 
         res.status(200).json({
             status: 200,
@@ -226,7 +238,7 @@ const refreshToken = (req, res, next) => {
             role_id: user.role_id,
         })
 
-        res.cookie('refreshToken', newRefreshToken, {
+        res.cookie('refresh_token', newRefreshToken, {
             httpOnly: true,
             secure: false,
             path: '/',
@@ -246,7 +258,7 @@ const logout = (req, res) => {
     res.clearCookie('refresh_token')
     res.status(200).json({
         status: 200,
-        message: 'Đăng xuất thành công'
+        message: 'Đăng xuất thành công',
     })
 }
 

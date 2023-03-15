@@ -41,7 +41,6 @@ const getAll = async (req, res, next) => {
 
         const { count, rows } = await Threater.findAndCountAll({
             where: option,
-            include: ['show_times', 'seats'],
             limit: Number(perPage),
             offset: Number(page * perPage - perPage),
             order: sortBy,
@@ -63,11 +62,14 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const threater = await Threater.findByPk(req.params.id)
+        const threater = await Threater.scope([
+            'includeSeats',
+            'includeShowTimes',
+        ]).findByPk(req.params.id)
         if (!threater) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -101,7 +103,7 @@ const update = async (req, res, next) => {
         if (!threater) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -130,7 +132,7 @@ const destroy = async (req, res, next) => {
         if (!threater) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 

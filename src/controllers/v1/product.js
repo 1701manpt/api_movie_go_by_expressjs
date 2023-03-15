@@ -112,7 +112,7 @@ const getById = async (req, res, next) => {
         if (!product) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -162,7 +162,7 @@ const update = async (req, res, next) => {
         if (!product) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -195,7 +195,7 @@ const destroy = async (req, res, next) => {
         if (!product) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 

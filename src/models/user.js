@@ -14,19 +14,23 @@ const User = sequelize.define(
         },
         account: {
             type: DataTypes.STRING,
+            allowNull: false,
         },
         password: {
             type: DataTypes.STRING,
+            allowNull: false,
         },
         email: {
             type: DataTypes.STRING,
-            allowNull: true,
+            allowNull: false,
         },
         role_id: {
             type: DataTypes.INTEGER,
+            allowNull: false,
         },
         status_id: {
             type: DataTypes.INTEGER,
+            allowNull: false,
         },
     },
     {
@@ -36,8 +40,16 @@ const User = sequelize.define(
 
 User.addScope('excludePassword', {
     attributes: {
-        exclude: ['password']
-    }
+        exclude: ['password'],
+    },
+})
+
+User.addScope('includeStatus', {
+    include: 'status',
+})
+
+User.addScope('includeRole', {
+    include: 'role',
 })
 
 User.belongsTo(UserStatus, {

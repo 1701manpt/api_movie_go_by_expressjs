@@ -1,20 +1,21 @@
 const express = require('express')
-
 const router = express.Router()
-
-// controllers
 const {
     loginCustomer,
     loginAdmin,
     registerCustomer,
     refreshToken,
-    logout
+    logout,
 } = require('~/controllers/v1/auth')
+const { authenticateToken } = require('~/middlewares/verify-token')
 
+// all
 router.post('/login/customer', loginCustomer)
 router.post('/login/admin', loginAdmin)
 router.post('/register/customer', registerCustomer)
 router.post('/refresh', refreshToken)
-router.post('/logout', logout)
+
+// authentication
+router.post('/logout', authenticateToken, logout)
 
 module.exports = router

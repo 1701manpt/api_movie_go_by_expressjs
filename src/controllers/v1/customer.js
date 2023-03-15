@@ -85,12 +85,14 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const customer = await Customer.scope(['includeUser']).findByPk(req.params.id)
+        const customer = await Customer.scope(['includeUser']).findByPk(
+            req.params.id,
+        )
 
         if (!customer) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -110,7 +112,7 @@ const update = async (req, res, next) => {
         if (!customer) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -140,7 +142,7 @@ const destroy = async (req, res, next) => {
         if (!instance) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -168,14 +170,14 @@ const restore = async (req, res, next) => {
         if (!instance) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
         if (instance.deleted_at == null) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -202,14 +204,14 @@ const destroyForce = async (req, res, next) => {
         if (!instance) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
         if (instance.deleted_at == null) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -228,25 +230,6 @@ const destroyForce = async (req, res, next) => {
     }
 }
 
-const getOrders = async (req, res, next) => {
-    try {
-        const customer = await Customer.scope(['includeOrders', 'excludePassword']).findAll()
-        if (!customer) {
-            return res.status(404).json({
-                status: 404,
-                message: '404 Not Found',
-            })
-        }
-
-        res.status(200).json({
-            status: 200,
-            data: customer,
-        })
-    } catch (error) {
-        next(error)
-    }
-}
-
 module.exports = {
     getAll,
     getById,
@@ -254,5 +237,4 @@ module.exports = {
     destroy,
     restore,
     destroyForce,
-    getOrders,
 }

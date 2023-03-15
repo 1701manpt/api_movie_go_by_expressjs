@@ -13,10 +13,20 @@ const Order = sequelize.define('Order', {
     },
     customer_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
     status_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
+})
+
+Order.addScope('includeCustomer', {
+    include: 'customer',
+})
+
+Order.addScope('includeStatus', {
+    include: 'status',
 })
 
 Order.belongsTo(Customer, {

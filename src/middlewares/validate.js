@@ -6,7 +6,9 @@ function validate(schema) {
             //    acc[cur.path[0]] = cur.message
             //    return acc
             // }, {})
-            return res.status(400).json({ errors: { validations: error.details } })
+            return res
+                .status(400)
+                .json({ errors: { validations: error.details } })
         }
 
         return next()

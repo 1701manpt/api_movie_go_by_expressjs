@@ -1,13 +1,16 @@
 const express = require('express')
-
 const router = express.Router()
+const {
+    getAll,
+    getById,
+    create,
+    destroy,
+} = require('~/controllers/v1/show-time')
+const { authorizeToken } = require('~/middlewares/verify-token')
 
-// controllers
-const { getAll, getById, create, destroy } = require('~/controllers/v1/show-time')
-
-router.get('/', getAll)
-router.get('/:id', getById)
-router.post('/', create)
-router.delete('/:id', destroy)
+router.get('/', authorizeToken([1]), getAll)
+router.get('/:id', authorizeToken([1]), getById)
+router.post('/', authorizeToken([1]), create)
+router.delete('/:id', authorizeToken([1]), destroy)
 
 module.exports = router

@@ -70,7 +70,9 @@ const getAll = async (req, res, next) => {
                 return [e, 'ASC']
             }) || []
 
-        const { count, rows } = await User.findAndCountAll({
+        const { count, rows } = await User.scope([
+            'excludePassword',
+        ]).findAndCountAll({
             where: option,
             limit: Number(perPage),
             offset: Number(page * perPage - perPage),
@@ -93,13 +95,16 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const user = await User.findByPk(req.body.id, {
-        })
+        const user = await User.scope([
+            'excludePassword',
+            'includeStatus',
+            'includeRole',
+        ]).findByPk(req.params.id)
 
         if (!user) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -119,7 +124,7 @@ const update = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 
@@ -150,7 +155,7 @@ const destroy = async (req, res, next) => {
         if (!instance) {
             return res.status(404).json({
                 status: 404,
-                message: '404 Not Found',
+                message: 'Not Found',
             })
         }
 

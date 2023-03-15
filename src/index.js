@@ -32,6 +32,9 @@ const server = app.listen(7000, err => {
     if (err) {
         console.error(`Listening on port 7000 error: ${err}`)
     } else {
-        console.log(`Server listening on port ${`http://localhost:${server.address().port}/api`}`)
+        console.log(
+            `Server listening on port ${`http://localhost:${server.address().port
+            }/api`}`,
+        )
     }
 })

@@ -12,9 +12,11 @@ const ProductImage = sequelize.define('ProductImage', {
     },
     path: {
         type: DataTypes.TEXT,
+        allowNull: false,
     },
     product_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
     },
 })
 

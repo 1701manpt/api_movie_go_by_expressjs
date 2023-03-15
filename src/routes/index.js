@@ -1,5 +1,8 @@
 const v100 = require('./v1')
-const { handle404Error, handle500Error } = require('~/middlewares/error-handler')
+const {
+    handle404Error,
+    handle500Error,
+} = require('~/middlewares/error-handler')
 
 function route(app) {
     // version of the API
