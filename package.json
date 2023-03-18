@@ -1,5 +1,5 @@
 {
-   "name": "storeonline",
+   "name": "api_movie_go_by_expressjs",
    "version": "1.0.0",
    "main": "src/index",
    "scripts": {
@@ -32,12 +32,12 @@
    },
    "repository": {
       "type": "git",
-      "url": "git+https://github.com/1701manpt/StoreOnline.git"
+      "url": "git+https://github.com/1701manpt/api_movie_go_by_expressjs.git"
    },
    "bugs": {
-      "url": "https://github.com/1701manpt/StoreOnline/issues"
+      "url": "https://github.com/1701manpt/api_movie_go_by_expressjs/issues"
    },
-   "homepage": "https://github.com/1701manpt/StoreOnline#readme",
+   "homepage": "https://github.com/1701manpt/api_movie_go_by_expressjs#readme",
    "description": "",
    "devDependencies": {
       "prettier": "^2.8.4"
