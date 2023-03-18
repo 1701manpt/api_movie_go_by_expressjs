@@ -18,4 +18,8 @@ const UserStatus = sequelize.define('UserStatus', {
     },
 })
 
+UserStatus.addScope('includeUsers', {
+    include: 'users',
+})
+
 module.exports = UserStatus

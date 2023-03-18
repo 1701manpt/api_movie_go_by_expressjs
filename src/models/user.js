@@ -52,6 +52,10 @@ User.addScope('includeRole', {
     include: 'role',
 })
 
+User.addScope('includeCustomer', {
+    include: 'customer',
+})
+
 User.belongsTo(UserStatus, {
     foreignKey: 'status_id',
     as: 'status',

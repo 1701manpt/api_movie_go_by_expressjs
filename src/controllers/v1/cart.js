@@ -1,84 +1,58 @@
-const { Op } = require('sequelize')
 const Cart = require('~/models/cart')
 const CartLine = require('~/models/cart-line')
 const Customer = require('~/models/customer')
 const Product = require('~/models/product')
 const User = require('~/models/user')
+const search = require('~/search/cart')
+const Pagination = require('~/utils/pagination')
+const sortBy = require('~/utils/sort-by')
 
 const getAll = async (req, res, next) => {
     try {
         const { query } = req
-        const option = {}
 
-        // search by field `id`
-        if (query.ids) {
-            const array = query.ids.split(',')
-            const search = {
-                [Op.in]: array,
-            }
-            option.id = search
-        }
-
-        // search by field `customer_id`
-        if (req.user.role_id === 1) {
-            if (query.customer_ids) {
-                const array = query.customer_ids.split(',')
-                const search = {
-                    [Op.in]: array,
-                }
-                option.customer_id = search
-            }
-        }
-
-        if (req.user.role_id !== 1) {
+        // phân quyền: nếu là customer thì chỉ lấy orders của chính chủ
+        if (req.user.role_id === 2) {
             const customer = await Customer.findOne({
-                include: {
-                    as: 'user',
-                    model: User,
-                    where: {
-                        id: req.user.id,
-                    },
-                },
-            })
-            option.customer_id = customer.id
-        }
-
-        // search by field `status_id`
-        if (query.status_ids) {
-            const array = query.status_ids.split(',')
-            const search = {
-                [Op.in]: array,
-            }
-            option.status_id = search
-        }
-
-        // paginate results
-        const perPage = query.per_page || 5
-        const page = query.page || 1
-
-        // sort by fields
-        const sortBy =
-            query?.sort_by?.split(',').map(e => {
-                if (e.includes('-')) {
-                    return [e.slice(1), 'DESC']
+                where: {
+                    user_id: req.user.id,
                 }
-                return [e, 'ASC']
-            }) || []
+            })
 
-        const { count, rows } = await Cart.findAndCountAll({
-            where: option,
-            include: ['customer', 'cart_lines'],
-            limit: Number(perPage),
-            offset: Number(page * perPage - perPage),
-            order: sortBy,
+            if (!customer) {
+                return res.status(400).json({
+                    status: 400,
+                    message: '400 Bad Request',
+                })
+            }
+
+            query.customer_ids = customer.id
+        }
+
+        // pagination
+        const pagination = new Pagination({
+            perPage: query.per_page,
+            page: query.page,
         })
+
+        // searchs
+        const where = search(query)
+
+        // sort by
+        const sort = sortBy(query.sort_by)
+
+        const { count, rows } = await Cart.scope(['includeCustomer']).findAndCountAll({
+            where: where,
+            limit: pagination.getLimit(),
+            offset: pagination.getOffset(),
+            order: sort,
+        })
+
+        pagination.setCount(count)
 
         res.status(200).json({
             status: 200,
-            page: Number(page),
-            per_page: Number(perPage),
-            total_page: Math.ceil(count / perPage),
-            total_record: count,
+            ...pagination.getInfor(),
             count: rows.length,
             data: rows,
         })

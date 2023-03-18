@@ -14,6 +14,14 @@ const Cart = sequelize.define('Cart', {
     },
 })
 
+Cart.addScope('includeCustomer', {
+    include: 'customer',
+})
+
+Cart.addScope('includeCartLines', {
+    include: 'cart_lines',
+})
+
 Cart.belongsTo(Customer, {
     foreignKey: 'customer_id',
     as: 'customer',

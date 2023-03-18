@@ -1,76 +1,39 @@
-const { Op } = require('sequelize')
 const ShowTime = require('~/models/show-time')
 const Seat = require('~/models/seat')
 const Order = require('~/models/order')
 const Ticket = require('~/models/ticket')
+const Pagination = require('~/utils/pagination')
+const search = require('~/search/ticket')
+const sortBy = require('~/utils/sort-by')
 
 const getAll = async (req, res, next) => {
     try {
         const { query } = req
-        const option = {}
 
-        // search by field `id`
-        if (query.ids) {
-            const array = query.ids.split(',')
-            const search = {
-                [Op.in]: array,
-            }
-            option.id = search
-        }
-
-        // search by field `show_time_id`
-        if (query.show_time_ids) {
-            const array = query.show_time_ids.split(',')
-            const search = {
-                [Op.in]: array,
-            }
-            option.show_time_id = search
-        }
-
-        // search by field `seat_id`
-        if (query.seat_ids) {
-            const seats = query.seat_ids.split(',')
-            const searchSeatId = {
-                [Op.in]: seats,
-            }
-            option.seat_id = searchSeatId
-        }
-
-        // search by field `order_id`
-        if (query.order_ids) {
-            const orders = query.order_ids.split(',')
-            const searchOrderId = {
-                [Op.in]: orders,
-            }
-            option.order_id = searchOrderId
-        }
-
-        // paginate results
-        const perPage = query.per_page || 5
-        const page = query.page || 1
-
-        // sort by fields
-        const sortBy =
-            query?.sort_by?.split(',').map(e => {
-                if (e.includes('-')) {
-                    return [e.slice(1), 'DESC']
-                }
-                return [e, 'ASC']
-            }) || []
-
-        const { count, rows } = await Ticket.findAndCountAll({
-            where: option,
-            limit: Number(perPage),
-            offset: Number(page * perPage - perPage),
-            order: sortBy,
+        // pagination
+        const pagination = new Pagination({
+            perPage: query.per_page,
+            page: query.page,
         })
+
+        // searchs
+        const where = search(query)
+
+        // sort by
+        const sort = sortBy(query.sort_by)
+
+        const { count, rows } = await Ticket.scope(['includeShowTime']).findAndCountAll({
+            where: where,
+            limit: pagination.getLimit(),
+            offset: pagination.getOffset(),
+            order: sort,
+        })
+
+        pagination.setCount(count)
 
         res.status(200).json({
             status: 200,
-            page: Number(page),
-            per_page: Number(perPage),
-            total_page: Math.ceil(count / perPage),
-            total_record: count,
+            ...pagination.getInfor(),
             count: rows.length,
             data: rows,
         })

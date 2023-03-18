@@ -14,4 +14,8 @@ const OrderStatus = sequelize.define('OrderStatus', {
     },
 })
 
+OrderStatus.addScope('includeOrders', {
+    include: 'orders',
+})
+
 module.exports = OrderStatus

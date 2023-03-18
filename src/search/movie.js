@@ -37,34 +37,36 @@ const search = search => {
     }
 
     // search by field `price`
-    if (query.min_price && query.max_price) {
-        const searchPrice = {
-            [Op.between]: [query.min_price, query.max_price],
+    if (query.min_duration && query.max_duration) {
+        const searchDuration = {
+            [Op.between]: [query.min_duration, query.max_duration],
         }
-        option.price = searchPrice
+        option.duration = searchDuration
     }
 
-    if (query.min_price && !query.max_price) {
+    if (query.min_duration && !query.max_duration) {
         const search = {
-            [Op.gt]: Number(query.min_price),
+            [Op.gt]: Number(query.min_duration),
         }
-        option.price = search
+        option.duration = search
     }
 
-    if (!query.min_price && query.max_price) {
+    if (!query.min_duration && query.max_duration) {
         const search = {
-            [Op.lt]: Number(query.max_price),
+            [Op.lt]: Number(query.max_duration),
         }
-        option.price = search
+        option.duration = search
     }
 
-    // search by field `categoryId`
-    if (query.category_ids) {
-        const categories = String(query.category_ids).split(',')
-        const searchCategoryId = {
-            [Op.in]: categories,
+    // search by field `genre`
+    if (query.genre) {
+        const genres = query.genre.split(',' || ' ')
+        const searchGenre = {
+            [Op.or]: genres.map(term => ({
+                [Op.like]: `%${term}%`,
+            })),
         }
-        option.category_id = searchCategoryId
+        option.genre = searchGenre
     }
 
     return option

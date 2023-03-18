@@ -14,34 +14,30 @@ const search = search => {
         option.id = search
     }
 
-    // search by field `name`
-    if (query.name) {
-        const names = query.name.split(' ')
-        const searchName = {
-            [Op.or]: names.map(term => ({
-                [Op.like]: `%${term}%`,
-            })),
+    // search by field `threater_id`
+    if (query.threater_ids) {
+        const threaters = String(query.threater_ids).split(',')
+        const searchThreaterId = {
+            [Op.in]: threaters,
         }
-        option.name = searchName
+        option.threater_id = searchThreaterId
     }
 
-    // search by field `description`
-    if (query.description) {
-        const descriptions = query.description.split(' ')
-        const searchDescription = {
-            [Op.and]: descriptions.map(term => ({
-                [Op.like]: `%${term}%`,
-            })),
+    // search by field `movie_id`
+    if (query.movie_ids) {
+        const array = String(query.movie_ids).split(',')
+        const search = {
+            [Op.in]: array,
         }
-        option.description = searchDescription
+        option.movie_id = search
     }
 
     // search by field `price`
     if (query.min_price && query.max_price) {
-        const searchPrice = {
+        const search = {
             [Op.between]: [query.min_price, query.max_price],
         }
-        option.price = searchPrice
+        option.price = search
     }
 
     if (query.min_price && !query.max_price) {
@@ -58,13 +54,12 @@ const search = search => {
         option.price = search
     }
 
-    // search by field `categoryId`
-    if (query.category_ids) {
-        const categories = String(query.category_ids).split(',')
-        const searchCategoryId = {
-            [Op.in]: categories,
+    // search by field `date_time`
+    if (query.min_date_time && query.max_date_time) {
+        const searchDateTime = {
+            [Op.between]: [query.min_date_time, query.max_date_time],
         }
-        option.category_id = searchCategoryId
+        option.date_time = searchDateTime
     }
 
     return option

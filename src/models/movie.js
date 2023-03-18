@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize')
-
 const sequelize = require('~/connection')
-// const ShowTime = require('./show-time')
 
 const Movie = sequelize.define('Movie', {
     id: {
@@ -35,7 +33,7 @@ const Movie = sequelize.define('Movie', {
     },
 })
 
-Movie.addScope('includeShowTime', {
+Movie.addScope('includeShowTimes', {
     include: ['show_times'],
 })
 

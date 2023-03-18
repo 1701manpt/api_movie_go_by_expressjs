@@ -1,90 +1,38 @@
 require('dotenv').config()
-const { Op } = require('sequelize')
 const User = require('~/models/user')
+const search = require('~/search/user')
+const Pagination = require('~/utils/pagination')
 const { comparePassword } = require('~/utils/password')
+const sortBy = require('~/utils/sort-by')
 
 const getAll = async (req, res, next) => {
     try {
         const { query } = req
-        const option = {}
 
-        // search by field `id`
-        if (query.ids) {
-            const array = query.ids.split(',')
-            const search = {
-                [Op.in]: array,
-            }
-            option.id = search
-        }
-
-        // search by field `role_id`
-        if (query.role_ids) {
-            const array = query.role_ids.split(',')
-            const search = {
-                [Op.in]: array,
-            }
-            option.role_id = search
-        }
-
-        // search by field `status_id`
-        if (query.status_ids) {
-            const array = query.status_ids.split(',')
-            const search = {
-                [Op.in]: array,
-            }
-            option.status_id = search
-        }
-
-        // search by field `account`
-        if (query.accounts) {
-            const descriptions = query.accounts.split(',')
-            const searchDescription = {
-                [Op.or]: descriptions.map(term => ({
-                    [Op.like]: `%${term}%`,
-                })),
-            }
-            option.account = searchDescription
-        }
-
-        // search by field `email`
-        if (query.emails) {
-            const descriptions = query.emails.split(',')
-            const searchDescription = {
-                [Op.or]: descriptions.map(term => ({
-                    [Op.like]: `%${term}%`,
-                })),
-            }
-            option.email = searchDescription
-        }
-
-        // paginate results
-        const perPage = query.per_page || 5
-        const page = query.page || 1
-
-        // sort by fields
-        const sortBy =
-            query?.sort_by?.split(',').map(e => {
-                if (e.includes('-')) {
-                    return [e.slice(1), 'DESC']
-                }
-                return [e, 'ASC']
-            }) || []
-
-        const { count, rows } = await User.scope([
-            'excludePassword',
-        ]).findAndCountAll({
-            where: option,
-            limit: Number(perPage),
-            offset: Number(page * perPage - perPage),
-            order: sortBy,
+        // pagination
+        const pagination = new Pagination({
+            perPage: query.per_page,
+            page: query.page,
         })
+
+        // searchs
+        const where = search(query)
+
+        // sort by
+        const sort = sortBy(query.sort_by)
+
+        const { count, rows } = await User.scope(['includeCustomer']).findAndCountAll({
+            where: where,
+            limit: pagination.getLimit(),
+            offset: pagination.getOffset(),
+            order: sort,
+        })
+
+        pagination.setCount(count)
 
         res.status(200).json({
             status: 200,
-            page: Number(page),
-            per_page: Number(perPage),
-            total_page: Math.ceil(count / perPage),
-            total_record: count,
+            ...pagination.getInfor(),
             count: rows.length,
             data: rows,
         })

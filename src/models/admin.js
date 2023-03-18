@@ -33,6 +33,18 @@ const Admin = sequelize.define(
     },
 )
 
+Admin.addScope('includeCustomer', {
+    include: 'customer',
+})
+
+Admin.addScope('includeRole', {
+    include: 'role',
+})
+
+Admin.addScope('includeStatus', {
+    include: 'status',
+})
+
 Admin.belongsTo(User, {
     foreignKey: 'user_id',
     as: 'user',

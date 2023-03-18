@@ -31,6 +31,22 @@ const Product = sequelize.define('Product', {
     },
 })
 
+Product.addScope('includeCategory', {
+    include: 'category',
+})
+
+Product.addScope('includeOrderLines', {
+    include: 'order_lines',
+})
+
+Product.addScope('includeCartLines', {
+    include: 'cart_lines',
+})
+
+Product.addScope('includeImages', {
+    include: 'images',
+})
+
 Product.belongsTo(Category, {
     foreignKey: 'category_id',
     as: 'category',

@@ -1,99 +1,37 @@
-const { Op } = require('sequelize')
 const ShowTime = require('~/models/show-time')
 const Threater = require('~/models/threater')
 const Movie = require('~/models/movie')
+const sortBy = require('~/utils/sort-by')
+const search = require('~/search/show-time')
 
 const getAll = async (req, res, next) => {
     try {
         const { query } = req
-        const option = {}
 
-        // search by field `id`
-        if (query.ids) {
-            const array = query.ids.split(',')
-            const search = {
-                [Op.in]: array,
-            }
-            option.id = search
-        }
-
-        // search by field `threater_id`
-        if (query.threater_ids) {
-            const threaters = query.threater_ids.split(',')
-            const searchThreaterId = {
-                [Op.in]: threaters,
-            }
-            option.threater_id = searchThreaterId
-        }
-
-        // search by field `movie_id`
-        if (query.movie_ids) {
-            const array = query.movie_ids.split(',')
-            const search = {
-                [Op.in]: array,
-            }
-            option.movie_id = search
-        }
-
-        // search by field `price`
-        if (query.min_price && query.max_price) {
-            const search = {
-                [Op.between]: [query.min_price, query.max_price],
-            }
-            option.price = search
-        }
-
-        if (query.min_price && !query.max_price) {
-            const search = {
-                [Op.gt]: Number(query.min_price),
-            }
-            option.price = search
-        }
-
-        if (!query.min_price && query.max_price) {
-            const search = {
-                [Op.lt]: Number(query.max_price),
-            }
-            option.price = search
-        }
-
-        // search by field `date_time`
-        if (query.min_date_time && query.max_date_time) {
-            const searchDateTime = {
-                [Op.between]: [query.min_date_time, query.max_date_time],
-            }
-            option.date_time = searchDateTime
-        }
-
-        // paginate results
-        const perPage = query.per_page || 5
-        const page = query.page || 1
-
-        // sort by fields
-        const sortBy =
-            query?.sort_by?.split(',').map(e => {
-                if (e.includes('-')) {
-                    return [e.slice(1), 'DESC']
-                }
-                return [e, 'ASC']
-            }) || []
-
-        const { count, rows } = await ShowTime.scope([
-            'includeMovie',
-            'includeThreater',
-        ]).findAndCountAll({
-            where: option,
-            limit: Number(perPage),
-            offset: Number(page * perPage - perPage),
-            order: sortBy,
+        // pagination
+        const pagination = new Pagination({
+            perPage: query.per_page,
+            page: query.page,
         })
+
+        // searchs
+        const where = search(query)
+
+        // sort by
+        const sort = sortBy(query.sort_by)
+
+        const { count, rows } = await ShowTime.scope(['includeMovie']).findAndCountAll({
+            where: where,
+            limit: pagination.getLimit(),
+            offset: pagination.getOffset(),
+            order: sort,
+        })
+
+        pagination.setCount(count)
 
         res.status(200).json({
             status: 200,
-            page: Number(page),
-            per_page: Number(perPage),
-            total_page: Math.ceil(count / perPage),
-            total_record: count,
+            ...pagination.getInfor(),
             count: rows.length,
             data: rows,
         })

@@ -23,6 +23,15 @@ const Seat = sequelize.define('Seat', {
     },
 })
 
+
+Seat.addScope('includeThreater', {
+    include: 'threater',
+})
+
+Seat.addScope('includeTicket', {
+    include: 'ticket',
+})
+
 Seat.belongsTo(Threater, {
     foreignKey: 'threater_id',
     as: 'threater',

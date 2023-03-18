@@ -18,4 +18,8 @@ const Role = sequelize.define('Role', {
     },
 })
 
+Role.addScope('includeUsers', {
+    include: 'users',
+})
+
 module.exports = Role

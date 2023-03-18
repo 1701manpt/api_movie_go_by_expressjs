@@ -25,6 +25,14 @@ const CartLine = sequelize.define('CartLine', {
     },
 })
 
+CartLine.addScope('includeCart', {
+    include: 'cart'
+})
+
+CartLine.addScope('includeProduct', {
+    include: 'product'
+})
+
 CartLine.belongsTo(Cart, {
     foreignKey: 'cart_id',
     as: 'cart',

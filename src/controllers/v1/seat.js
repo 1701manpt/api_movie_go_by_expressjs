@@ -1,78 +1,37 @@
-const { Op } = require('sequelize')
 const Seat = require('~/models/seat')
 const Threater = require('~/models/threater')
+const search = require('~/search/seat')
+const Pagination = require('~/utils/pagination')
+const sortBy = require('~/utils/sort-by')
 
 const getAll = async (req, res, next) => {
     try {
-        const query = req.query
-        const option = {}
+        const { query } = req
 
-        // search by field `id`
-        if (query.ids) {
-            const array = query.ids.split(',')
-            const search = {
-                [Op.in]: array,
-            }
-            option.id = search
-        }
-
-        // search by field `threater_id`
-        if (query.threater_ids) {
-            const threaters = query.threater_ids.split(',')
-            const searchThreaterId = {
-                [Op.in]: threaters,
-            }
-            option.threater_id = searchThreaterId
-        }
-
-        // search by field `text`, `number`
-        if (query.rows) {
-            const rs = query.rows.split(',')
-            const searchText = {
-                [Op.or]: rs.map(term => ({
-                    [Op.eq]: `${term}`,
-                })),
-            }
-            option.text = searchText
-        }
-
-        if (query.columns) {
-            const cs = query.columns.split(',')
-            const searchNumber = {
-                [Op.or]: cs.map(term => ({
-                    [Op.eq]: Number(term),
-                })),
-            }
-            option.number = searchNumber
-        }
-
-        // paginate results
-        const perPage = query.per_page || 5
-        const page = query.page || 1
-
-        // sort by fields
-        const sortBy =
-            query?.sort_by?.split(',').map(e => {
-                if (e.includes('-')) {
-                    return [e.slice(1), 'DESC']
-                }
-                return [e, 'ASC']
-            }) || []
-
-        const { count, rows } = await Seat.findAndCountAll({
-            include: ['threater', 'tickets'],
-            where: option,
-            limit: Number(perPage),
-            offset: Number(page * perPage - perPage),
-            order: sortBy,
+        // pagination
+        const pagination = new Pagination({
+            perPage: query.per_page,
+            page: query.page,
         })
+
+        // searchs
+        const where = search(query)
+
+        // sort by
+        const sort = sortBy(query.sort_by)
+
+        const { count, rows } = await Seat.scope(['includeThreater']).findAndCountAll({
+            where: where,
+            limit: pagination.getLimit(),
+            offset: pagination.getOffset(),
+            order: sort,
+        })
+
+        pagination.setCount(count)
 
         res.status(200).json({
             status: 200,
-            page: Number(page),
-            per_page: Number(perPage),
-            total_page: Math.ceil(count / perPage),
-            total_record: count,
+            ...pagination.getInfor(),
             count: rows.length,
             data: rows,
         })

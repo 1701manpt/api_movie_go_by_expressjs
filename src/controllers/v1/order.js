@@ -1,16 +1,32 @@
-const { Op } = require('sequelize')
 const sequelize = require('~/connection')
 const Order = require('~/models/order')
 const Customer = require('~/models/customer')
 const OrderLine = require('~/models/order-line')
 const Pagination = require('~/utils/pagination')
 const sortBy = require('~/utils/sort-by')
-const searchOrder = require('~/search/order')
-const User = require('~/models/user')
+const search = require('~/search/order')
 
 const getAll = async (req, res, next) => {
     try {
         const { query } = req
+
+        // phân quyền: nếu là customer thì chỉ lấy orders của chính chủ
+        if (req.user.role_id === 2) {
+            const customer = await Customer.findOne({
+                where: {
+                    user_id: req.user.id,
+                }
+            })
+
+            if (!customer) {
+                return res.status(400).json({
+                    status: 400,
+                    message: '400 Bad Request',
+                })
+            }
+
+            query.customer_ids = customer.id
+        }
 
         // pagination
         const pagination = new Pagination({
@@ -19,7 +35,7 @@ const getAll = async (req, res, next) => {
         })
 
         // searchs
-        const where = searchOrder(query)
+        const where = search(query)
 
         // sort by
         const sort = sortBy(query.sort_by)
@@ -71,7 +87,12 @@ const getById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
     try {
-        const customer = await Customer.findByPk(req.body.customer_id)
+        const customer = await Customer.findOne({
+            where: {
+                user_id: req.user.id,
+            }
+        })
+
         if (!customer) {
             return res.status(400).json({
                 status: 400,
@@ -82,7 +103,7 @@ const create = async (req, res, next) => {
         const newOrder = await sequelize.transaction(async t => {
             const newOrder = await Order.create(
                 {
-                    customer_id: req.body.customer_id,
+                    customer_id: customer.id,
                     status_id: 1,
                 },
                 {

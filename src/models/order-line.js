@@ -27,6 +27,14 @@ const OrderLine = sequelize.define('OrderLine', {
     },
 })
 
+OrderLine.addScope('includeOrder', {
+    include: 'order',
+})
+
+OrderLine.addScope('includeProduct', {
+    include: 'product',
+})
+
 OrderLine.belongsTo(Order, {
     foreignKey: 'order_id',
     as: 'order',

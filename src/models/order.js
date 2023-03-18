@@ -29,6 +29,10 @@ Order.addScope('includeStatus', {
     include: 'status',
 })
 
+Order.addScope('includeOrderLines', {
+    include: 'order_lines',
+})
+
 Order.belongsTo(Customer, {
     foreignKey: 'customer_id',
     as: 'customer',
