@@ -1,25 +1,29 @@
 const { DataTypes } = require('sequelize')
-
 const sequelize = require('~/connection')
-
 const OrderStatus = require('~/models/order-status')
 const Customer = require('~/models/customer')
 
-const Order = sequelize.define('Order', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
+const Order = sequelize.define(
+    'Order',
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        customer_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        status_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
     },
-    customer_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+    {
+        paranoid: true,
     },
-    status_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-})
+)
 
 Order.addScope('includeCustomer', {
     include: 'customer',

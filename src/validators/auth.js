@@ -1,14 +1,8 @@
 const Joi = require('joi')
 
 const registerCustomer = Joi.object({
-    full_name: Joi.string()
-        .min(2)
-        .max(50)
-        .optional(),
-    address: Joi.string()
-        .min(2)
-        .max(100)
-        .optional(),
+    full_name: Joi.string().min(2).max(50).optional(),
+    address: Joi.string().min(2).max(100).optional(),
     phone_number: Joi.string()
         .pattern(/^(?:\+84|0)[3-9]\d{8}$/)
         .required(),

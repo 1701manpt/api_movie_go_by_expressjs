@@ -21,7 +21,7 @@ const getAll = async (req, res, next) => {
             if (!customer) {
                 return res.status(400).json({
                     status: 400,
-                    message: '400 Bad Request',
+                    message: 'Bad Request',
                 })
             }
 
@@ -65,7 +65,14 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        let id = req.params.id
+        const checkOrder = await Order.findByPk(req.params.id)
+        if (!checkOrder) {
+            return res.status(400).json({
+                status: 404,
+                message: 'Not Found',
+            })
+        }
+
         let order
         // phân quyền: nếu là customer thì chỉ lấy orders của chính chủ
         if (req.user.role_id === 2) {
@@ -78,17 +85,26 @@ const getById = async (req, res, next) => {
             if (!customer) {
                 return res.status(400).json({
                     status: 400,
-                    message: '400 Bad Request',
+                    message: 'Bad Request',
                 })
             }
 
             order = await Order.scope(['includeOrderLines', 'includeCustomer']).findOne({
                 where: {
+                    id: req.params.id,
                     customer_id: customer.id,
                 },
             })
+            if (!order) {
+                return res.status(400).json({
+                    status: 403,
+                    message: 'Forbidden',
+                })
+            }
         } else {
-            order = await Order.scope(['includeOrderLines', 'includeCustomer']).findById(id)
+            order = await Order.scope(['includeOrderLines', 'includeCustomer']).findById(
+                req.params.id,
+            )
         }
 
         if (!order) {
@@ -118,9 +134,11 @@ const create = async (req, res, next) => {
         if (!customer) {
             return res.status(400).json({
                 status: 400,
-                message: '400 Bad Request',
+                message: 'Bad Request',
             })
         }
+
+        const orderLines = []
 
         const newOrder = await sequelize.transaction(async t => {
             const newOrder = await Order.create(
@@ -134,7 +152,7 @@ const create = async (req, res, next) => {
             )
 
             for (const orderLine of req.body.order_lines) {
-                await OrderLine.create(
+                const oL = await OrderLine.create(
                     {
                         order_id: newOrder.id,
                         product_id: orderLine.product_id,
@@ -144,6 +162,7 @@ const create = async (req, res, next) => {
                         transaction: t,
                     },
                 )
+                orderLines.push(oL)
             }
 
             return newOrder
@@ -151,14 +170,12 @@ const create = async (req, res, next) => {
 
         res.status(200).json({
             status: 200,
-            data: newOrder,
+            data: {
+                order: newOrder,
+                order_lines: orderLines,
+            },
         })
-
-        // If the execution reaches this line, the transaction has been committed successfully
-        // `result` is whatever was returned from the transaction callback (the `user`, in this case)
     } catch (error) {
-        // If the execution reaches this line, an error occurred.
-        // The transaction has already been rolled back automatically by Sequelize!
         next(error)
     }
 }
@@ -172,19 +189,47 @@ const update = async (req, res, next) => {
                 message: 'Not Found',
             })
         }
-        const [count, updatedOrder] = await Order.update(
-            {
-                status_id: req.body.status_id,
+
+        const customer = await Customer.findOne({
+            where: {
+                user_id: req.user.id,
             },
-            {
-                where: { id: req.params.id },
-                returning: true,
-            },
-        )
+        })
+
+        if (!customer) {
+            return res.status(400).json({
+                status: 400,
+                message: 'Bad Request',
+            })
+        }
+
+        const updatedOrderLines = []
+        const updatedOrder = await sequelize.transaction(async t => {
+            for (const orderLine of req.body.order_lines) {
+                if (orderLine.deleted) {
+                    await OrderLine.destroy({
+                        where: { id: orderLine.id },
+                        transaction: t,
+                    })
+                } else {
+                    const [updatedCount, updatedRows] = await OrderLine.update(orderLine, {
+                        where: { id: orderLine.id },
+                        returning: true,
+                        transaction: t,
+                    })
+
+                    updatedOrderLines.push(updatedRows[0])
+                }
+            }
+        })
+
         res.status(200).json({
             status: 200,
             count: count,
-            data: updatedOrder,
+            data: {
+                order: updatedOrder,
+                order_lines: updatedOrderLines,
+            },
         })
     } catch (err) {
         next(err)
@@ -193,20 +238,34 @@ const update = async (req, res, next) => {
 
 const destroy = async (req, res, next) => {
     try {
-        const instance = await Order.findByPk(req.params.id)
-        if (!instance) {
+        const order = await Order.findByPk(req.params.id)
+        if (!order) {
             return res.status(404).json({
                 status: 404,
                 message: 'Not Found',
             })
         }
-        const count = await Order.destroy({
-            where: { id: req.params.id },
-            returning: true,
+
+        const customer = await Customer.findOne({
+            where: {
+                user_id: req.user.id,
+            },
         })
-        res.json({
+
+        if (!customer) {
+            return res.status(400).json({
+                status: 400,
+                message: 'Bad Request',
+            })
+        }
+
+        const deletedCount = await Order.destroy({
+            where: { id: req.params.id },
+        })
+
+        res.status(200).json({
             status: 200,
-            count: count,
+            count: deletedCount,
         })
     } catch (err) {
         next(err)

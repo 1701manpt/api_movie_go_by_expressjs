@@ -22,7 +22,7 @@ const getAll = async (req, res, next) => {
             if (!customer) {
                 return res.status(400).json({
                     status: 400,
-                    message: '400 Bad Request',
+                    message: 'Bad Request',
                 })
             }
 
@@ -76,7 +76,7 @@ const getById = async (req, res, next) => {
             if (!customer) {
                 return res.status(400).json({
                     status: 400,
-                    message: '400 Bad Request',
+                    message: 'Bad Request',
                 })
             }
 
@@ -126,7 +126,7 @@ const create = async (req, res, next) => {
             if (!product) {
                 return res.status(404).json({
                     status: 400,
-                    message: '400 Bad Request',
+                    message: 'Bad Request',
                 })
             }
 

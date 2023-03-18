@@ -54,7 +54,7 @@ const getById = async (req, res, next) => {
             if (!customer) {
                 return res.status(400).json({
                     status: 400,
-                    message: '400 Bad Request',
+                    message: 'Bad Request',
                 })
             }
 

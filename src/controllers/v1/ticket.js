@@ -73,7 +73,7 @@ const create = async (req, res, next) => {
         if (!seat || !showTime || !order || showTime.threater_id !== seat.threater_id) {
             return res.status(404).json({
                 status: 400,
-                message: '400 Bad Request',
+                message: 'Bad Request',
             })
         }
 

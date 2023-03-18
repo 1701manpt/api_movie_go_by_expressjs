@@ -65,7 +65,7 @@ const create = async (req, res, next) => {
         if (!threater) {
             return res.status(404).json({
                 status: 400,
-                message: '400 Bad Request',
+                message: 'Bad Request',
             })
         }
 
