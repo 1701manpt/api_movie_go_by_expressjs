@@ -2,9 +2,9 @@ require('dotenv').config()
 const defineTable = require('~/configs/tables')
 
 const config = {
+    // database: process.env.DB_NAME,
     // username: process.env.DB_USERNAME,
     // password: process.env.DB_PASSWORD,
-    // database: process.env.DB_DATABASE,
     // dialect: 'mssql',
     // port: 54817,
     // dialectOptions: {
@@ -19,21 +19,22 @@ const config = {
     // // database options...
     // define: defineTable,
 
-    "username": "moviego",
-    "password": "A6XpVGrfFD4WUzoXpfU5puM77zIy94F0",
-    "host": "dpg-cg84bendvk4ljrg7dcig-a.singapore-postgres.render.com",
-    "database": "moviego",
-    "dialect": "postgres",
-    "port": 5432,
-    "protocol": "postgres",
-    "dialectOptions": {
-        "useUTC": false,
-        "ssl": {
-            "require": true,
-            "rejectUnauthorized": false
-        }
+    host: process.env.HOST_1,
+    username: process.env.DB_USERNAME_1,
+    password: process.env.DB_PASSWORD_1,
+    database: process.env.DB_NAME_1,
+    dialect: 'postgres',
+    port: 5432,
+    protocol: 'postgres',
+    dialectOptions: {
+        useUTC: false,
+        ssl: {
+            require: true,
+            rejectUnauthorized: false,
+        },
     },
-    "timezone": "+07:00",
+    timezone: '+07:00',
+    define: defineTable,
 }
 
 module.exports = config

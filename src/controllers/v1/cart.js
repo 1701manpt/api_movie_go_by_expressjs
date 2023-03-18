@@ -36,8 +36,8 @@ const getAll = async (req, res, next) => {
                     as: 'user',
                     model: User,
                     where: {
-                        id: req.user.id
-                    }
+                        id: req.user.id,
+                    },
                 },
             })
             option.customer_id = customer.id
@@ -89,32 +89,32 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        let cart;
+        let cart
 
         switch (req.user.role_id) {
             case 1:
-                cart = await Cart.findByPk(req.params.id);
-                break;
+                cart = await Cart.findByPk(req.params.id)
+                break
             case 2:
                 const customer = await Customer.findOne({
                     include: {
                         as: 'user',
                         model: User,
                         where: {
-                            id: req.user.id
-                        }
+                            id: req.user.id,
+                        },
                     },
                 })
 
                 cart = await Cart.findByPk(req.params.id, {
                     where: {
-                        customer_id: customer.id
-                    }
+                        customer_id: customer.id,
+                    },
                 })
-                break;
+                break
 
             default:
-                break;
+                break
         }
 
         if (!cart) {
@@ -131,18 +131,17 @@ const getById = async (req, res, next) => {
     } catch (error) {
         next(error)
     }
-};
+}
 
 const create = async (req, res, next) => {
     try {
-
         const customer = await Customer.findOne({
             include: {
                 as: 'user',
                 model: User,
                 where: {
-                    id: req.user.id
-                }
+                    id: req.user.id,
+                },
             },
         })
 

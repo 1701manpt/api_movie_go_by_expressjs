@@ -1,9 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {
-    destroy,
-    update,
-} = require('~/controllers/v1/product-image')
+const { destroy, update } = require('~/controllers/v1/product-image')
 const { authorizeToken } = require('~/middlewares/verify-token')
 
 // all
