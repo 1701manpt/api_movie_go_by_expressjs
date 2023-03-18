@@ -16,7 +16,7 @@ const getAll = async (req, res, next) => {
             const customer = await Customer.findOne({
                 where: {
                     user_id: req.user.id,
-                }
+                },
             })
 
             if (!customer) {
@@ -63,32 +63,30 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
+        let id = req.params.id
         let cart
+        // phân quyền: nếu là customer thì chỉ lấy orders của chính chủ
+        if (req.user.role_id === 2) {
+            const customer = await Customer.findOne({
+                where: {
+                    user_id: req.user.id,
+                },
+            })
 
-        switch (req.user.role_id) {
-            case 1:
-                cart = await Cart.findByPk(req.params.id)
-                break
-            case 2:
-                const customer = await Customer.findOne({
-                    include: {
-                        as: 'user',
-                        model: User,
-                        where: {
-                            id: req.user.id,
-                        },
-                    },
+            if (!customer) {
+                return res.status(400).json({
+                    status: 400,
+                    message: '400 Bad Request',
                 })
+            }
 
-                cart = await Cart.findByPk(req.params.id, {
-                    where: {
-                        customer_id: customer.id,
-                    },
-                })
-                break
-
-            default:
-                break
+            cart = await Cart.scope(['includeCartLines', 'includeCustomer']).findOne({
+                where: {
+                    customer_id: customer.id,
+                },
+            })
+        } else {
+            cart = await Cart.scope(['includeCartLines', 'includeCustomer']).findById(id)
         }
 
         if (!cart) {

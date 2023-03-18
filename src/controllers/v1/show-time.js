@@ -42,10 +42,9 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const showTime = await ShowTime.scope([
-            'includeThreater',
-            'includeMovie',
-        ]).findByPk(req.params.id)
+        const showTime = await ShowTime.scope(['includeThreater', 'includeMovie']).findByPk(
+            req.params.id,
+        )
         if (!showTime) {
             return res.status(404).json({
                 status: 404,

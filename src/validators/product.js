@@ -1,17 +1,22 @@
 const Joi = require('joi')
 
-exports.create = Joi.object({
-    avatar: Joi.string().allow(null).optional(),
-    name: Joi.string().required(),
+const create = Joi.object({
+    name: Joi.string().min(3).max(50).regex(/^[a-zA-Z0-9_ ]+$/).required(),
+    avatar_url: Joi.string().pattern(/^https?:\/\/\S+$/).optional(),
     price: Joi.number().positive().required(),
-    description: Joi.string().allow(null).optional(),
-    categoryId: Joi.number().allow(null).optional(),
+    description: Joi.string().max(2000).optional(),
+    category_id: Joi.number().integer().positive().optional(),
 })
 
-exports.update = Joi.object({
-    avatar: Joi.string().allow(null).optional(),
-    name: Joi.string().min(1),
-    price: Joi.number().positive().min(1),
-    description: Joi.string().allow(null).optional(),
-    categoryId: Joi.number().allow(null).optional(),
+const update = Joi.object({
+    name: Joi.string().min(3).max(50).regex(/^[a-zA-Z0-9_ ]+$/).required(),
+    avatar_url: Joi.string().pattern(/^https?:\/\/\S+$/).optional(),
+    price: Joi.number().positive().required(),
+    description: Joi.string().max(2000).optional(),
+    category_id: Joi.number().integer().positive().optional(),
 })
+
+module.exports = {
+    create,
+    update,
+}

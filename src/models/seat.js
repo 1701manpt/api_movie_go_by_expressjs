@@ -23,7 +23,6 @@ const Seat = sequelize.define('Seat', {
     },
 })
 
-
 Seat.addScope('includeThreater', {
     include: 'threater',
 })

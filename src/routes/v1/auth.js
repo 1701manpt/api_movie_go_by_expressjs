@@ -7,12 +7,14 @@ const {
     refreshToken,
     logout,
 } = require('~/controllers/v1/auth')
+const validate = require('~/middlewares/validate')
 const { authenticateToken } = require('~/middlewares/verify-token')
+const authSchema = require('~/validators/auth')
 
 // all
 router.post('/login/customer', loginCustomer)
 router.post('/login/admin', loginAdmin)
-router.post('/register/customer', registerCustomer)
+router.post('/register/customer', validate(authSchema.registerCustomer), registerCustomer)
 router.post('/refresh', refreshToken)
 
 // authentication

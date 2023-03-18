@@ -35,9 +35,6 @@ const server = app.listen(7000, err => {
     if (err) {
         console.error(`Listening on port 7000 error: ${err}`)
     } else {
-        console.log(
-            `Rest API: ${`http://localhost:${server.address().port
-            }/api/v1.0.0/`}`,
-        )
+        console.log(`Rest API: ${`http://localhost:${server.address().port}/api/v1.0.0/`}`)
     }
 })

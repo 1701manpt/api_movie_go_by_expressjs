@@ -41,10 +41,9 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const threater = await Threater.scope([
-            'includeSeats',
-            'includeShowTimes',
-        ]).findByPk(req.params.id)
+        const threater = await Threater.scope(['includeSeats', 'includeShowTimes']).findByPk(
+            req.params.id,
+        )
         if (!threater) {
             return res.status(404).json({
                 status: 404,

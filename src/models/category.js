@@ -19,7 +19,7 @@ const Category = sequelize.define('Category', {
 })
 
 Category.addScope('includeProducts', {
-    include: 'products'
+    include: 'products',
 })
 
 module.exports = Category

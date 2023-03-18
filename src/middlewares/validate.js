@@ -2,13 +2,16 @@ function validate(schema) {
     return (req, res, next) => {
         const { error } = schema.validate(req.body, { abortEarly: false })
         if (error) {
-            // const errors = error.details.reduce((acc, cur) => {
-            //    acc[cur.path[0]] = cur.message
-            //    return acc
-            // }, {})
-            return res
-                .status(400)
-                .json({ errors: { validations: error.details } })
+            const errors = error.details.map(detail => {
+                return {
+                    field: detail.context.key,
+                    message: detail.message,
+                }
+            })
+            return res.status(400).json({
+                status: 400,
+                errors: errors,
+            })
         }
 
         return next()

@@ -15,7 +15,7 @@ const getAll = async (req, res, next) => {
             const customer = await Customer.findOne({
                 where: {
                     user_id: req.user.id,
-                }
+                },
             })
 
             if (!customer) {
@@ -65,10 +65,32 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const order = await Order.scope([
-            'includeCustomer',
-            'includeStatus',
-        ]).findByPk(req.params.id)
+        let id = req.params.id
+        let order
+        // phân quyền: nếu là customer thì chỉ lấy orders của chính chủ
+        if (req.user.role_id === 2) {
+            const customer = await Customer.findOne({
+                where: {
+                    user_id: req.user.id,
+                },
+            })
+
+            if (!customer) {
+                return res.status(400).json({
+                    status: 400,
+                    message: '400 Bad Request',
+                })
+            }
+
+            order = await Order.scope(['includeOrderLines', 'includeCustomer']).findOne({
+                where: {
+                    customer_id: customer.id,
+                },
+            })
+        } else {
+            order = await Order.scope(['includeOrderLines', 'includeCustomer']).findById(id)
+        }
+
         if (!order) {
             return res.status(404).json({
                 status: 404,
@@ -90,7 +112,7 @@ const create = async (req, res, next) => {
         const customer = await Customer.findOne({
             where: {
                 user_id: req.user.id,
-            }
+            },
         })
 
         if (!customer) {

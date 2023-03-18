@@ -1,11 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {
-    getAll,
-    getById,
-    create,
-    destroy,
-} = require('~/controllers/v1/threater')
+const { getAll, getById, create, destroy } = require('~/controllers/v1/threater')
 const { authorizeToken } = require('~/middlewares/verify-token')
 
 router.get('/', authorizeToken([1]), getAll)

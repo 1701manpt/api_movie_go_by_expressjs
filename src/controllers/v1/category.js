@@ -1,4 +1,3 @@
-// modal
 const Category = require('~/models/category')
 const search = require('~/search/category')
 const Pagination = require('~/utils/pagination')

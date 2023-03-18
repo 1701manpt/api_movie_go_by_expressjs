@@ -1,13 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { authorizeToken } = require('~/middlewares/verify-token')
-const {
-    getAll,
-    getById,
-    create,
-    update,
-    destroy,
-} = require('~/controllers/v1/category')
+const { getAll, getById, create, update, destroy } = require('~/controllers/v1/category')
 
 // all
 router.get('/', getAll)

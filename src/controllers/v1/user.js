@@ -1,4 +1,5 @@
 require('dotenv').config()
+const Customer = require('~/models/customer')
 const User = require('~/models/user')
 const search = require('~/search/user')
 const Pagination = require('~/utils/pagination')
@@ -43,11 +44,31 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const user = await User.scope([
-            'excludePassword',
-            'includeStatus',
-            'includeRole',
-        ]).findByPk(req.params.id)
+        let id = req.params.id
+        let user
+        // phân quyền: nếu là customer thì chỉ lấy orders của chính chủ
+        if (req.user.role_id === 2) {
+            const customer = await Customer.findOne({
+                where: {
+                    user_id: req.user.id,
+                },
+            })
+
+            if (!customer) {
+                return res.status(400).json({
+                    status: 400,
+                    message: '400 Bad Request',
+                })
+            }
+
+            user = await User.scope(['includeCustomer']).findOne({
+                where: {
+                    customer_id: customer.id,
+                },
+            })
+        } else {
+            user = await User.scope(['includeCustomer']).findById(id)
+        }
 
         if (!user) {
             return res.status(404).json({

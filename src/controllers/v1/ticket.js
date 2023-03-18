@@ -70,12 +70,7 @@ const create = async (req, res, next) => {
         const showTime = await ShowTime.findByPk(req.body.show_time_id)
         const seat = await Seat.findByPk(req.body.seat_id)
         const order = await Order.findByPk(req.body.order_id)
-        if (
-            !seat ||
-            !showTime ||
-            !order ||
-            showTime.threater_id !== seat.threater_id
-        ) {
+        if (!seat || !showTime || !order || showTime.threater_id !== seat.threater_id) {
             return res.status(404).json({
                 status: 400,
                 message: '400 Bad Request',

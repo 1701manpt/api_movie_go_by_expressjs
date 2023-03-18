@@ -1,10 +1,7 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const Customer = require('~/models/customer')
-const {
-    generateToken,
-    generateRefreshToken,
-} = require('~/utils/generate-token')
+const { generateToken, generateRefreshToken } = require('~/utils/generate-token')
 const { hashPassword, comparePassword } = require('~/utils/password')
 const User = require('~/models/user')
 const Admin = require('~/models/admin')
@@ -30,10 +27,7 @@ const loginCustomer = async (req, res, next) => {
 
         const user = customer.user
 
-        const isPassword = await comparePassword(
-            req.body.password,
-            user.password,
-        )
+        const isPassword = await comparePassword(req.body.password, user.password)
 
         if (user && !isPassword) {
             return res.status(401).json({
@@ -93,10 +87,7 @@ const loginAdmin = async (req, res, next) => {
 
         const user = admin.user
 
-        const isPassword = await comparePassword(
-            req.body.password,
-            user.password,
-        )
+        const isPassword = await comparePassword(req.body.password, user.password)
 
         if (user && !isPassword) {
             return res.status(401).json({

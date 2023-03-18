@@ -1,12 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {
-    getAll,
-    getById,
-    create,
-    update,
-    destroy,
-} = require('~/controllers/v1/order')
+const { getAll, getById, create, update, destroy } = require('~/controllers/v1/order')
 const { authorizeToken } = require('~/middlewares/verify-token')
 
 // admin

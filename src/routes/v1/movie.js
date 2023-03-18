@@ -1,12 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {
-    getAll,
-    getById,
-    create,
-    destroy,
-    update,
-} = require('~/controllers/v1/movie')
+const { getAll, getById, create, destroy, update } = require('~/controllers/v1/movie')
 const { authorizeToken } = require('~/middlewares/verify-token')
 
 // all

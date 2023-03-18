@@ -42,9 +42,26 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
     try {
-        const customer = await Customer.scope(['includeUser']).findByPk(
-            req.params.id,
-        )
+        let id = req.params.id
+        // phân quyền: nếu là customer thì chỉ lấy orders của chính chủ
+        if (req.user.role_id === 2) {
+            const customer = await Customer.findOne({
+                where: {
+                    user_id: req.user.id,
+                },
+            })
+
+            if (!customer) {
+                return res.status(400).json({
+                    status: 400,
+                    message: '400 Bad Request',
+                })
+            }
+
+            id = customer.id
+        }
+
+        const customer = await Customer.scope(['includeUser']).findByPk(id)
 
         if (!customer) {
             return res.status(404).json({

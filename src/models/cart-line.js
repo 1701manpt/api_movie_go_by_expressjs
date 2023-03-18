@@ -26,11 +26,11 @@ const CartLine = sequelize.define('CartLine', {
 })
 
 CartLine.addScope('includeCart', {
-    include: 'cart'
+    include: 'cart',
 })
 
 CartLine.addScope('includeProduct', {
-    include: 'product'
+    include: 'product',
 })
 
 CartLine.belongsTo(Cart, {
