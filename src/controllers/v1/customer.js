@@ -1,6 +1,6 @@
 // modal
 const Customer = require('~/models/customer')
-const search = require('~/search/customer')
+const search = require('~/searchs/customer')
 const Pagination = require('~/utils/pagination')
 const sortBy = require('~/utils/sort-by')
 

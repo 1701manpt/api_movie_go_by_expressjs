@@ -1,7 +1,7 @@
 require('dotenv').config()
 const Admin = require('~/models/admin')
 const User = require('~/models/user')
-const search = require('~/search/admin')
+const search = require('~/searchs/admin')
 const Pagination = require('~/utils/pagination')
 const { comparePassword } = require('~/utils/password')
 const sortBy = require('~/utils/sort-by')

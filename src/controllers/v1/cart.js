@@ -3,7 +3,7 @@ const CartLine = require('~/models/cart-line')
 const Customer = require('~/models/customer')
 const Product = require('~/models/product')
 const User = require('~/models/user')
-const search = require('~/search/cart')
+const search = require('~/searchs/cart')
 const Pagination = require('~/utils/pagination')
 const sortBy = require('~/utils/sort-by')
 

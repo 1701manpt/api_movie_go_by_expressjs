@@ -1,6 +1,5 @@
 require('module-alias/register')
 const express = require('express')
-
 const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -24,12 +23,6 @@ chat()
 
 // delete data in db and sync with model
 // delDataAndSyncModel()
-
-// const crypto = require('crypto')
-// const buf = crypto.randomBytes(64, (err, buf) => {
-//     if (err) throw err;
-//     console.log(`${buf.length} bytes of random data: ${buf.toString('hex')}`);
-// });
 
 const server = app.listen(7000, err => {
     if (err) {

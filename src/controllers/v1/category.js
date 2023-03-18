@@ -1,5 +1,5 @@
 const Category = require('~/models/category')
-const search = require('~/search/category')
+const search = require('~/searchs/category')
 const Pagination = require('~/utils/pagination')
 const sortBy = require('~/utils/sort-by')
 

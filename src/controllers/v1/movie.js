@@ -1,5 +1,5 @@
 const Movie = require('~/models/movie')
-const search = require('~/search/movie')
+const search = require('~/searchs/movie')
 const Pagination = require('~/utils/pagination')
 const sortBy = require('~/utils/sort-by')
 

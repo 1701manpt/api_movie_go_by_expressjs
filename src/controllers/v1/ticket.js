@@ -3,7 +3,7 @@ const Seat = require('~/models/seat')
 const Order = require('~/models/order')
 const Ticket = require('~/models/ticket')
 const Pagination = require('~/utils/pagination')
-const search = require('~/search/ticket')
+const search = require('~/searchs/ticket')
 const sortBy = require('~/utils/sort-by')
 
 const getAll = async (req, res, next) => {

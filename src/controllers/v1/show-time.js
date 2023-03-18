@@ -2,7 +2,7 @@ const ShowTime = require('~/models/show-time')
 const Threater = require('~/models/threater')
 const Movie = require('~/models/movie')
 const sortBy = require('~/utils/sort-by')
-const search = require('~/search/show-time')
+const search = require('~/searchs/show-time')
 
 const getAll = async (req, res, next) => {
     try {

@@ -1,6 +1,6 @@
 const Seat = require('~/models/seat')
 const Threater = require('~/models/threater')
-const search = require('~/search/seat')
+const search = require('~/searchs/seat')
 const Pagination = require('~/utils/pagination')
 const sortBy = require('~/utils/sort-by')
 

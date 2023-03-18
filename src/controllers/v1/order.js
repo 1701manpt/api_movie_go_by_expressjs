@@ -4,7 +4,7 @@ const Customer = require('~/models/customer')
 const OrderLine = require('~/models/order-line')
 const Pagination = require('~/utils/pagination')
 const sortBy = require('~/utils/sort-by')
-const search = require('~/search/order')
+const search = require('~/searchs/order')
 
 const getAll = async (req, res, next) => {
     try {

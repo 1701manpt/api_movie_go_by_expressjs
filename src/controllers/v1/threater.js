@@ -1,5 +1,5 @@
 const Threater = require('~/models/threater')
-const search = require('~/search/threater')
+const search = require('~/searchs/threater')
 const Pagination = require('~/utils/pagination')
 const sortBy = require('~/utils/sort-by')
 
