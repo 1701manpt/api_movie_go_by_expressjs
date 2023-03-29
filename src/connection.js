@@ -10,6 +10,6 @@ sequelize
     .catch(error => {
         console.error('Unable to connect to the database:', error)
     })
-    .finally(() => { })
+    .finally(() => {})
 
 module.exports = sequelize

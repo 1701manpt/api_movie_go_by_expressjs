@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Socket.io Example</title>
+</head>
+
+<body>
+    <ul id="messages"></ul>
+    <form id="message-form">
+        <input type="radio" id="size1" name="size" value="256x256" />
+        <label for="size1">256 x 256</label><br>
+        <input type="radio" id="size2" name="size" value="512x512" />
+        <label for="size2">512 x 512</label><br>
+        <input type="radio" id="size3" name="size" value="1024x1024" />
+        <label for="size3">1024 x 1024</label><br>
+        <textarea id="message-input"></textarea>
+        <button type="submit">Send</button>
+    </form>
+
+    <ul id="results">
+
+    </ul>
+
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+        integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+        crossorigin="anonymous"></script>
+    <script>
+        var socket = io('http://localhost:7000', {
+            withCredentials: true,
+        });
+
+        var messages = document.getElementById('messages');
+        var results = document.getElementById('results');
+        var form = document.getElementById('message-form');
+        var input = document.getElementById('message-input');
+        var sizes = document.getElementsByName('size');
+
+        form.addEventListener('submit', function (e) {
+            let size
+            for (const s of sizes) {
+                if (s.checked) {
+                    size = s.value
+                }
+            }
+
+            e.preventDefault();
+            socket.emit('chat message', input.value);
+            socket.emit('/create-image', { description: input.value, size: size });
+            input.value = '';
+        });
+
+        socket.on('chat message', function (msg) {
+            var li = document.createElement('li');
+            li.textContent = msg;
+            messages.appendChild(li);
+        });
+
+        socket.on('/create-image', function ({ url, size }) {
+            var li = document.createElement('li');
+            li.innerHTML = `<img src='${url}' height='${size.split('x')[0]}' width='${size.split('x')[1]}'/>`;
+            results.appendChild(li);
+        });
+    </script>
+</body>
+
+</html>
